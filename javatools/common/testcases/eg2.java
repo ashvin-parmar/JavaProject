@@ -1,6 +1,6 @@
 import com.thinking.machines.utils.*;
 
-class psp
+class TestKeyboard2
 {
 public static void main(String gg[])
 {

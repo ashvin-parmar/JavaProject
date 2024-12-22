@@ -4,7 +4,7 @@ public class TMArrayList implements TMList
 {
 private int size;
 private int collection[];
-TMArrayList()
+public TMArrayList()
 {
 this.collection=new int[10];
 this.size=0;
