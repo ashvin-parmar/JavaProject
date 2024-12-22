@@ -1,15 +1,15 @@
 package com.thinking.machines.utils;
 
-class TMArrayList implements TMList
+public class TMArrayList implements TMList
 {
 private int size;
-private int[] collection;
+private int collection[];
 TMArrayList()
 {
 this.collection=new int[10];
 this.size=0;
 }
-private resizeArray()
+private void resizeArray()
 {
 int tmp[]=new int[this.size+10];
 for(int i=0;i<this.size;i++) tmp[i]=this.collection[i];
@@ -27,7 +27,7 @@ this.size++;
 }
 public void add(int index,int data)
 {
-if(index<0 || index>collection.size) throw new IndexOutOfBoundsException("Invalid index: "+index);
+if(index<0 || index>this.size) throw new IndexOutOfBoundsException("Invalid index: "+index);
 if(this.size==collection.length)
 {
 resizeArray();
