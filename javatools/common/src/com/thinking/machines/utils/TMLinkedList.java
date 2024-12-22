@@ -48,16 +48,19 @@ TMLinkedListNode node=new TMLinkedListNode(data);
 if(this.start==null)
 {
 this.start=this.end=node;
-this.size++;
-return;
-}
+}else
+if(index==0)
+{
+node.next=this.start;
+this.start=node;
+}else
 if(index==this.size)
 {
 this.end.next=node;
 this.end=node;
-this.size++;
-return;
 }
+else
+{
 TMLinkedListNode t,f=null;
 t=this.start;
 for(int i=0;i<index;i++)
@@ -67,6 +70,7 @@ t=t.next;
 }
 f.next=node;
 node.next=t;
+}
 this.size++;
 }
 public void insert(int index,int data)
@@ -117,11 +121,13 @@ t.data=data;
 
 public void removeAll()
 {
-this.size=0;
+this.clear();
 }
 public void clear()
 {
 this.size=0;
+this.start=null;
+this.end=null;
 }
 
 public int get(int index)
