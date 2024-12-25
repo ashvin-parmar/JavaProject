@@ -96,35 +96,38 @@ public int size()
 {
 return this.size;
 }
-
 public void copyTo(TMList other)
 {
 other.clear();
-for(int i=0;i<this.size;i++)
+TMIterator iterator=this.iterator();
+while(iterator.hasNext())
 {
-other.add(this.collection[i]);
+other.add(iterator.next());
 }
 }
 public void copyFrom(TMList other)
 {
 this.clear();
-for(int i=0;i<other.size();i++)
+TMIterator iterator=other.iterator();
+while(iterator.hasNext())
 {
-this.add(other.get(i));
+this.add(iterator.next());
 }
 }
 public void appendTo(TMList other)
 {
-for(int i=0;i<this.size;i++)
+TMIterator iterator=this.iterator();
+while(iterator.hasNext())
 {
-other.add(this.collection[i]);
+other.add(iterator.next());
 }
 }
 public void appendFrom(TMList other)
 {
-for(int i=0;i<other.size();i++)
+TMIterator iterator=other.iterator();
+while(iterator.hasNext())
 {
-this.add(other.get(i));
+this.add(iterator.next());
 }
 }
 }
