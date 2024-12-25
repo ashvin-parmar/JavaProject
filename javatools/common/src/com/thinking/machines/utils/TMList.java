@@ -19,4 +19,6 @@ public void copyFrom(TMList other);
 
 public void appendTo(TMList other);
 public void appendFrom(TMList other);
+
+//public TMIterator iterator();
 }
