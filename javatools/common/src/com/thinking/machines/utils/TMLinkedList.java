@@ -1,5 +1,4 @@
 package com.thinking.machines.utils;
-
 class TMLinkedListNode 
 {
 int data;
@@ -20,6 +19,30 @@ public class TMLinkedList implements TMList
 private int size;
 private TMLinkedListNode start;
 private TMLinkedListNode end;
+public class TMLinkedListIterator implements TMIterator	//TMLinkedListIterator inner class
+{
+private TMLinkedListNode node;
+public TMLinkedListIterator(TMLinkedListNode node)
+{
+this.node=node;	
+}
+public boolean hasNext()
+{
+return node!=null;
+}
+public int next()
+{
+if(node==null) throw new InvalidIteratorException("Iterator has no more element");
+int data;
+data=node.data;
+node=node.next;
+return data;
+}
+}
+public TMLinkedListIterator iterator()
+{
+return new TMLinkedListIterator(this.start);
+}
 public TMLinkedList()
 {
 this.size=0;

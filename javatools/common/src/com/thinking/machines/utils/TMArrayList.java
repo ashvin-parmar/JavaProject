@@ -4,6 +4,27 @@ public class TMArrayList implements TMList
 {
 private int size;
 private int collection[];
+class TMArrayListIterator implements TMIterator
+{
+int index;
+public TMArrayListIterator()
+{
+this.index=0;
+}
+public boolean hasNext()
+{
+return this.index!=TMArrayList.this.size;	//outside class this property used
+}
+public int next()
+{
+if(this.index==TMArrayList.this.size) throw new InvalidIteratorException("Iterator has no more element");
+return TMArrayList.this.collection[this.index++];
+}
+}
+public TMArrayListIterator iterator()
+{
+return new TMArrayListIterator();
+}
 public TMArrayList()
 {
 this.collection=new int[10];
