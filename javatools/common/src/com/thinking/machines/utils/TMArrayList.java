@@ -25,6 +25,13 @@ public TMArrayListIterator iterator()
 {
 return new TMArrayListIterator();
 }
+public void forEach(FunctionalSeries fs)
+{
+for(int i=0;i<this.size;i++)
+{
+fs.traversal(this.collection[i]);
+}
+}
 public TMArrayList()
 {
 this.collection=new int[10];
