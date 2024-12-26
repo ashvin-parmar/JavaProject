@@ -43,6 +43,16 @@ public TMLinkedListIterator iterator()
 {
 return new TMLinkedListIterator(this.start);
 }
+public void forEach(FunctionalSeries fs)
+{
+TMLinkedListNode node;
+node=this.start;
+while(node!=null)
+{
+fs.traversal(node.data);
+node=node.next;
+}
+}
 public TMLinkedList()
 {
 this.size=0;

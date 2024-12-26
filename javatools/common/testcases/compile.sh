@@ -5,4 +5,5 @@ javac -classpath ../classes:. eg4.java
 javac -classpath ../classes:. eg5.java
 javac -classpath ../classes:. eg6.java
 javac -classpath ../classes:. eg7.java
+javac -classpath ../classes:. eg8.java
 #javac -classpath ../classes:. psp
