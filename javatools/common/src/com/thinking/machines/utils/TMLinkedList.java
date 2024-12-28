@@ -43,13 +43,14 @@ public TMLinkedListIterator iterator()
 {
 return new TMLinkedListIterator(this.start);
 }
-public void forEach(FunctionalSeries fs)
+public void forEach(TMListItemAcceptor a)
 {
+if(a==null) return;
 TMLinkedListNode node;
 node=this.start;
 while(node!=null)
 {
-fs.traversal(node.data);
+a.accept(node.data);
 node=node.next;
 }
 }

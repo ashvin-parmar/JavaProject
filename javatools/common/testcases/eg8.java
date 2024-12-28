@@ -11,7 +11,9 @@ list.add(40);
 
 list.forEach((p)->{System.out.println("Data is: "+p);});
 TMArrayList list2=new TMArrayList();
-list2.copyFrom(list);
+list2.add(100);
+list2.add(200);
+list2.appendFrom(list);
 list2.forEach((p)->{System.out.println(p);});
 
 }

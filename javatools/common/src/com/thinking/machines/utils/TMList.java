@@ -21,4 +21,5 @@ public void appendTo(TMList other);
 public void appendFrom(TMList other);
 
 public TMIterator iterator();
+public void forEach(TMListItemAcceptor a);
 }

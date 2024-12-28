@@ -25,11 +25,12 @@ public TMArrayListIterator iterator()
 {
 return new TMArrayListIterator();
 }
-public void forEach(FunctionalSeries fs)
+public void forEach(TMListItemAcceptor a)
 {
+if(a==null) return;
 for(int i=0;i<this.size;i++)
 {
-fs.traversal(this.collection[i]);
+a.accept(this.collection[i]);
 }
 }
 public TMArrayList()
