@@ -2,3 +2,4 @@
 *.out
 *.class
 !javatools/tools/**/*.class
+*.tmp
