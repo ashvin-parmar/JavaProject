@@ -1,25 +1,25 @@
 package com.thinking.machines.utils;
 
-public interface TMList
+public interface TMList<T>
 {
-public void add(int data);
-public void add(int index,int data);
-public void insert(int index,int data);
-public int remove(int index);
-public void update(int index,int data);
+public void add(T data);
+public void add(int index,T data);
+public void insert(int index,T data);
+public T remove(int index);
+public void update(int index,T data);
 
 public void removeAll();
 public void clear();
 
-public int get(int index);
+public T get(int index);
 public int size();
 
-public void copyTo(TMList other);
-public void copyFrom(TMList other);
+public void copyTo(TMList<T> other);
+public void copyFrom(TMList<T> other);
 
-public void appendTo(TMList other);
-public void appendFrom(TMList other);
+public void appendTo(TMList<T> other);
+public void appendFrom(TMList<T> other);
 
-public TMIterator iterator();
-public void forEach(TMListItemAcceptor a);
+public TMIterator<T> iterator();
+public void forEach(TMListItemAcceptor<T> a);
 }

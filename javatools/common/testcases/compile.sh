@@ -6,4 +6,8 @@ javac -classpath ../classes:. eg5.java
 javac -classpath ../classes:. eg6.java
 javac -classpath ../classes:. eg7.java
 javac -classpath ../classes:. eg8.java
-#javac -classpath ../classes:. psp
+javac -classpath ../dist/tmcommon.jar:. TestGeneric.java
+javac -classpath ../dist/*:. TestGeneric.java
+#java -classpath ../dist/*:. TestGeneric
+#java -classpath ../dist/tmcommon.jar:. TestGeneric
+#java -classpath ../classes:. psp

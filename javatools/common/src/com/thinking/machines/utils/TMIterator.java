@@ -1,6 +1,6 @@
 package com.thinking.machines.utils;
-public interface TMIterator
+public interface TMIterator<T>
 {
 public boolean hasNext();
-public int next();
+public T next();
 }

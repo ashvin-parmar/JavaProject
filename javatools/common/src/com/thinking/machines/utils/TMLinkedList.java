@@ -1,28 +1,28 @@
 package com.thinking.machines.utils;
-class TMLinkedListNode 
+class TMLinkedListNode<T> 
 {
-int data;
-TMLinkedListNode next;
+T data;
+TMLinkedListNode<T> next;
 TMLinkedListNode()
 {
-this.data=0;
+this.data=null;
 this.next=null;
 }
-TMLinkedListNode(int data)
+TMLinkedListNode(T data)
 {
 this.data=data;
 this.next=null;
 }
 }
-public class TMLinkedList implements TMList
+public class TMLinkedList<T> implements TMList<T>
 {
 private int size;
-private TMLinkedListNode start;
-private TMLinkedListNode end;
-public class TMLinkedListIterator implements TMIterator	//TMLinkedListIterator inner class
+private TMLinkedListNode<T> start;
+private TMLinkedListNode<T> end;
+public class TMLinkedListIterator<T> implements TMIterator<T>	//TMLinkedListIterator inner class
 {
-private TMLinkedListNode node;
-public TMLinkedListIterator(TMLinkedListNode node)
+private TMLinkedListNode<T> node;
+public TMLinkedListIterator(TMLinkedListNode<T> node)
 {
 this.node=node;	
 }
@@ -30,27 +30,27 @@ public boolean hasNext()
 {
 return node!=null;
 }
-public int next()
+public T next()
 {
 if(node==null) throw new InvalidIteratorException("Iterator has no more element");
-int data;
-data=node.data;
+T data;
+data=(T)node.data;
 node=node.next;
 return data;
 }
 }
-public TMLinkedListIterator iterator()
+public TMLinkedListIterator<T> iterator()
 {
-return new TMLinkedListIterator(this.start);
+return new TMLinkedListIterator<T>(this.start);
 }
-public void forEach(TMListItemAcceptor a)
+public void forEach(TMListItemAcceptor<T> a)
 {
 if(a==null) return;
-TMLinkedListNode node;
+TMLinkedListNode<T> node;
 node=this.start;
 while(node!=null)
 {
-a.accept(node.data);
+a.accept((T)node.data);
 node=node.next;
 }
 }
@@ -60,9 +60,9 @@ this.size=0;
 this.start=null;
 this.end=null;
 }
-public void add(int data)
+public void add(T data)
 {
-TMLinkedListNode node=new TMLinkedListNode(data);
+TMLinkedListNode<T> node=new TMLinkedListNode<T>(data);
 if(this.start==null)
 {
 this.start=node;
@@ -75,10 +75,10 @@ this.end=node;
 }
 this.size++;
 }
-public void add(int index,int data)
+public void add(int index,T data)
 {
 if(index<0 || index>this.size) throw new IndexOutOfBoundsException("Invalid index: "+index);
-TMLinkedListNode node=new TMLinkedListNode(data);
+TMLinkedListNode<T> node=new TMLinkedListNode<T>(data);
 if(this.start==null)
 {
 this.start=this.end=node;
@@ -95,7 +95,7 @@ this.end=node;
 }
 else
 {
-TMLinkedListNode t,f=null;
+TMLinkedListNode<T> t,f=null;
 t=this.start;
 for(int i=0;i<index;i++)
 {
@@ -107,14 +107,14 @@ node.next=t;
 }
 this.size++;
 }
-public void insert(int index,int data)
+public void insert(int index,T data)
 {
 this.add(index,data);
 }
-public int remove(int index)
+public T remove(int index)
 {
 if(index<0 || index>=this.size) throw new IndexOutOfBoundsException("Invalid index: "+index);
-TMLinkedListNode t,f;
+TMLinkedListNode<T> t,f;
 f=null;
 t=this.start;
 for(int i=0;i<index;i++)
@@ -139,12 +139,12 @@ this.end=f;
 f.next=t.next;
 }
 this.size--;
-return t.data;
+return (T)t.data;
 }
-public void update(int index,int data)
+public void update(int index,T data)
 {
 if(index<0 || index>=this.size) throw new IndexOutOfBoundsException("Invalid index: "+index);
-TMLinkedListNode t;
+TMLinkedListNode<T> t;
 t=this.start;
 for(int i=0;i<index;i++)
 {
@@ -164,53 +164,53 @@ this.start=null;
 this.end=null;
 }
 
-public int get(int index)
+public T get(int index)
 {
 if(index<0 || index>=this.size) throw new IndexOutOfBoundsException("Invalid indedx: "+index);
-TMLinkedListNode t;
+TMLinkedListNode<T> t;
 t=this.start;
 for(int i=0;i<index;i++)
 {
 t=t.next;
 }
-return t.data;
+return (T)t.data;
 }
 public int size()
 {
 return this.size;
 }
-public void copyTo(TMList other)
+public void copyTo(TMList<T> other)
 {
 other.clear();
-TMIterator iterator=this.iterator();
+TMIterator<T> iterator=this.iterator();
 while(iterator.hasNext())
 {
-other.add(iterator.next());
+other.add((T)iterator.next());
 }
 }
-public void copyFrom(TMList other)
+public void copyFrom(TMList<T> other)
 {
 this.clear();
-TMIterator iterator=other.iterator();
+TMIterator<T> iterator=other.iterator();
 while(iterator.hasNext())
 {
-this.add(iterator.next());
+this.add((T)iterator.next());
 }
 }
-public void appendTo(TMList other)
+public void appendTo(TMList<T> other)
 {
-TMIterator iterator=this.iterator();
+TMIterator<T> iterator=this.iterator();
 while(iterator.hasNext())
 {
-other.add(iterator.next());
+other.add((T)iterator.next());
 }
 }
-public void appendFrom(TMList other)
+public void appendFrom(TMList<T> other)
 {
-TMIterator iterator=other.iterator();
+TMIterator<T> iterator=other.iterator();
 while(iterator.hasNext())
 {
-this.add(iterator.next());
+this.add((T)iterator.next());
 }
 }
 }

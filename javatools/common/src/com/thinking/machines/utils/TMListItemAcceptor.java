@@ -1,5 +1,5 @@
 package com.thinking.machines.utils;
-public interface TMListItemAcceptor
+public interface TMListItemAcceptor<T>
 {
-public void accept(int p);
+public void accept(T p);
 }

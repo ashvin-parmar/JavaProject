@@ -1,10 +1,10 @@
 package com.thinking.machines.utils;
 
-public class TMArrayList implements TMList
+public class TMArrayList<T> implements TMList<T>
 {
 private int size;
-private int collection[];
-class TMArrayListIterator implements TMIterator
+private Object collection[];
+class TMArrayListIterator<T> implements TMIterator<T>
 {
 int index;
 public TMArrayListIterator()
@@ -15,37 +15,37 @@ public boolean hasNext()
 {
 return this.index!=TMArrayList.this.size;	//outside class this property used
 }
-public int next()
+public T next()
 {
 if(this.index==TMArrayList.this.size) throw new InvalidIteratorException("Iterator has no more element");
-return TMArrayList.this.collection[this.index++];
+return (T)TMArrayList.this.collection[this.index++];
 }
 }
-public TMArrayListIterator iterator()
+public TMArrayListIterator<T> iterator()
 {
-return new TMArrayListIterator();
+return new TMArrayListIterator<T>();
 }
-public void forEach(TMListItemAcceptor a)
+public void forEach(TMListItemAcceptor<T> a)
 {
 if(a==null) return;
 for(int i=0;i<this.size;i++)
 {
-a.accept(this.collection[i]);
+a.accept((T)this.collection[i]);
 }
 }
 public TMArrayList()
 {
-this.collection=new int[10];
+this.collection=new Object[10];
 this.size=0;
 }
 private void resizeArray()
 {
-int tmp[]=new int[this.size+10];
+Object tmp[]=new Object[this.size+10];
 for(int i=0;i<this.size;i++) tmp[i]=this.collection[i];
 this.collection=tmp;
 }
 
-public void add(int data)
+public void add(T data)
 {
 if(this.size==collection.length)
 {
@@ -54,7 +54,7 @@ resizeArray();
 this.collection[this.size]=data;
 this.size++;
 }
-public void add(int index,int data)
+public void add(int index,T data)
 {
 if(index<0 || index>this.size) throw new IndexOutOfBoundsException("Invalid index: "+index);
 if(this.size==collection.length)
@@ -65,15 +65,15 @@ for(int e=this.size;e>index;e--) this.collection[e]=this.collection[e-1];
 this.collection[index]=data;
 this.size++;
 }
-public void insert(int index,int data)
+public void insert(int index,T data)
 {
 add(index,data);
 }
-public int remove(int index)
+public T remove(int index)
 {
 if(index<0 || index>=this.size) throw new IndexOutOfBoundsException("Invalid index: "+index);
-int data;
-data=this.collection[index];
+T data;
+data=(T)this.collection[index];
 int ep=this.size-2;
 for(int e=index;e<=ep;e++)
 {
@@ -82,7 +82,7 @@ this.collection[e]=this.collection[e+1];
 this.size--;
 return data;
 }
-public void update(int index,int data)
+public void update(int index,T data)
 {
 if(index<0 || index>=this.size) throw new IndexOutOfBoundsException("Invalid index: "+index);
 this.collection[index]=data;
@@ -95,44 +95,44 @@ public void clear()
 {
 this.size=0;
 }
-public int get(int index)
+public T get(int index)
 {
 if(index<0 || index>this.size) throw new IndexOutOfBoundsException("Invalid index: "+index);
-return this.collection[index];
+return (T)this.collection[index];
 }
 public int size()
 {
 return this.size;
 }
-public void copyTo(TMList other)
+public void copyTo(TMList<T> other)
 {
 other.clear();
-TMIterator iterator=this.iterator();
+TMIterator<T> iterator=this.iterator();
 while(iterator.hasNext())
 {
 other.add(iterator.next());
 }
 }
-public void copyFrom(TMList other)
+public void copyFrom(TMList<T> other)
 {
 this.clear();
-TMIterator iterator=other.iterator();
+TMIterator<T> iterator=other.iterator();
 while(iterator.hasNext())
 {
 this.add(iterator.next());
 }
 }
-public void appendTo(TMList other)
+public void appendTo(TMList<T> other)
 {
-TMIterator iterator=this.iterator();
+TMIterator<T> iterator=this.iterator();
 while(iterator.hasNext())
 {
 other.add(iterator.next());
 }
 }
-public void appendFrom(TMList other)
+public void appendFrom(TMList<T> other)
 {
-TMIterator iterator=other.iterator();
+TMIterator<T> iterator=other.iterator();
 while(iterator.hasNext())
 {
 this.add(iterator.next());
