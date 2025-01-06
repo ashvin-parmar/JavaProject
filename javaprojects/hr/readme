@@ -6,16 +6,22 @@ This project is Three Layed programming project, which are Data Layer, Business 
 Though based on commits, you can learn about the project in step wise.
 At very first, we have created a structure of project we want to folders that are used to classified each level of programs.
 --------------------------------------------------------------------------------
-We need a exception classes to handle all type of problem arrived while coding.
+1: We need a exception classes to handle all type of problem arrived while coding.
 		***Exception class: DAOException***
 For each layer, their are unique and different exception classes for them, for data layer, we are created a exception class on path: 'hr/dl/src/com/thinking/machines/hr/dl/exceptions'.
-DAO: Data Access Object
 --------------------------------------------------------------------------------
 Now, Start creating project: 
-1: First we are created an interface for Designation class of Data Layer, which is called DesignationDTOInterface. At the very first learning stage names are like this such that its memories as DTO and DAO.
-DTO: Data Transfer Object
+2: First we are created an interface for Designation Data Transfer Object class of Data Layer, which is called DesignationDTOInterface. At the very first learning stage names are like this such that its memories as DTO and DAO.
+DTO: Data Transfer Object		: Used to share data to layers
 There are total of two property/field added in Designation class which are (a) code[int] and (b) title[String], for designation name and designation code.
 After creating interface, we are creating its implementation on path: 'hr/dl/src/com/thinking/machines/hr/dl/dto'.
 We have created a tmp folder for doing all unnecessary works. We are generating Setter Geeter from our tool for DesignationDTO class.
 For DesignationDTO, We are created setter getter and necessary functionality like hashCode, equals and compareTo. Those are required functionality for any DTO class.
 --------------------------------------------------------------------------------
+3: Creating interface for Designation Data Access Object Class of Data Layer, which is called DesignationDAOInterface.
+DAO: Data Access Object			:Used to access data from layers
+There are CRUD operation performed on Designation Data's, which would be handle by this class. All the necessary method which required to perform operations are declared in this interface.
+After declaring, It should be defined in seperate dao folder class names as DesignationDAO.
+There are many methods like add, update, delete, getAll, getByCode, getByTitle, isCodeExist, isTitleExist, and getCount. All of this methods are available but thier implementation need to be checked after each steps, so we have declared them as empty with a exception 'DAOException("Not yer implemented");' such that there are no need for returning any values.
+On each implementation, we have to create thier testcases and try that our methds are written well or not.
+-------------------------------------------------------------------------------
