@@ -5,4 +5,17 @@ There are different kind of designation, employee, department are added later wi
 This project is Three Layed programming project, which are Data Layer, Business Layer, and Presentation Layer. We worked on each layer one by one.
 Though based on commits, you can learn about the project in step wise.
 At very first, we have created a structure of project we want to folders that are used to classified each level of programs.
-	We need a exception classes to handle all type of problem arrived while coding.
+--------------------------------------------------------------------------------
+We need a exception classes to handle all type of problem arrived while coding.
+		***Exception class: DAOException***
+For each layer, their are unique and different exception classes for them, for data layer, we are created a exception class on path: 'hr/dl/src/com/thinking/machines/hr/dl/exceptions'.
+DAO: Data Access Object
+--------------------------------------------------------------------------------
+Now, Start creating project: 
+1: First we are created an interface for Designation class of Data Layer, which is called DesignationDTOInterface. At the very first learning stage names are like this such that its memories as DTO and DAO.
+DTO: Data Transfer Object
+There are total of two property/field added in Designation class which are (a) code[int] and (b) title[String], for designation name and designation code.
+After creating interface, we are creating its implementation on path: 'hr/dl/src/com/thinking/machines/hr/dl/dto'.
+We have created a tmp folder for doing all unnecessary works. We are generating Setter Geeter from our tool for DesignationDTO class.
+For DesignationDTO, We are created setter getter and necessary functionality like hashCode, equals and compareTo. Those are required functionality for any DTO class.
+--------------------------------------------------------------------------------
