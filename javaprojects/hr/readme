@@ -22,7 +22,18 @@ For DesignationDTO, We are created setter getter and necessary functionality lik
 DAO: Data Access Object			:Used to access data from layers
 There are CRUD operation performed on Designation Data's, which would be handle by this class. All the necessary method which required to perform operations are declared in this interface.
 After declaring, It should be defined in seperate dao folder class names as DesignationDAO.
-There are many methods like add, update, delete, getAll, getByCode, getByTitle, isCodeExist, isTitleExist, and getCount. All of this methods are available but thier implementation need to be checked after each steps, so we have declared them as empty with a exception 'DAOException("Not yer implemented");' such that there are no need for returning any values.
+There are many methods like add, update, delete, getAll, getByCode, getByTitle, isCodeExist, isTitleExist, and getCount. All of this methods are available but thier implementation need to be checked after each steps, so we have declared them as empty with a exception 'throw new DAOException("Not yer implemented");' such that there are no need for returning any values.
 On each implementation, we have to create thier testcases and try that our methds are written well or not.
-One more thing that all of this methods are written with throw DAOException as declared, which means they all methods are using checked exception. On using all of this methods, Used must have to put a try and catch block to handle exceptions.
--------------------------------------------------------------------------------
+One more thing that all of this methods are written with throws DAOException as declared, which means they all methods are using checked exception. On using all of this methods, Used must have to put a try and catch block to handle exceptions.
+--------------------------------------------------------------------------------
+Learning: First all data related data layer is managed by file handling, then changed it to using RBDMS: Database management (MySQL).
+3-1: void add(DesignationDTOInterface) throws DAOException;
+There are some validation needs to performed and implementation done as per below 
+	a) DesignationDTOInterface should not be null.
+	b) Title are seperate out from DesignationDTOInterface. 
+	c) Code used is unique, and maintained as Primary Key. Generate code and set in DesignationDTOInterface, Then user can get designation code from there. We want unique code, user may blundered here, so we are using this technique.
+	d) Title need to be unique, We are travers on all records and not to add title if its already available. Data redundancy checked.
+	e) Generated code and title is set in file [ Data structure maintained(optional)].
+	f) Header added at first before add records in file. 10 space for lastGeneratedCode and 10 space for totalNumberOfRecords.
+	We have to manually create 10 space area for that, trim that string before converting it to Integer. 
+====================================
