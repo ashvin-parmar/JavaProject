@@ -186,7 +186,7 @@ public void delete(int code) throws DAOException
 {
 throw new DAOException("Not yer implemented");
 }
-public TreeSet<DesignationDTOInterface> getAll() throws DAOException
+public Set<DesignationDTOInterface> getAll() throws DAOException
 {
 try
 {
