@@ -71,6 +71,7 @@ randomAccessFile.writeBytes("\n");
 randomAccessFile.writeBytes(totalRecordsString);
 randomAccessFile.writeBytes("\n");
 designationDTO.setCode(code);
+randomAccessFile.close();
 }catch(IOException ioException)
 {
 throw new DAOException(ioException.getMessage());
@@ -78,7 +79,108 @@ throw new DAOException(ioException.getMessage());
 }
 public void update(DesignationDTOInterface designationDTO) throws DAOException
 {
-throw new DAOException("Not yer implemented");
+if(designationDTO==null) throw new DAOException("Designation is null");
+int code;
+code=designationDTO.getCode();
+if(code<=0) throw new DAOException("Invalid code : "+code);
+String title;
+title=designationDTO.getTitle().trim();
+if(title==null) throw new DAOException("Designation is null");
+if(title.length()==0) throw new DAOException("Title length is zero");
+try
+{
+File file=new File(DESIGNATION_FILE);
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid code: "+code);
+}
+else
+{
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+/*
+lastGeneratedCodeString=randomAccessFile.readLine().trim();
+lastGeneratedCode=Integer.parseInt(lastGeneratedCodeString);
+totalRecordsString=randomAccessFile.readLine().trim();
+totalRecords=Integer.parseInt(totalRecordsString);
+*/
+}
+int fCode=0;
+String fTitle="";
+boolean found=false;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fCode=Integer.parseInt(randomAccessFile.readLine().trim());
+fTitle=randomAccessFile.readLine().trim();
+if(code==fCode)
+{
+if(fTitle.equalsIgnoreCase(title)) 
+{
+randomAccessFile.close();
+//throw new DAOException("Same title : "+title+" already exist against given code.");
+return;
+}
+found=true;
+}
+if(fTitle.equalsIgnoreCase(title))
+{
+randomAccessFile.close();
+throw new DAOException("Given title already exist alongside another code");
+}
+}
+if(!found) 
+{
+randomAccessFile.close();
+throw new DAOException("Invalide code: "+code);
+}
+//System.out.println("Previous Title: "+fTitle);
+//System.out.println("New Title: "+title);
+randomAccessFile.seek(0);
+File tmpFile=new File("tmp.tmp");
+tmpFile.delete();
+RandomAccessFile tmpRandomAccessFile;
+tmpRandomAccessFile=new RandomAccessFile(tmpFile,"rw");
+tmpRandomAccessFile.writeBytes(randomAccessFile.readLine().trim());
+tmpRandomAccessFile.writeBytes("\n");
+tmpRandomAccessFile.writeBytes(randomAccessFile.readLine().trim());
+tmpRandomAccessFile.writeBytes("\n");
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fCode=Integer.parseInt(randomAccessFile.readLine());
+fTitle=randomAccessFile.readLine();
+if(fCode==code)
+{
+tmpRandomAccessFile.writeBytes(String.valueOf(code));
+tmpRandomAccessFile.writeBytes("\n");
+tmpRandomAccessFile.writeBytes(title);
+tmpRandomAccessFile.writeBytes("\n");
+}
+else
+{
+tmpRandomAccessFile.writeBytes(String.valueOf(fCode));
+tmpRandomAccessFile.writeBytes("\n");
+tmpRandomAccessFile.writeBytes(fTitle);
+tmpRandomAccessFile.writeBytes("\n");
+}
+}
+tmpRandomAccessFile.seek(0);
+randomAccessFile.seek(0);
+while(tmpRandomAccessFile.getFilePointer()<tmpRandomAccessFile.length())
+{
+randomAccessFile.writeBytes(tmpRandomAccessFile.readLine());
+randomAccessFile.writeBytes("\n");
+}
+randomAccessFile.setLength(tmpRandomAccessFile.length());
+tmpRandomAccessFile.close();
+randomAccessFile.close();
+tmpFile.delete();
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public void delete(int code) throws DAOException
 {
@@ -86,7 +188,36 @@ throw new DAOException("Not yer implemented");
 }
 public TreeSet<DesignationDTOInterface> getAll() throws DAOException
 {
-throw new DAOException("Not yer implemented");
+try
+{
+TreeSet<DesignationDTOInterface> treeSet;
+treeSet=new TreeSet<>();
+DesignationDTOInterface designationDTO;
+File file=new File(DESIGNATION_FILE);
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+throw new DAOException("Zero designation added");
+}
+int code=0;
+String title="";
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+code=Integer.parseInt(randomAccessFile.readLine());
+title=randomAccessFile.readLine();
+designationDTO=new DesignationDTO();
+designationDTO.setTitle(title);
+designationDTO.setCode(code);
+treeSet.add(designationDTO);
+}
+return treeSet;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public DesignationDTOInterface getByCode(int code) throws DAOException
 {
@@ -106,6 +237,24 @@ throw new DAOException("Not yer implemented");
 }
 public int getCount() throws DAOException
 {
-throw new DAOException("Not yer implemented");
+try
+{
+File file=new File(DESIGNATION_FILE);
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0) 
+{
+randomAccessFile.close();
+return 0;
+}
+randomAccessFile.readLine();
+int count=Integer.parseInt(randomAccessFile.readLine().trim());
+randomAccessFile.close();
+return count;
+}
+catch(IOException ioException)
+{
+return 0;
+}
 }
 }

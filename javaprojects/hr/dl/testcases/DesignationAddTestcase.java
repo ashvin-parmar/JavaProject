@@ -4,7 +4,7 @@ import com.thinking.machines.hr.dl.interfaces.dto.*;
 import com.thinking.machines.hr.dl.interfaces.dao.*;
 import com.thinking.machines.hr.dl.dao.*;
 import com.thinking.machines.hr.dl.dto.*;
-public class DesignationTestCase
+public class DesignationAddTestcase
 {
 public static void main(String gg[])
 {
