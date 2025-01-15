@@ -137,9 +137,9 @@ File tmpFile=new File("tmp.tmp");
 tmpFile.delete();
 RandomAccessFile tmpRandomAccessFile;
 tmpRandomAccessFile=new RandomAccessFile(tmpFile,"rw");
-tmpRandomAccessFile.writeBytes(randomAccessFile.readLine().trim());
+tmpRandomAccessFile.writeBytes(randomAccessFile.readLine());
 tmpRandomAccessFile.writeBytes("\n");
-tmpRandomAccessFile.writeBytes(randomAccessFile.readLine().trim());
+tmpRandomAccessFile.writeBytes(randomAccessFile.readLine());
 tmpRandomAccessFile.writeBytes("\n");
 while(randomAccessFile.getFilePointer()<randomAccessFile.length())
 {
@@ -168,9 +168,9 @@ randomAccessFile.writeBytes(tmpRandomAccessFile.readLine());
 randomAccessFile.writeBytes("\n");
 }
 randomAccessFile.setLength(tmpRandomAccessFile.length());
+tmpRandomAccessFile.setLength(0);
 tmpRandomAccessFile.close();
 randomAccessFile.close();
-tmpFile.delete();
 }catch(IOException ioException)
 {
 throw new DAOException(ioException.getMessage());

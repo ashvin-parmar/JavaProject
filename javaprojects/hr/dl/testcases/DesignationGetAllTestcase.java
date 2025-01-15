@@ -13,7 +13,8 @@ try
 {
 DesignationDAOInterface designationDAO;
 designationDAO=new DesignationDAO();
-Set<DesignationDTOInterface> designations=designationDAO.getAll();
+Set<DesignationDTOInterface> designations;
+designations=designationDAO.getAll();
 for(DesignationDTOInterface designation:designations)
 {
 System.out.println("Designation Code: "+designation.getCode()+" Designation Title: "+designation.getTitle());
