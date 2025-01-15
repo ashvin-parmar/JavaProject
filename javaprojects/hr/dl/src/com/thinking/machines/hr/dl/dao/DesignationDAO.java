@@ -12,8 +12,9 @@ public void add(DesignationDTOInterface designationDTO) throws DAOException
 {
 if(designationDTO==null) throw new DAOException("Designation is null");
 String title;
-title=designationDTO.getTitle().trim();
+title=designationDTO.getTitle();
 if(title==null) throw new DAOException("Designation is null");
+title=title.trim();
 if(title.length()==0) throw new DAOException("Title length is zero");
 try
 {
@@ -84,12 +85,14 @@ int code;
 code=designationDTO.getCode();
 if(code<=0) throw new DAOException("Invalid code : "+code);
 String title;
-title=designationDTO.getTitle().trim();
+title=designationDTO.getTitle();
 if(title==null) throw new DAOException("Designation is null");
-if(title.length()==0) throw new DAOException("Title length is zero");
+title=title.trim();
+if(title.length()==0) throw new DAOException("Designation length is zero");
 try
 {
 File file=new File(DESIGNATION_FILE);
+if(file.exists()==false) throw new DAOException("Invalid code: "+code);
 RandomAccessFile randomAccessFile;
 randomAccessFile=new RandomAccessFile(file,"rw");
 if(randomAccessFile.length()==0)
@@ -97,23 +100,14 @@ if(randomAccessFile.length()==0)
 randomAccessFile.close();
 throw new DAOException("Invalid code: "+code);
 }
-else
-{
 randomAccessFile.readLine();
 randomAccessFile.readLine();
-/*
-lastGeneratedCodeString=randomAccessFile.readLine().trim();
-lastGeneratedCode=Integer.parseInt(lastGeneratedCodeString);
-totalRecordsString=randomAccessFile.readLine().trim();
-totalRecords=Integer.parseInt(totalRecordsString);
-*/
-}
 int fCode=0;
 String fTitle="";
 boolean found=false;
 while(randomAccessFile.getFilePointer()<randomAccessFile.length())
 {
-fCode=Integer.parseInt(randomAccessFile.readLine().trim());
+fCode=Integer.parseInt(randomAccessFile.readLine());
 fTitle=randomAccessFile.readLine().trim();
 if(code==fCode)
 {
@@ -128,7 +122,7 @@ found=true;
 if(fTitle.equalsIgnoreCase(title))
 {
 randomAccessFile.close();
-throw new DAOException("Given title already exist alongside another code");
+throw new DAOException("Designation: "+title+" Exist");
 }
 }
 if(!found) 
@@ -190,15 +184,17 @@ public Set<DesignationDTOInterface> getAll() throws DAOException
 {
 try
 {
-TreeSet<DesignationDTOInterface> treeSet;
+Set<DesignationDTOInterface> treeSet;
 treeSet=new TreeSet<>();
 DesignationDTOInterface designationDTO;
 File file=new File(DESIGNATION_FILE);
+if(file.exists()==false) return treeSet;
 RandomAccessFile randomAccessFile;
 randomAccessFile=new RandomAccessFile(file,"rw");
 if(randomAccessFile.length()==0)
 {
-throw new DAOException("Zero designation added");
+randomAccessFile.close();
+return treeSet;
 }
 int code=0;
 String title="";
@@ -240,6 +236,7 @@ public int getCount() throws DAOException
 try
 {
 File file=new File(DESIGNATION_FILE);
+if(file.exists()==false) return 0;
 RandomAccessFile randomAccessFile;
 randomAccessFile=new RandomAccessFile(file,"rw");
 if(randomAccessFile.length()==0) 
@@ -254,7 +251,7 @@ return count;
 }
 catch(IOException ioException)
 {
-return 0;
+throw new DAOException(ioException.getMessage());
 }
 }
 }
