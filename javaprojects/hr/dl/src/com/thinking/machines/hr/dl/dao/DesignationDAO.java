@@ -304,13 +304,84 @@ throw new DAOException("Invalid title: "+title);
 throw new DAOException(ioException.getMessage());
 }
 }
-public boolean codeExist(int coed) throws DAOException
+public boolean codeExist(int code) throws DAOException
 {
-throw new DAOException("Not yer implemented");
+if(code<=0) return false;
+try
+{
+File file=new File(DESIGNATION_FILE);
+if(file.exists()==false) return false;
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return false;
+}
+randomAccessFile.readLine();
+int recordCount=Integer.parseInt(randomAccessFile.readLine().trim());
+if(recordCount==0)
+{
+randomAccessFile.close();
+return false;
+}
+int fCode=0;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fCode=Integer.parseInt(randomAccessFile.readLine());
+if(fCode==code)
+{
+randomAccessFile.close();
+return true;
+}
+randomAccessFile.readLine();
+}
+randomAccessFile.close();
+return false;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public boolean titleExist(String title) throws DAOException
 {
-throw new DAOException("Not yer implemented");
+if(title==null || title.trim().length()==0) return false;
+title=title.trim();
+try
+{
+File file=new File(DESIGNATION_FILE);
+if(file.exists()==false) return false;
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return false;
+}
+randomAccessFile.readLine();
+int recordCount=Integer.parseInt(randomAccessFile.readLine().trim());
+if(recordCount==0)
+{
+randomAccessFile.close();
+return false;
+}
+String fTitle="";
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+randomAccessFile.readLine();
+fTitle=randomAccessFile.readLine();
+if(fTitle.equalsIgnoreCase(title)==true)
+{
+randomAccessFile.close();
+return true;
+}
+}
+randomAccessFile.close();
+return false;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public int getCount() throws DAOException
 {
