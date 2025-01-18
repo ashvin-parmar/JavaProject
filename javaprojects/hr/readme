@@ -66,4 +66,11 @@ then 10th:  employee id is A100000000010
 Total Length of one id: 13: 1->character, 12->integer
 Max Generated Code: A999999999999, MAX number of records
 ------------
+Over here, DTO Class implemented with all this fields. 
+Now, Implementation of thier functionalities in DAO Class.
 
+Employee DAO Class: 
+There are lots of methods involved for managing Employee data, We are start implemetation from here.
+DesignationCode used to manage Designation of each employee and for use Designation based data, We are using GetByDesignationCode(designationCode) in which returning Set<> will give provide complete date. Also, We can check existance of Designation Code using isDesignationAlloted(designationCode) methods.
+We are checking existance of aadharCardNumber, panNumber, employeeId and seperately get Data based on thier seperate provided id or numbers.
+===============================================================================
