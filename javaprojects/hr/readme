@@ -36,4 +36,34 @@ There are some validation needs to performed and implementation done as per belo
 	e) Generated code and title is set in file [ Data structure maintained(optional)].
 	f) Header added at first before add records in file. 10 space for lastGeneratedCode and 10 space for totalNumberOfRecords.
 	We have to manually create 10 space area for that, trim that string before converting it to Integer. 
-====================================
+3-2: void remove(int code) throws DAOException;
+There are data removed from file if exist but before that we have to checks availibility of the code, then take all data in a tmp file except that code data which has to remove then shift all data from tmp file to our data file. 
+3-3: void update(DesignationDTOInterface) throws DAOException;
+There are data to update based on code as primary key. First we have to checks availibility of code and then we have to check availibility of the designation title against other code. if title already exist against another code then Do not update data. Over here, We have to change recordCount to -1 and then change in file manually.
+If all conditions are satisfied and there are no more errors and exceptions then==> create a tmp file to store all other code data and add that code data with updated values, then shift all data from tmpfile to main file.
+3-4: Code exist, title exist , getByCode, getByTitle are all methods in which we have to check and if found data then return required things. There are no need to change recordsCount and lastGeneratedCode whatever those things. Just find and return.
+3-5: Set<DesignationDTOInterface> getAll() throw DAOException;
+     We have to create a TreeSet and return after fill all data from file. There are Set Returns which is Super class of TreeSet, So Data can be transformed from Set to whatever Class (HashSet,HashLinkedSet,TreeSet). User can do as per basis of thier requirement.
+================================================================================
+	
+			Employee DTO/DAO Class Implementation
+
+We are creating a class for Employee Entry Management, There are following fields are available. 
+1: String 	employeeId		Primary Key, Unique, Auto Generated
+2: String 	name
+3: int 		designationCode
+4: Date 	dateOfBirth				(java.util.*)
+5: char 	gender
+6: boolean 	isIndian
+7: BigDecimal	basicSalary				(java.math.*)
+8: String 	panNumber		Unique
+9: String 	aadharCardNumber	Unique
+------------
+EmployeeId need to be primary Key and auto generated, Example: 
+employeeId: A100000000001 is first employee id
+then 10th:  employee id is A100000000010
+100th : A100000000100
+Total Length of one id: 13: 1->character, 12->integer
+Max Generated Code: A999999999999, MAX number of records
+------------
+

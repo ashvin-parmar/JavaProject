@@ -178,7 +178,89 @@ throw new DAOException(ioException.getMessage());
 }
 public void delete(int code) throws DAOException
 {
-throw new DAOException("Not yer implemented");
+if(code<=0) throw new DAOException("Invalid code: "+code);
+try
+{
+File file=new File(DESIGNATION_FILE);
+if(!file.exists()) throw new DAOException("Invalid code: "+code);
+RandomAccessFile randomAccessFile;
+randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0) 
+{
+randomAccessFile.close();
+throw new DAOException("Invalid code: "+code);
+}
+randomAccessFile.readLine();
+int recordsCount=Integer.parseInt(randomAccessFile.readLine().trim());
+if(recordsCount==0)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid code: "+code);
+}
+int fCode;
+String fTitle;
+boolean found=false;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fCode=Integer.parseInt(randomAccessFile.readLine());
+if(fCode==code)
+{
+found=true;
+break;
+}
+randomAccessFile.readLine();
+}
+if(found==false)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid code: "+code);
+}
+randomAccessFile.seek(0);
+File tmpFile=new File("tmp.tmp");
+RandomAccessFile tmpRandomAccessFile;
+tmpRandomAccessFile=new RandomAccessFile(tmpFile,"rw");
+tmpRandomAccessFile.writeBytes(randomAccessFile.readLine());
+tmpRandomAccessFile.writeBytes("\n");
+tmpRandomAccessFile.writeBytes(randomAccessFile.readLine());
+tmpRandomAccessFile.writeBytes("\n");
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fCode=Integer.parseInt(randomAccessFile.readLine());
+fTitle=randomAccessFile.readLine();
+if(fCode!=code)
+{
+tmpRandomAccessFile.writeBytes(String.valueOf(fCode));
+tmpRandomAccessFile.writeBytes("\n");
+tmpRandomAccessFile.writeBytes(fTitle);
+tmpRandomAccessFile.writeBytes("\n");
+}
+}
+tmpRandomAccessFile.seek(0);
+randomAccessFile.seek(0);
+randomAccessFile.writeBytes(tmpRandomAccessFile.readLine());
+randomAccessFile.writeBytes("\n");
+tmpRandomAccessFile.readLine();
+String recordsCountString;
+recordsCount--;
+recordsCountString=String.valueOf(recordsCount);
+while(recordsCountString.length()<10) recordsCountString+=" ";
+randomAccessFile.writeBytes(recordsCountString);
+randomAccessFile.writeBytes("\n");
+while(tmpRandomAccessFile.getFilePointer()<tmpRandomAccessFile.length())
+{
+randomAccessFile.writeBytes(tmpRandomAccessFile.readLine());
+randomAccessFile.writeBytes("\n");
+randomAccessFile.writeBytes(tmpRandomAccessFile.readLine());
+randomAccessFile.writeBytes("\n");
+}
+randomAccessFile.setLength(tmpRandomAccessFile.length());
+tmpRandomAccessFile.setLength(0);
+randomAccessFile.close();
+tmpRandomAccessFile.close();
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public Set<DesignationDTOInterface> getAll() throws DAOException
 {
