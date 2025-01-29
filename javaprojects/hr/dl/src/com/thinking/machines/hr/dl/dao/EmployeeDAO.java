@@ -290,7 +290,7 @@ if(panNumber.length()==0) throw new DAOException("PAN Number length is zero");
 try
 {
 File file=new File(FILE_NAME);
-if(file.exists()==false) throw new DAOException("Invalid PAN Number");;
+if(file.exists()==false) throw new DAOException("Invalid PAN Number");
 RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
 if(randomAccessFile.length()==0)
 {
@@ -356,7 +356,7 @@ if(aadharCardNumber.length()==0) throw new DAOException("Aadhar Card Number leng
 try
 {
 File file=new File(FILE_NAME);
-if(file.exists()==false) throw new DAOException("Invalid Aadhar Card Number");;
+if(file.exists()==false) throw new DAOException("Invalid Aadhar Card Number");
 RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
 if(randomAccessFile.length()==0)
 {
@@ -420,15 +420,106 @@ throw new DAOException("Not Yet Implemented");
 }
 public boolean employeeIdExists(String employeeId) throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+if(employeeId==null) throw new DAOException("Employee ID is null");
+employeeId=employeeId.trim();
+if(employeeId.length()==0) throw new DAOException("Employee ID length is zero");
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) return false;
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return false;
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+String fEmployeeId="";
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fEmployeeId=randomAccessFile.readLine();
+if(!fEmployeeId.equalsIgnoreCase(employeeId))
+{
+for(int i=0;i<8;i++) randomAccessFile.readLine();
+continue;
+}
+randomAccessFile.close();
+return true;
+}
+randomAccessFile.close();
+return false;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public boolean panNumberExists(String panNumber) throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+if(panNumber==null) throw new DAOException("PAN Number is null");
+panNumber=panNumber.trim();
+if(panNumber.length()==0) throw new DAOException("PAN Number length is zero");
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) return false;
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return false;
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+String fPANNumber;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+for(int i=0;i<7;i++) randomAccessFile.readLine();
+fPANNumber=randomAccessFile.readLine();
+if(!fPANNumber.equalsIgnoreCase(panNumber)) continue;
+randomAccessFile.readLine();
+randomAccessFile.close();
+return true;
+}
+randomAccessFile.close();
+return false;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public boolean aadharCardNumberExists(String aadharCardNumber) throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+if(aadharCardNumber==null) throw new DAOException("Aadhar Card Number is null");
+aadharCardNumber=aadharCardNumber.trim();
+if(aadharCardNumber.length()==0) throw new DAOException("Aadhar Card Number length is zero");
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) return false;
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return false;
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+String fAadharCardNumber;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+for(int i=0;i<8;i++) randomAccessFile.readLine();
+fAadharCardNumber=randomAccessFile.readLine();
+if(!fAadharCardNumber.equalsIgnoreCase(aadharCardNumber)) continue;
+randomAccessFile.close();
+return true;
+}
+randomAccessFile.close();
+return false;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public int getCount() throws DAOException
 {
