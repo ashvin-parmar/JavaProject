@@ -476,8 +476,11 @@ while(randomAccessFile.getFilePointer()<randomAccessFile.length())
 {
 for(int i=0;i<7;i++) randomAccessFile.readLine();
 fPANNumber=randomAccessFile.readLine();
-if(!fPANNumber.equalsIgnoreCase(panNumber)) continue;
+if(!fPANNumber.equalsIgnoreCase(panNumber)) 
+{
 randomAccessFile.readLine();
+continue;
+}
 randomAccessFile.close();
 return true;
 }
