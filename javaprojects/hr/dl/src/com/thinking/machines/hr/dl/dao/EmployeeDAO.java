@@ -230,15 +230,189 @@ throw new DAOException(ioException.getMessage());
 }
 public EmployeeDTOInterface getByEmployeeId(String employeeId) throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+if(employeeId==null) throw new DAOException("Employee ID is null");
+employeeId=employeeId.trim();
+if(employeeId.length()==0) throw new DAOException("Employee ID length is zero");
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) throw new DAOException("Invalid Employee ID");
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid Employee ID");
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+EmployeeDTOInterface employeeDTO;
+SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+String fEmployeeId="";
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fEmployeeId=randomAccessFile.readLine();
+if(!fEmployeeId.equalsIgnoreCase(employeeId))
+{
+for(int i=0;i<8;i++) randomAccessFile.readLine();
+continue;
+}
+employeeDTO=new EmployeeDTO();
+employeeDTO.setEmployeeId(employeeId);
+employeeDTO.setName(randomAccessFile.readLine());
+employeeDTO.setDesignationCode(Integer.parseInt(randomAccessFile.readLine().trim()));
+try
+{
+employeeDTO.setDateOfBirth(simpleDateFormat.parse(randomAccessFile.readLine()));
+}catch(ParseException parseException)
+{
+//Do Nothing
+}
+employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
+employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
+employeeDTO.setPANNumber(randomAccessFile.readLine());
+employeeDTO.setAadharCardNumber(randomAccessFile.readLine());
+randomAccessFile.close();
+return employeeDTO;
+}
+randomAccessFile.close();
+throw new DAOException("Invalid Employee ID");
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public EmployeeDTOInterface getByPANNumber(String panNumber) throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+if(panNumber==null) throw new DAOException("PAN Number is null");
+panNumber=panNumber.trim();
+if(panNumber.length()==0) throw new DAOException("PAN Number length is zero");
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) throw new DAOException("Invalid PAN Number");;
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid PAN Number");
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+EmployeeDTOInterface employeeDTO;
+String fEmployeeId;
+String fName;
+int fDesignationCode;
+Date fDateOfBirth=new Date();
+char fGender;
+boolean fIsIndian;
+BigDecimal fBasicSalary;
+String fPANNumber;
+String fAadharCardNumber;
+SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fEmployeeId=randomAccessFile.readLine();
+fName=randomAccessFile.readLine();
+fDesignationCode=Integer.parseInt(randomAccessFile.readLine().trim());
+try
+{
+fDateOfBirth=simpleDateFormat.parse(randomAccessFile.readLine());
+}catch(ParseException parseException)
+{
+//Do Nothing
+}
+fGender=randomAccessFile.readLine().charAt(0);
+fIsIndian=Boolean.parseBoolean(randomAccessFile.readLine());
+fBasicSalary=new BigDecimal(randomAccessFile.readLine());
+fPANNumber=randomAccessFile.readLine();
+fAadharCardNumber=randomAccessFile.readLine();
+if(!fPANNumber.equalsIgnoreCase(panNumber)) continue;
+employeeDTO=new EmployeeDTO();
+employeeDTO.setEmployeeId(fEmployeeId);
+employeeDTO.setName(fName);
+employeeDTO.setDesignationCode(fDesignationCode);
+employeeDTO.setDateOfBirth(fDateOfBirth);
+employeeDTO.setGender(fGender);
+employeeDTO.setIsIndian(fIsIndian);
+employeeDTO.setBasicSalary(fBasicSalary);
+employeeDTO.setPANNumber(fPANNumber);
+employeeDTO.setAadharCardNumber(fAadharCardNumber);
+randomAccessFile.close();
+return employeeDTO;
+}
+randomAccessFile.close();
+throw new DAOException("Invalid PAN Number");
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public EmployeeDTOInterface getByAadharCardNumber(String aadharCardNumber) throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+if(aadharCardNumber==null) throw new DAOException("Aadhar Card Number is null");
+aadharCardNumber=aadharCardNumber.trim();
+if(aadharCardNumber.length()==0) throw new DAOException("Aadhar Card Number length is zero");
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) throw new DAOException("Invalid Aadhar Card Number");;
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid Aadhar Card Number");
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+EmployeeDTOInterface employeeDTO;
+String fEmployeeId;
+String fName;
+int fDesignationCode;
+Date fDateOfBirth=new Date();
+char fGender;
+boolean fIsIndian;
+BigDecimal fBasicSalary;
+String fPANNumber;
+String fAadharCardNumber;
+SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+fEmployeeId=randomAccessFile.readLine();
+fName=randomAccessFile.readLine();
+fDesignationCode=Integer.parseInt(randomAccessFile.readLine().trim());
+try
+{
+fDateOfBirth=simpleDateFormat.parse(randomAccessFile.readLine());
+}catch(ParseException parseException)
+{
+//Do Nothing
+}
+fGender=randomAccessFile.readLine().charAt(0);
+fIsIndian=Boolean.parseBoolean(randomAccessFile.readLine());
+fBasicSalary=new BigDecimal(randomAccessFile.readLine());
+fPANNumber=randomAccessFile.readLine();
+fAadharCardNumber=randomAccessFile.readLine();
+if(!fAadharCardNumber.equalsIgnoreCase(aadharCardNumber)) continue;
+employeeDTO=new EmployeeDTO();
+employeeDTO.setEmployeeId(fEmployeeId);
+employeeDTO.setName(fName);
+employeeDTO.setDesignationCode(fDesignationCode);
+employeeDTO.setDateOfBirth(fDateOfBirth);
+employeeDTO.setGender(fGender);
+employeeDTO.setIsIndian(fIsIndian);
+employeeDTO.setBasicSalary(fBasicSalary);
+employeeDTO.setPANNumber(fPANNumber);
+employeeDTO.setAadharCardNumber(fAadharCardNumber);
+randomAccessFile.close();
+return employeeDTO;
+}
+randomAccessFile.close();
+throw new DAOException("Invalid Aadhar Card Number");
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public boolean isDesignationAlloted(int designationCode) throws DAOException
 {
