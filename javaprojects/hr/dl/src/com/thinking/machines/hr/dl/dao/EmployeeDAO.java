@@ -416,7 +416,41 @@ throw new DAOException(ioException.getMessage());
 }
 public boolean isDesignationAlloted(int designationCode) throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+if(designationCode<=0) throw new DAOException("Invalid designation code.");
+boolean isDesignationCodeValid=false;
+isDesignationCodeValid=(new DesignationDAO()).codeExist(designationCode);
+if(!isDesignationCodeValid) throw new DAOException("Invalid designation code.");
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) return false;
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return false;
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+int fDesignationCode=0;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+fDesignationCode=Integer.parseInt(randomAccessFile.readLine().trim());
+if(fDesignationCode==designationCode)
+{
+randomAccessFile.close();
+return true;
+}
+for(int i=4;i<=9;i++) randomAccessFile.readLine();
+}
+randomAccessFile.close();
+return false;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public boolean employeeIdExists(String employeeId) throws DAOException
 {
@@ -526,11 +560,63 @@ throw new DAOException(ioException.getMessage());
 }
 public int getCount() throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+int numberOfRecords;
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) return 0;
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return 0;
+}
+randomAccessFile.readLine();
+numberOfRecords=Integer.parseInt(randomAccessFile.readLine().trim());
+randomAccessFile.close();
+return numberOfRecords;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public int getCountByDesignation(int designationCode) throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+if(designationCode<=0) throw new DAOException("Invalid designation code: "+designationCode);
+boolean isDesignationCodeValid=false;
+isDesignationCodeValid=(new DesignationDAO()).codeExist(designationCode);
+if(!isDesignationCodeValid) throw new DAOException("Invalid designation code: "+designationCode);
+int count=0;
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) return count;
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+return count;
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+int fDesignationCode=0;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+fDesignationCode=Integer.parseInt(randomAccessFile.readLine().trim());
+if(fDesignationCode==designationCode)
+{
+count++;
+}
+for(int i=4;i<=9;i++) randomAccessFile.readLine();
+}
+randomAccessFile.close();
+return count;
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 }
 
