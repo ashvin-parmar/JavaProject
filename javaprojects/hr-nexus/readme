@@ -76,7 +76,7 @@ We are checking existance of aadharCardNumber, panNumber, employeeId and seperat
 ===============================================================================
 For the validation of Gender field, which is fixed so we have to use enumeration(enum). Enumeration is a way in which we can create a Data Type which contains some values, and we can take any value against that data type from those values only. Only that values are assigned towards that Data Type.
 Example: 
-enum GENDER={MALE,FEMALE};	
+public enum GENDER{MALE,FEMALE}
 Data Type: GENDER
 Values: MALE,FEMALE		Only values can be assigned towards GENDER otherwise code not compiled.
 We have to manage the same for every layer: DL,BL,PL
