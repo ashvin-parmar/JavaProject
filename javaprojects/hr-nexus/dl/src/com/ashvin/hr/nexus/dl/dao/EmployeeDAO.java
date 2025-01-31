@@ -26,6 +26,7 @@ if(!isDesignationCodeExists) throw new DAOException("Invalid designation code");
 Date dateOfBirth=employeeDTO.getDateOfBirth();
 if(dateOfBirth==null) throw new DAOException("Date is null");
 char gender=employeeDTO.getGender();
+if(gender==' ') throw new DAOException("Invalid Gender Type");
 boolean isIndian=employeeDTO.isIndian();
 BigDecimal basicSalary=employeeDTO.getBasicSalary();
 if(basicSalary==null) throw new DAOException("Basic salary is null");
