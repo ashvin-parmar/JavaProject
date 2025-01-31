@@ -3,7 +3,7 @@ import com.ashvin.hr.nexus.dl.exceptions.*;
 import com.ashvin.hr.nexus.dl.interfaces.dto.*;
 import com.ashvin.hr.nexus.dl.interfaces.dao.*;
 import com.ashvin.hr.nexus.dl.dto.*;
-
+import com.ashvin.enums.*;
 import java.util.*;
 import java.math.*;
 import java.text.*;
@@ -169,7 +169,7 @@ employeeDTO.setDateOfBirth(simpleDateFormat.parse(randomAccessFile.readLine()));
 {
 //Do Nothing
 }
-employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+employeeDTO.setGender(randomAccessFile.readLine().charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
 employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
 employeeDTO.setPANNumber(randomAccessFile.readLine());
@@ -214,7 +214,7 @@ employeeDTO.setDateOfBirth(simpleDateFormat.parse(randomAccessFile.readLine()));
 {
 //Do Nothing
 }
-employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+employeeDTO.setGender(randomAccessFile.readLine().charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
 employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
 employeeDTO.setPANNumber(randomAccessFile.readLine());
@@ -267,7 +267,7 @@ employeeDTO.setDateOfBirth(simpleDateFormat.parse(randomAccessFile.readLine()));
 {
 //Do Nothing
 }
-employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+employeeDTO.setGender(randomAccessFile.readLine().charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
 employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
 employeeDTO.setPANNumber(randomAccessFile.readLine());
@@ -333,7 +333,7 @@ employeeDTO.setEmployeeId(fEmployeeId);
 employeeDTO.setName(fName);
 employeeDTO.setDesignationCode(fDesignationCode);
 employeeDTO.setDateOfBirth(fDateOfBirth);
-employeeDTO.setGender(fGender);
+employeeDTO.setGender(fGender=='M'?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(fIsIndian);
 employeeDTO.setBasicSalary(fBasicSalary);
 employeeDTO.setPANNumber(fPANNumber);
@@ -399,7 +399,7 @@ employeeDTO.setEmployeeId(fEmployeeId);
 employeeDTO.setName(fName);
 employeeDTO.setDesignationCode(fDesignationCode);
 employeeDTO.setDateOfBirth(fDateOfBirth);
-employeeDTO.setGender(fGender);
+employeeDTO.setGender(fGender=='M'?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(fIsIndian);
 employeeDTO.setBasicSalary(fBasicSalary);
 employeeDTO.setPANNumber(fPANNumber);

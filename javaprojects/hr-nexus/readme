@@ -82,5 +82,8 @@ Values: MALE,FEMALE		Only values can be assigned towards GENDER otherwise code n
 We have to manage the same for every layer: DL,BL,PL
 That's Why we are creating those enum things in common area of HR project.
 Those Things are also used for testcases too.
+enum are nomenclatured as CAPITAL letters.
+Added GENDER Functionality using enum for validate gender section: 
+Contains in: common: com.ashvin.enums.*; 
 ===============================================================================
 

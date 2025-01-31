@@ -1,5 +1,6 @@
 package com.ashvin.hr.nexus.dl.dto;
 import com.ashvin.hr.nexus.dl.interfaces.dto.*;
+import com.ashvin.enums.*;
 import java.math.*;
 import java.util.*;
 public class EmployeeDTO implements EmployeeDTOInterface
@@ -58,9 +59,16 @@ public java.util.Date getDateOfBirth()
 {
 return this.dateOfBirth;
 }
-public void setGender(char gender)
+public void setGender(GENDER gender)
 {
-this.gender=gender;
+if(gender==GENDER.MALE)
+{
+this.gender='M';
+}
+else
+{
+this.gender='F';
+}
 }
 public char getGender()
 {
