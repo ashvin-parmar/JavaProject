@@ -153,8 +153,6 @@ try
 File file=new File(FILE_NAME);
 if(file.exists()==false) throw new DAOException("Invalid Employee Id. : "+employeeId);
 RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
-int lastGeneratedEmployeeId=0;
-int numberOfRecords=0;
 if(randomAccessFile.length()==0)
 {
 randomAccessFile.close();
@@ -163,12 +161,6 @@ throw new DAOException("Invalid Employee Id. : "+employeeId);
 randomAccessFile.readLine();
 randomAccessFile.readLine();
 String fEmployeeId;
-String fName;
-int fDesignationCode;
-Date fDateOfBirth;
-char fGender;
-boolean fIsIndian;
-BigDecimal fBasicSalary;
 String fPANNumber;
 String fAadharCardNumber;
 int x;
@@ -255,7 +247,66 @@ throw new DAOException(ioException.getMessage());
 }
 public void delete(String employeeId) throws DAOException
 {
-throw new DAOException("Not Yet Implemented");
+if(employeeId==null) throw new DAOException("Employee id is null");
+if(employeeId.length()==0) throw new DAOException("Length of Employee Id. is zero");
+try
+{
+File file=new File(FILE_NAME);
+if(file.exists()==false) throw new DAOException("Invalid Employee Id. : "+employeeId);
+RandomAccessFile randomAccessFile=new RandomAccessFile(file,"rw");
+if(randomAccessFile.length()==0)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid Employee Id. : "+employeeId);
+}
+randomAccessFile.readLine();
+int numberOfRecords=Integer.parseInt(randomAccessFile.readLine().trim());
+String fEmployeeId;
+int x;
+boolean employeeIdExists=false;
+long foundAt=0;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+foundAt=randomAccessFile.getFilePointer();
+fEmployeeId=randomAccessFile.readLine();
+for(x=1;x<=8;x++) randomAccessFile.readLine();
+if(fEmployeeId.equalsIgnoreCase(employeeId))
+{
+employeeIdExists=true;
+break;
+}
+}
+if(employeeIdExists==false) 
+{
+randomAccessFile.close();
+throw new DAOException("Invalid employee id. : "+employeeId);
+}
+randomAccessFile.seek(foundAt);
+for(int i=0;i<9;i++) randomAccessFile.readLine();
+File tmpFile=new File("tmp.tmp");
+if(file.exists()) tmpFile.delete();
+RandomAccessFile tmpRandomAccessFile=new RandomAccessFile(tmpFile,"rw");
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+tmpRandomAccessFile.writeBytes(randomAccessFile.readLine()+"\r\n");
+}
+randomAccessFile.seek(foundAt);
+tmpRandomAccessFile.seek(0);
+while(tmpRandomAccessFile.getFilePointer()<tmpRandomAccessFile.length())
+{
+randomAccessFile.writeBytes(tmpRandomAccessFile.readLine()+"\r\n");
+}
+randomAccessFile.setLength(randomAccessFile.getFilePointer());
+tmpRandomAccessFile.setLength(0);
+randomAccessFile.seek(0);
+randomAccessFile.readLine();
+randomAccessFile.writeBytes(String.format("%-10d",--numberOfRecords)+"\r\n");
+randomAccessFile.close();
+tmpRandomAccessFile.close();
+}catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public Set<EmployeeDTOInterface> getByDesignationCode(int designationCode) throws DAOException
 {
