@@ -134,7 +134,7 @@ throw new DAOException("Invalide code: "+code);
 //System.out.println("New Title: "+title);
 randomAccessFile.seek(0);
 File tmpFile=new File("tmp.tmp");
-tmpFile.delete();
+if(tmpFile.exists()) tmpFile.delete();
 RandomAccessFile tmpRandomAccessFile;
 tmpRandomAccessFile=new RandomAccessFile(tmpFile,"rw");
 tmpRandomAccessFile.writeBytes(randomAccessFile.readLine());
@@ -197,23 +197,28 @@ if(recordsCount==0)
 randomAccessFile.close();
 throw new DAOException("Invalid code: "+code);
 }
-int fCode;
-String fTitle;
+int fCode=0;
+String fTitle="";
 boolean found=false;
 while(randomAccessFile.getFilePointer()<randomAccessFile.length())
 {
 fCode=Integer.parseInt(randomAccessFile.readLine());
+fTitle=randomAccessFile.readLine();
 if(fCode==code)
 {
 found=true;
 break;
 }
-randomAccessFile.readLine();
 }
 if(found==false)
 {
 randomAccessFile.close();
 throw new DAOException("Invalid code: "+code);
+}
+if((new EmployeeDAO().isDesignationAlloted(code)))
+{
+randomAccessFile.close();
+throw new DAOException("Employee exists with designation: "+fTitle);
 }
 randomAccessFile.seek(0);
 File tmpFile=new File("tmp.tmp");

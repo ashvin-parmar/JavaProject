@@ -214,7 +214,7 @@ throw new DAOException("Employee with Aadhar card number ("+aadharCardNumber+") 
 randomAccessFile.seek(foundAt);
 for(int i=0;i<9;i++) randomAccessFile.readLine();
 File tmpFile=new File("tmp.tmp");
-if(file.exists()) tmpFile.delete();
+if(tmpFile.exists()) tmpFile.delete();
 RandomAccessFile tmpRandomAccessFile=new RandomAccessFile(tmpFile,"rw");
 while(randomAccessFile.getFilePointer()<randomAccessFile.length())
 {
@@ -281,10 +281,8 @@ if(employeeIdExists==false)
 randomAccessFile.close();
 throw new DAOException("Invalid employee id. : "+employeeId);
 }
-randomAccessFile.seek(foundAt);
-for(int i=0;i<9;i++) randomAccessFile.readLine();
 File tmpFile=new File("tmp.tmp");
-if(file.exists()) tmpFile.delete();
+if(tmpFile.exists()) tmpFile.delete();
 RandomAccessFile tmpRandomAccessFile=new RandomAccessFile(tmpFile,"rw");
 while(randomAccessFile.getFilePointer()<randomAccessFile.length())
 {
