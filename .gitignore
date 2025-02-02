@@ -3,3 +3,6 @@
 *.class
 !javatools/tools/**/*.class
 *.tmp
+build/
+.gradle
+*.swp

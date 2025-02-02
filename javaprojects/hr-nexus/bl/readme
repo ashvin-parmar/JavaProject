@@ -1,0 +1,26 @@
+			HR-Nexus: Business Layer
+Buisness layer created such that presentation layer does not requires data layer objects to access. From data layer, there are too much time need for fetching and searching data from files, so, here data structures are maintained on buisness layer which solve our problem for fast searching.
+
+-------------------------------------------------------------------------------
+No worry of memory for nearly 1 crore of records ?
+Reason: If someone has 1 crore clients, then his revenue is too much and he can invest in bigger servers to maintain 1 crore+ records.
+Let's suppose, one records contains 1000 bytes maximum: (address stores in records)
+number_of_records=10000000		[1 crore]
+one_record_size=1000 bytes
+total_number_of_bytes=10000000 * 1000 =10000000000 bytes
+total_number_of_kilo_bytes=	10000000000 / 1024  = 9765625 KB
+total_number_of_mega_bytes= 	    9765625 / 1024  = 9537 MB
+total_number_of_giga_bytes=            9537 / 1024  = 9.31 GB
+
+Nearly 10 GB of Server Requires to store if one records is of 1000 bytes. 
+-------------------------------------------------------------------------------
+
+Buisness Layer is a layer in which we are creating functionalities for Presentation layer to use and manage data in a data structure for fast searching.
+We are fetching data from Data Layer and populate in a data structure on starting of application, also add through using data layer add method, if successfully added then add in our data structure and similarly for all mehthods.
+For getAll values, We are directly create a clone of one of our data structure and pass to presentation layer.
+For managing multiple exceptions at the same time such that presentation layer works perfectly, we are creating BLException, Manage one generic exception + multiple property based (field_wise) exceptions.
+
+-------------------------------------------------------------------------------
+
+		Designation
+

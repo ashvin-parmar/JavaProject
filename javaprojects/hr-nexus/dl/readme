@@ -1,4 +1,5 @@
-		Human Resources: A Learning Project
+	Human Resources Nexus: A Designation & Employee Management Project
+				[Data Layer]
 
 This is a self learning project names as HR: Human Resources.
 There are different kind of designation, employee, department are added later with the time, which will be introduces as a features. 
@@ -86,4 +87,3 @@ enum are nomenclatured as CAPITAL letters.
 Added GENDER Functionality using enum for validate gender section: 
 Contains in: common: com.ashvin.enums.*; 
 ===============================================================================
-
