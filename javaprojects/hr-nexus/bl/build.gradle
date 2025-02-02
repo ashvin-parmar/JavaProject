@@ -1,4 +1,4 @@
 apply plugin: 'java'
 dependencies {
-compile files('./../dl/dist/hr-nexus-1.0.jar')
+implementation files('../dl/dist/hr-nexus-dl-1.0.jar')
 }
