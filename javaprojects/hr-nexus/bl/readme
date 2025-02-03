@@ -22,5 +22,25 @@ For managing multiple exceptions at the same time such that presentation layer w
 
 -------------------------------------------------------------------------------
 
-		Designation
+		DesignationManager
+Over here, We are using singletone pattern method. In this method we are required to create such type of class in which only one object of that class is createdthrough complete cycle of the application. 
+----------------------------------------------
+How to implement Singletone Pattern?
+1: Create Private Constructor of the Class[DesignationManager]
+2: Create a static method for getClassObject[getDesignationManager() method]
+3: Create a private static Pointer of Same class inside the class. 
+Example: private static DesignationManagerInterface designationManager=null;
+4: Create an object by allocating agaist that 'designationManager' static pointer and return it from getDesignationManager() method. Only create an object if there is null value against that static pointer. Otherwise return already alloted object address.
+5: Create a private method of populateDataStructures() for retrieve data from Data Layer and populate in Data Structures that we have to create in Designation Manager.
+----------------------------------------------
+Data Structures: 
+1: Map for Code Wise Data Management: 	
+Example: Map<Integer,DesignationInterface> codeWiseDesignationMap
+2: Map for Title wise data managerment in UpperCase String as title for inCaseSensitive Searching: 
+Example: Map<String,DesignatonInterface> titleWiseDesignationMap
+3: A Set for All data of designations that are collected in a set.
+Example: Set<DesignationInterface> designationSet
+(.......more added when required................)
+----------------------------------------------
+
 
