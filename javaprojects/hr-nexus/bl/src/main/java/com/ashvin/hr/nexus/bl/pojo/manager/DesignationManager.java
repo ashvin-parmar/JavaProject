@@ -213,8 +213,16 @@ return this.titleWiseDesignationMap.containsKey(title.toUpperCase());
 }
 public Set<DesignationInterface> getDesignations() throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+Set<DesignationInterface> designations;
+designations=new TreeSet<>();
+DesignationInterface designationClone;
+for(DesignationInterface designation:this.designationSet)
+{
+designationClone=new Designation();
+designationClone.setCode(designation.getCode());
+designationClone.setTitle(designation.getTitle());
+designations.add(designationClone);
+}
+return designations;
 }
 }
