@@ -143,7 +143,6 @@ throw blException;
 }
 public void removeDesignation(int code) throws BLException
 {
-
 BLException blException=new BLException();
 if(code<=0) blException.addPropertyException("code","Code should not be negative or zero.");
 else if(this.codeWiseDesignationMap.containsKey(code)==false)
@@ -166,35 +165,51 @@ blException.setGenericException(daoException.getMessage());
 throw blException;
 }
 }
-public Set<DesignationInterface> getDesignationByCode(int code) throws BLException
+public DesignationInterface getDesignationByCode(int code) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+if(code<=0) blException.addPropertyException("code","Code should not be negative or zero.");
+else if(this.codeWiseDesignationMap.containsKey(code)==false)
+{
+blException.addPropertyException("code","Invalid code: "+code);
 }
-public Set<DesignationInterface> getDesignationByTitle(String title) throws BLException
+if(blException.hasExceptions()) throw blException;
+DesignationInterface designation=new Designation();
+DesignationInterface fDesignation=this.codeWiseDesignationMap.get(code);
+designation.setCode(fDesignation.getCode());
+designation.setTitle(fDesignation.getTitle());
+return designation;
+}
+public DesignationInterface getDesignationByTitle(String title) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+if(title==null) blException.addPropertyException("title","Title required.");
+else if((title=title.trim()).length()==0) blException.addPropertyException("title","Title required.");
+else if(this.titleWiseDesignationMap.containsKey(title.toUpperCase())==false)
+{
+blException.addPropertyException("title","Invalid title: "+title);
+}
+if(blException.hasExceptions()) throw blException;
+DesignationInterface designation=new Designation();
+DesignationInterface fDesignation=this.titleWiseDesignationMap.get(title.toUpperCase());
+designation.setCode(fDesignation.getCode());
+designation.setTitle(fDesignation.getTitle());
+return designation;
 }
 public int getDesignationCount() throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.designationSet.size();
 }
 public boolean designationCodeExists(int code) throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.codeWiseDesignationMap.containsKey(code);
 }
 public boolean designationTitleExists(String title) throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+if(title==null) return false;
+title=title.trim();
+if(title.length()==0) return false;
+return this.titleWiseDesignationMap.containsKey(title.toUpperCase());
 }
 public Set<DesignationInterface> getDesignations() throws BLException
 {
