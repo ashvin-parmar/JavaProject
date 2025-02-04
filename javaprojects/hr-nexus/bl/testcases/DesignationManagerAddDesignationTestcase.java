@@ -4,17 +4,21 @@ import com.ashvin.hr.nexus.bl.pojo.*;
 import com.ashvin.hr.nexus.bl.interfaces.pojo.manager.*;
 import com.ashvin.hr.nexus.bl.pojo.manager.*;
 import java.util.*;
-public class DesignationGetDesignationsTestcase
+public class DesignationManagerAddDesignationTestcase
 {
 public static void main(String gg[])
 {
+String title=gg[0];
 try
 {
-Set<DesignationInterface> designations=DesignationManager.getDesignationManager().getDesignations();
-for(DesignationInterface designation:designations)
-{
-System.out.printf("Code: %d, Title: %s\n",designation.getCode(),designation.getTitle());
-}
+DesignationInterface designation;
+designation=new Designation();
+//designation.setCode(-13);
+designation.setTitle(title);
+DesignationManagerInterface designationManager;
+designationManager=DesignationManager.getDesignationManager();
+designationManager.addDesignation(designation);
+System.out.println("Designtaion added with code: "+designation.getCode());
 }catch(BLException blException)
 {
 if(blException.hasGenericException()) System.out.println(blException.getGenericException());

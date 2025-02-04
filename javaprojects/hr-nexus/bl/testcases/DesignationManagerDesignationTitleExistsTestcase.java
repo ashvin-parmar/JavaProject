@@ -1,10 +1,9 @@
 import com.ashvin.hr.nexus.bl.exceptions.*;
 import com.ashvin.hr.nexus.bl.interfaces.pojo.*;
-import com.ashvin.hr.nexus.bl.pojo.*;
 import com.ashvin.hr.nexus.bl.interfaces.pojo.manager.*;
 import com.ashvin.hr.nexus.bl.pojo.manager.*;
 import java.util.*;
-public class DesignationTitleExistsTestcase
+public class DesignationManagerDesignationTitleExistsTestcase
 {
 public static void main(String gg[])
 {

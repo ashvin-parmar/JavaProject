@@ -4,15 +4,14 @@ import com.ashvin.hr.nexus.bl.pojo.*;
 import com.ashvin.hr.nexus.bl.interfaces.pojo.manager.*;
 import com.ashvin.hr.nexus.bl.pojo.manager.*;
 import java.util.*;
-public class DesignationRemoveTestcase
+public class DesignationManagerDesignationCodeExistsTestcase
 {
 public static void main(String gg[])
 {
 int code=Integer.parseInt(gg[0]);
 try
 {
-DesignationManager.getDesignationManager().removeDesignation(code);
-System.out.println("Designtaion Removed");
+System.out.printf("Designation code %d : %s\n",code,DesignationManager.getDesignationManager().designationCodeExists(code)==true?"exist":"not exist");
 }catch(BLException blException)
 {
 if(blException.hasGenericException()) System.out.println(blException.getGenericException());

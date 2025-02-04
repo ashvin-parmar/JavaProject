@@ -4,22 +4,13 @@ import com.ashvin.hr.nexus.bl.pojo.*;
 import com.ashvin.hr.nexus.bl.interfaces.pojo.manager.*;
 import com.ashvin.hr.nexus.bl.pojo.manager.*;
 import java.util.*;
-public class DesignationUpdateTestcase
+public class DesignationManagerGetDesignationCountTestcase
 {
 public static void main(String gg[])
 {
-int code=Integer.parseInt(gg[0]);
-String title=gg[1];
 try
 {
-DesignationInterface designation;
-designation=new Designation();
-designation.setCode(code);
-designation.setTitle(title);
-DesignationManagerInterface designationManager;
-designationManager=DesignationManager.getDesignationManager();
-designationManager.updateDesignation(designation);
-System.out.println("Designtaion Updated");
+System.out.println("Number of designations: "+DesignationManager.getDesignationManager().getDesignationCount());
 }catch(BLException blException)
 {
 if(blException.hasGenericException()) System.out.println(blException.getGenericException());

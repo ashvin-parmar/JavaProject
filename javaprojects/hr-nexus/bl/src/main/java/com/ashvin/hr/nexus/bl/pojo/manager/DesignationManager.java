@@ -108,6 +108,7 @@ else if(this.codeWiseDesignationMap.containsKey(code)==false)
 {
 blException.addPropertyException("code","Invalid code: "+code);
 }
+if(blException.hasExceptions()) throw blException;
 String title=designation.getTitle();
 if(title==null) blException.addPropertyException("title","Title required.");
 else if((title=title.trim()).length()==0) blException.addPropertyException("title","Title required.");
