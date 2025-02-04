@@ -5,13 +5,13 @@ import com.ashvin.hr.nexus.bl.interfaces.pojo.*;
 import java.util.*;
 public interface DesignationManagerInterface
 {
-public void add(DesignationInterface designation) throws BLException;
-public void update(DesignationInterface designation) throws BLException;
-public void remove(int code) throws BLException;
-public Set<DesignationInterface> getByCode(int code) throws BLException;
-public Set<DesignationInterface> getByTitle(String title) throws BLException;
+public void addDesignation(DesignationInterface designation) throws BLException;
+public void updateDesignation(DesignationInterface designation) throws BLException;
+public void removeDesignation(int code) throws BLException;
+public Set<DesignationInterface> getDesignationByCode(int code) throws BLException;
+public Set<DesignationInterface> getDesignationByTitle(String title) throws BLException;
 public int getDesignationCount() throws BLException;
-public boolean codeExists(int code) throws BLException;
-public boolean titleExists(String title) throws BLException;
+public boolean designationCodeExists(int code) throws BLException;
+public boolean designationTitleExists(String title) throws BLException;
 public Set<DesignationInterface> getDesignations() throws BLException;
 }

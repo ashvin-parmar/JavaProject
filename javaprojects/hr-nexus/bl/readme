@@ -42,5 +42,5 @@ Example: Map<String,DesignatonInterface> titleWiseDesignationMap
 Example: Set<DesignationInterface> designationSet
 (.......more added when required................)
 ----------------------------------------------
-
-
+In class DesignationManager, We are named method as 'addDesignation()' instead of 'add()' only, Reason: In Manager class in business layer, it may possible that more than one entity are managed. So we have to configure at each place that for which it should be called. Over here, We are named it uniquly such that no more confusion/problem occured in future.
+-------------------------------------------------------------------------------

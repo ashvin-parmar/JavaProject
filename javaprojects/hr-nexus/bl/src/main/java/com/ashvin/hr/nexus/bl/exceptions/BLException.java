@@ -25,7 +25,7 @@ public String getMessage()
 if(this.genericException==null) return "";
 return this.genericException;
 }
-public void setPropertyException(String property,String exception)
+public void addPropertyException(String property,String exception)
 {
 this.exceptions.put(property,exception);
 }
@@ -33,7 +33,11 @@ public String getPropertyException(String property)
 {
 return this.exceptions.get(property);
 }
-List<String> getExceptionProperties()
+public void removePropertyException(String property)
+{
+this.exceptions.remove(property);
+}
+public List<String> getProperties()
 {
 List<String> properties=new ArrayList<>();
 this.exceptions.forEach((k,v)->{
@@ -41,14 +45,18 @@ properties.add(k);
 });
 return properties;
 }
-public int getExceptionCount()
+public int getExceptionsCount()
 {
 if(this.genericException!=null) return this.exceptions.size()+1;
 return this.exceptions.size();
 }
 public boolean hasExceptions()
 {
-return this.getExceptionCount()>0;
+return this.getExceptionsCount()>0;
+}
+public boolean hasPropertyException(String property)
+{
+return this.exceptions.containsKey(property);
 }
 public boolean hasGenericException()
 {

@@ -45,36 +45,74 @@ blException.setGenericException(daoException.getMessage());
 throw blException;
 }
 }
-public DesignationManagerInterface getDesignationManager() throws BLException
+public static DesignationManagerInterface getDesignationManager() throws BLException
 {
-if(this.designationManager==null) this.designationManager=new DesignationManager();
-return this.designationManager;
+if(designationManager==null) designationManager=new DesignationManager();
+return designationManager;
 }
-public void add(DesignationInterface designation) throws BLException
+public void addDesignation(DesignationInterface designation) throws BLException
+{
+BLException blException=new BLException();
+if(designation==null) 
+{
+blException.setGenericException("designation is null"); 
+throw blException;
+}
+int code=designation.getCode();
+if(code!=0) blException.addPropertyException("code","Code should be zero");
+String title=designation.getTitle();
+if(title==null) 
+{
+blException.addPropertyException("title","Title required.");
+title="";
+}
+else if((title=title.trim()).length()==0)  
+{
+blException.addPropertyException("title","Title required.");
+}
+else if(this.titleWiseDesignationMap.containsKey(title.toUpperCase())==true)
+{
+blException.addPropertyException("title","Designation: "+title+" exists.");
+}
+if(blException.hasExceptions()) throw blException;
+try
+{
+DesignationDTOInterface dlDesignation=new DesignationDTO();
+dlDesignation.setTitle(designation.getTitle());
+(new DesignationDAO()).add(dlDesignation);
+code=dlDesignation.getCode();
+designation.setCode(code);
+DesignationInterface blDesignation=new Designation();
+blDesignation.setCode(code);
+blDesignation.setTitle(designation.getTitle());
+this.codeWiseDesignationMap.put(new Integer(blDesignation.getCode()),blDesignation);
+this.titleWiseDesignationMap.put(blDesignation.getTitle().toUpperCase(),blDesignation);
+this.designationSet.add(blDesignation);
+}catch(DAOException daoException)
+{
+blException.setGenericException(daoException.getMessage());
+throw blException;
+}
+}
+public void updateDesignation(DesignationInterface designation) throws BLException
 {
 BLException blException=new BLException();
 blException.setGenericException("Not yet implemented");
 throw blException;
 }
-public void update(DesignationInterface designation) throws BLException
+public void removeDesignation(int code) throws BLException
 {
 BLException blException=new BLException();
 blException.setGenericException("Not yet implemented");
 throw blException;
 }
-public void remove(int code) throws BLException
+public Set<DesignationInterface> getDesignationByCode(int code) throws BLException
 {
 BLException blException=new BLException();
 blException.setGenericException("Not yet implemented");
 throw blException;
 }
-public Set<DesignationInterface> getByCode(int code) throws BLException
-{
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
-}
-public Set<DesignationInterface> getByTitle(String title) throws BLException
+public Set<DesignationInterface> getDesignationByTitle(String title) throws BLException
 {
 BLException blException=new BLException();
 blException.setGenericException("Not yet implemented");
@@ -86,13 +124,13 @@ BLException blException=new BLException();
 blException.setGenericException("Not yet implemented");
 throw blException;
 }
-public boolean codeExists(int code) throws BLException
+public boolean designationCodeExists(int code) throws BLException
 {
 BLException blException=new BLException();
 blException.setGenericException("Not yet implemented");
 throw blException;
 }
-public boolean titleExists(String title) throws BLException
+public boolean designationTitleExists(String title) throws BLException
 {
 BLException blException=new BLException();
 blException.setGenericException("Not yet implemented");
