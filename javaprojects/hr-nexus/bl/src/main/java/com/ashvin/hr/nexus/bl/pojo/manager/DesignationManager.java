@@ -97,14 +97,74 @@ throw blException;
 public void updateDesignation(DesignationInterface designation) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(designation==null)
+{
+blException.setGenericException("Designation required.");
 throw blException;
+}
+int code=designation.getCode();
+if(code<=0) blException.addPropertyException("code","Code should not be negative or zero.");
+else if(this.codeWiseDesignationMap.containsKey(code)==false)
+{
+blException.addPropertyException("code","Invalid code: "+code);
+}
+String title=designation.getTitle();
+if(title==null) blException.addPropertyException("title","Title required.");
+else if((title=title.trim()).length()==0) blException.addPropertyException("title","Title required.");
+else if(this.titleWiseDesignationMap.containsKey(title.toUpperCase())==true)
+{
+DesignationInterface fDesignation=this.titleWiseDesignationMap.get(title.toUpperCase());
+if(fDesignation.getCode()!=code) blException.addPropertyException("title","Designation: "+title+" exists against another code.");
+}
+if(blException.hasExceptions()) throw blException;
+try
+{
+DesignationDTOInterface dlDesignation=new DesignationDTO();
+dlDesignation.setCode(code);
+dlDesignation.setTitle(title);
+(new DesignationDAO()).update(dlDesignation);
+DesignationInterface blDesignation=new Designation();
+blDesignation.setCode(code);
+blDesignation.setTitle(title);
+DesignationInterface fDesignation;
+fDesignation=this.codeWiseDesignationMap.get(code);
+this.codeWiseDesignationMap.remove(code);
+this.codeWiseDesignationMap.put(code,blDesignation);
+this.titleWiseDesignationMap.remove(title.toUpperCase());
+this.titleWiseDesignationMap.put(title.toUpperCase(),blDesignation);
+this.designationSet.remove(fDesignation);
+this.designationSet.add(blDesignation);
+}
+catch(DAOException daoException)
+{
+blException.setGenericException(daoException.getMessage());
+throw blException;
+}
 }
 public void removeDesignation(int code) throws BLException
 {
+
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(code<=0) blException.addPropertyException("code","Code should not be negative or zero.");
+else if(this.codeWiseDesignationMap.containsKey(code)==false)
+{
+blException.addPropertyException("code","Invalid code: "+code);
+}
+if(blException.hasExceptions()) throw blException;
+try
+{
+(new DesignationDAO()).delete(code);
+DesignationInterface fDesignation;
+fDesignation=this.codeWiseDesignationMap.get(code);
+this.codeWiseDesignationMap.remove(code);
+this.titleWiseDesignationMap.remove(fDesignation.getTitle().toUpperCase());
+this.designationSet.remove(fDesignation);
+}
+catch(DAOException daoException)
+{
+blException.setGenericException(daoException.getMessage());
 throw blException;
+}
 }
 public Set<DesignationInterface> getDesignationByCode(int code) throws BLException
 {
