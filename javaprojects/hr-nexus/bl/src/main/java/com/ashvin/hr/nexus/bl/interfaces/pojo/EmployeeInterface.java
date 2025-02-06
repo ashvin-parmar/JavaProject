@@ -1,0 +1,25 @@
+package com.ashvin.hr.nexus.bl.interfaces.pojo;
+import com.ashvin.enums.*;
+import java.util.*;
+import java.math.*;
+public interface EmployeeInterface extends java.io.Serializable, Comparable<EmployeeInterface>
+{
+public void setEmployeeId(String id);
+public String getEmployeeId();
+public void setName(String name);
+public String getName();
+public void setDesignationCode(int designationCode);
+public int getDesignationCode();
+public void setDateOfBirth(Date dateOfBirth);
+public Date getDateOfBirth();
+public void setGender(GENDER gender);
+public char getGender();
+public void setIsIndian(boolean isIndian);
+public boolean getIsIndian();
+public void setBasicSalary(BigDecimal basicSalary);
+public BigDecimal getBasicSalary();
+public void setPANNumber(String panNumber);
+public String getPANNumber();
+public void setAadharCardNumber(String aadharCardNumber);
+public String getAadharCardNumber();
+}

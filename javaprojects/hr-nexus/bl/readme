@@ -44,3 +44,20 @@ Example: Set<DesignationInterface> designationSet
 ----------------------------------------------
 In class DesignationManager, We are named method as 'addDesignation()' instead of 'add()' only, Reason: In Manager class in business layer, it may possible that more than one entity are managed. So we have to configure at each place that for which it should be called. Over here, We are named it uniquly such that no more confusion/problem occured in future.
 -------------------------------------------------------------------------------
+
+			Employee Implementation starts
+Over here, The same structure followed.
+First of all, we go through with EmployeeInterface then Employee Pojo classes then thier Manager classes.
+
+Data Structures created to manager Employees
+
+'''
+private Map<String,EmployeeInterface> employeeIdWiseEmployeeMap;
+private Map<String,EmployeeInterface> panNumberWiseEmployeeMap;
+private Map<String,EmployeeInterface> aadharCardNumberWiseEmployeeMap;
+private Map<Integer,Set<EmployeeInterface>> designationCodeWiseEmployeeMap;
+private Set<EmployeeInterface> employeeSet;
+'''
+
+Singletone pattern used for manage single object for complete data structure.
+

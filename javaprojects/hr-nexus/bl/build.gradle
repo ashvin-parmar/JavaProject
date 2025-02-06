@@ -3,5 +3,5 @@ plugins {
 id 'java'
 }
 dependencies {
-implementation files('../dl/dist/hr-nexus-dl-1.0.jar')
+implementation files('../dl/dist/hr-nexus-dl-1.0.jar','../common/dist/hr-nexus-common.jar')
 }
