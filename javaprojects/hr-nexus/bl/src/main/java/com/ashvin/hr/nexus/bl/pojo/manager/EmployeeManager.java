@@ -259,14 +259,52 @@ throw blException;
 public void removeEmployee(String employeeId) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(employeeId==null) blException.addPropertyException("employeeId","Employee Id required");
+else if((employeeId=employeeId.trim()).length()==0) blException.addPropertyException("employeeId","Employee Id required");
+else if(employeeIdWiseEmployeeMap.containsKey(employeeId)==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
+if(blException.hasExceptions()) throw blException;
+try
+{
+//delete from Data Layer
+(new EmployeeDAO()).delete(employeeId);
+//if remove from Data Layer
+
+Set<EmployeeInterface> list;
+EmployeeInterface fEmployee;
+//Remove from D.S.
+fEmployee=employeeIdWiseEmployeeMap.get(employeeId);
+employeeIdWiseEmployeeMap.remove(employeeId);
+panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber());
+aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber());
+list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
+list.remove(fEmployee);
+employeeSet.remove(fEmployee);
+}catch(DAOException daoException)
+{
+blException.setGenericException(daoException.getMessage());
 throw blException;
+}
 }
 public Set<EmployeeInterface> getEmployees() throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+Set<EmployeeInterface> employees;
+employees=new TreeSet<>();
+EmployeeInterface employee;
+for(EmployeeInterface emp:this.employeeSet)
+{
+employee=new Employee();
+employee.setEmployeeId(emp.getEmployeeId());
+employee.setName(emp.getName());
+employee.setDesignationCode(emp.getDesignationCode());
+employee.setDateOfBirth(emp.getDateOfBirth());
+employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
+employee.setIsIndian(emp.getIsIndian());
+employee.setBasicSalary(emp.getBasicSalary());
+employee.setPANNumber(emp.getPANNumber());
+employee.setAadharCardNumber(emp.getAadharCardNumber());
+employees.add(employee);
+}
+return employees;
 }
 public Set<EmployeeInterface> getEmployeesByDesignationCode() throws BLException
 {
