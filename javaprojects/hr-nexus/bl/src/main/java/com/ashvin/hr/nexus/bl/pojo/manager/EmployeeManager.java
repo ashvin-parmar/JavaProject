@@ -23,7 +23,7 @@ private Map<String,EmployeeInterface> panNumberWiseEmployeeMap;
 private Map<String,EmployeeInterface> aadharCardNumberWiseEmployeeMap;
 private Map<Integer,Set<EmployeeInterface>> designationCodeWiseEmployeeMap;
 private Set<EmployeeInterface> employeeSet;
-private EmployeeManager employeeManager;
+private static EmployeeManager employeeManager;
 private EmployeeManager() throws BLException
 {
 populateDataStrcutures();
@@ -76,22 +76,185 @@ blException.setGenericException(daoException.getMessage());
 throw blException;
 }
 }
-public EmployeeManagerInterface getEmployeeManager() throws BLException
+public static EmployeeManagerInterface getEmployeeManager() throws BLException
 {
-if(this.employeeManager!=null) this.employeeManager=new EmployeeManager();
-return this.employeeManager;
+if(employeeManager==null) employeeManager=new EmployeeManager();
+return employeeManager;
 }
 public void addEmployee(EmployeeInterface employee) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(employee==null)
+{
+blException.setGenericException("Employee required.");
 throw blException;
+}
+String employeeId=employee.getEmployeeId();
+if(employeeId!=null)
+{
+if((employeeId=employeeId.trim()).length()!=0) blException.addPropertyException("employeeId","Employee id must empty");
+}
+String name=employee.getName();
+if(name==null) blException.addPropertyException("name","Name required");
+else if((name=name.trim()).length()==0) blException.addPropertyException("name","Name required");
+int designationCode=employee.getDesignationCode();
+if(designationCode<=0) blException.addPropertyException("designationCode","Designation code should not be negative or zero.");
+else if((DesignationManager.getDesignationManager()).designationCodeExists(designationCode)==false) blException.addPropertyException("designationCode","Invalid designation code.");
+Date dateOfBirth=employee.getDateOfBirth();
+if(dateOfBirth==null) blException.addPropertyException("dateOfBirth","Date of birth required");
+char gender=employee.getGender();
+if(gender==' ') blException.addPropertyException("gender","Gender required");
+boolean isIndian=employee.getIsIndian();
+BigDecimal basicSalary=employee.getBasicSalary();
+if(basicSalary==null) blException.addPropertyException("basicSalary","Basic salary required.");
+else if(basicSalary.signum()<0) blException.addPropertyException("basicSalary","Basic salary can not be negative,");
+String panNumber=employee.getPANNumber();
+if(panNumber==null) blException.addPropertyException("panNumber","PAN number required.");
+else if((panNumber=panNumber.trim()).length()==0) blException.addPropertyException("panNumber","PAN number required.");
+else if(panNumberWiseEmployeeMap.containsKey(panNumber)==true) blException.addPropertyException("panNumber","PAN number exists.");
+String aadharCardNumber=employee.getAadharCardNumber();
+if(aadharCardNumber==null) blException.addPropertyException("aadharCardNumber","Aadhar number required.");
+else if((aadharCardNumber=aadharCardNumber.trim()).length()==0) blException.addPropertyException("aadharCardNumber","Aadhar card number required.");
+else if(aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber)==true) blException.addPropertyException("aadharCardNumber","Aadhar card number exists.");
+if(blException.hasExceptions()) throw blException;
+try
+{
+EmployeeDTOInterface dlEmployee=new EmployeeDTO();
+dlEmployee.setName(name);
+dlEmployee.setDesignationCode(designationCode);
+dlEmployee.setDateOfBirth(dateOfBirth);
+dlEmployee.setGender(gender=='M'?GENDER.MALE:GENDER.FEMALE);
+dlEmployee.setIsIndian(isIndian);
+dlEmployee.setBasicSalary(basicSalary);
+dlEmployee.setPANNumber(panNumber);
+dlEmployee.setAadharCardNumber(aadharCardNumber);
+
+//add in Data Layer
+(new EmployeeDAO()).add(dlEmployee);
+employeeId=dlEmployee.getEmployeeId();
+employee.setEmployeeId(employeeId);	//Add in employee
+//if added in Data Layer
+
+EmployeeInterface blEmployee=new Employee();
+blEmployee.setEmployeeId(employeeId);
+blEmployee.setName(name);
+blEmployee.setDesignationCode(designationCode);
+blEmployee.setDateOfBirth(dateOfBirth);
+blEmployee.setGender(gender=='M'?GENDER.MALE:GENDER.FEMALE);
+blEmployee.setIsIndian(isIndian);
+blEmployee.setBasicSalary(basicSalary);
+blEmployee.setPANNumber(panNumber);
+blEmployee.setAadharCardNumber(aadharCardNumber);
+
+employeeIdWiseEmployeeMap.put(employeeId,blEmployee);
+panNumberWiseEmployeeMap.put(panNumber,blEmployee);
+aadharCardNumberWiseEmployeeMap.put(aadharCardNumber,blEmployee);
+Set<EmployeeInterface> list;
+list=designationCodeWiseEmployeeMap.get(designationCode);
+if(list==null)
+{
+list=new TreeSet<>();
+}
+list.add(blEmployee);
+designationCodeWiseEmployeeMap.put(designationCode,list);
+employeeSet.add(blEmployee);
+}catch(DAOException daoException)
+{
+blException.setGenericException(daoException.getMessage());
+throw blException;
+}
 }
 public void updateEmployee(EmployeeInterface employee) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(employee==null)
+{
+blException.setGenericException("Employee required.");
 throw blException;
+}
+String employeeId=employee.getEmployeeId();
+if(employeeId==null) blException.addPropertyException("employeeId","Employee Id required");
+else if((employeeId=employeeId.trim()).length()==0) blException.addPropertyException("employeeId","Employee Id required");
+else if(employeeIdWiseEmployeeMap.containsKey(employeeId)==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
+String name=employee.getName();
+if(name==null) blException.addPropertyException("name","Name required");
+else if((name=name.trim()).length()==0) blException.addPropertyException("name","Name required");
+int designationCode=employee.getDesignationCode();
+if(designationCode<=0) blException.addPropertyException("designationCode","Designation code should not be negative or zero.");
+else if((DesignationManager.getDesignationManager()).designationCodeExists(designationCode)==false) blException.addPropertyException("designationCode","Invalid designation code.");
+Date dateOfBirth=employee.getDateOfBirth();
+if(dateOfBirth==null) blException.addPropertyException("dateOfBirth","Date of birth required");
+char gender=employee.getGender();
+if(gender==' ') blException.addPropertyException("gender","Gender required");
+boolean isIndian=employee.getIsIndian();
+BigDecimal basicSalary=employee.getBasicSalary();
+if(basicSalary==null) blException.addPropertyException("basicSalary","Basic salary required.");
+else if(basicSalary.signum()<0) blException.addPropertyException("basicSalary","Basic salary can not be negative,");
+String panNumber=employee.getPANNumber();
+EmployeeInterface fEmployee;
+if(panNumber==null) blException.addPropertyException("panNumber","PAN number required.");
+else if((panNumber=panNumber.trim()).length()==0) blException.addPropertyException("panNumber","PAN number required.");
+else if((fEmployee=panNumberWiseEmployeeMap.get(panNumber))!=null && fEmployee.getEmployeeId().equals(employeeId)==false) blException.addPropertyException("panNumber","PAN number exists against another employee.");
+String aadharCardNumber=employee.getAadharCardNumber();
+if(aadharCardNumber==null) blException.addPropertyException("aadharCardNumber","Aadhar number required.");
+else if((aadharCardNumber=aadharCardNumber.trim()).length()==0) blException.addPropertyException("aadharCardNumber","Aadhar card number required.");
+else if((fEmployee=aadharCardNumberWiseEmployeeMap.get(aadharCardNumber))!=null && fEmployee.getEmployeeId().equals(employeeId)==false) blException.addPropertyException("aadharCardNumber","Aadhar card number exists against another employee.");
+if(blException.hasExceptions()) throw blException;
+try
+{
+EmployeeDTOInterface dlEmployee=new EmployeeDTO();
+dlEmployee.setEmployeeId(employeeId);
+dlEmployee.setName(name);
+dlEmployee.setDesignationCode(designationCode);
+dlEmployee.setDateOfBirth(dateOfBirth);
+dlEmployee.setGender(gender=='M'?GENDER.MALE:GENDER.FEMALE);
+dlEmployee.setIsIndian(isIndian);
+dlEmployee.setBasicSalary(basicSalary);
+dlEmployee.setPANNumber(panNumber);
+dlEmployee.setAadharCardNumber(aadharCardNumber);
+
+//update in Data Layer
+(new EmployeeDAO()).update(dlEmployee);
+//if updated in Data Layer
+
+Set<EmployeeInterface> list;
+//Remove from D.S.
+fEmployee=employeeIdWiseEmployeeMap.get(employeeId);
+employeeIdWiseEmployeeMap.remove(employeeId);
+panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber());
+aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber());
+list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
+list.remove(fEmployee);
+employeeSet.remove(fEmployee);
+
+//Add new in D.S.
+EmployeeInterface blEmployee=new Employee();
+blEmployee.setEmployeeId(employeeId);
+blEmployee.setName(name);
+blEmployee.setDesignationCode(designationCode);
+blEmployee.setDateOfBirth(dateOfBirth);
+blEmployee.setGender(gender=='M'?GENDER.MALE:GENDER.FEMALE);
+blEmployee.setIsIndian(isIndian);
+blEmployee.setBasicSalary(basicSalary);
+blEmployee.setPANNumber(panNumber);
+blEmployee.setAadharCardNumber(aadharCardNumber);
+
+employeeIdWiseEmployeeMap.put(employeeId,blEmployee);
+panNumberWiseEmployeeMap.put(panNumber,blEmployee);
+aadharCardNumberWiseEmployeeMap.put(aadharCardNumber,blEmployee);
+list=designationCodeWiseEmployeeMap.get(designationCode);
+if(list==null)
+{
+list=new TreeSet<>();
+}
+list.add(blEmployee);
+designationCodeWiseEmployeeMap.put(designationCode,list);
+employeeSet.add(blEmployee);
+}catch(DAOException daoException)
+{
+blException.setGenericException(daoException.getMessage());
+throw blException;
+}
 }
 public void removeEmployee(String employeeId) throws BLException
 {
