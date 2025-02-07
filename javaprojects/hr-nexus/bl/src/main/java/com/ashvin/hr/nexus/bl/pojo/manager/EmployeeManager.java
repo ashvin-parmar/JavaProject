@@ -306,65 +306,117 @@ employees.add(employee);
 }
 return employees;
 }
-public Set<EmployeeInterface> getEmployeesByDesignationCode() throws BLException
+public Set<EmployeeInterface> getEmployeesByDesignationCode(int designationCode) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+if(designationCode<=0) blException.addPropertyException("designationCode","Invalid designation code: "+designationCode);
+else if((DesignationManager.getDesignationManager()).designationCodeExists(designationCode)==false) blException.addPropertyException("designationCode","Invalid designation code: "+designationCode);
+if(blException.hasExceptions()) throw blException;
+Set<EmployeeInterface> employees;
+employees=new TreeSet<>();
+EmployeeInterface employee;
+Set<EmployeeInterface> list=this.designationCodeWiseEmployeeMap.get(designationCode);
+if(list==null) return employees;
+for(EmployeeInterface emp:list)
+{
+employee=new Employee();
+employee.setEmployeeId(emp.getEmployeeId());
+employee.setName(emp.getName());
+employee.setDesignationCode(emp.getDesignationCode());
+employee.setDateOfBirth(emp.getDateOfBirth());
+employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
+employee.setIsIndian(emp.getIsIndian());
+employee.setBasicSalary(emp.getBasicSalary());
+employee.setPANNumber(emp.getPANNumber());
+employee.setAadharCardNumber(emp.getAadharCardNumber());
+employees.add(employee);
+}
+return employees;
 }
 public EmployeeInterface getEmployeeByEmployeeId(String employeeId) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+if(employeeId==null) blException.addPropertyException("employeeId","Employee Id required");
+else if((employeeId=employeeId.trim()).length()==0) blException.addPropertyException("employeeId","Employee Id required");
+else if(employeeIdWiseEmployeeMap.containsKey(employeeId)==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
+if(blException.hasExceptions()) throw blException;
+EmployeeInterface employee=new Employee();
+EmployeeInterface emp=this.employeeIdWiseEmployeeMap.get(employeeId);
+employee.setEmployeeId(emp.getEmployeeId());
+employee.setName(emp.getName());
+employee.setDesignationCode(emp.getDesignationCode());
+employee.setDateOfBirth(emp.getDateOfBirth());
+employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
+employee.setIsIndian(emp.getIsIndian());
+employee.setBasicSalary(emp.getBasicSalary());
+employee.setPANNumber(emp.getPANNumber());
+employee.setAadharCardNumber(emp.getAadharCardNumber());
+return employee;
 }
 public EmployeeInterface getEmployeeByPANNumber(String panNumber) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+if(panNumber==null) blException.addPropertyException("panNumber","PAN number required.");
+else if((panNumber=panNumber.trim()).length()==0) blException.addPropertyException("panNumber","PAN number required.");
+else if(panNumberWiseEmployeeMap.containsKey(panNumber)==false) blException.addPropertyException("panNumber","PAN number does not exists.");
+if(blException.hasExceptions()) throw blException;
+EmployeeInterface employee=new Employee();
+EmployeeInterface emp=this.panNumberWiseEmployeeMap.get(panNumber);
+employee.setEmployeeId(emp.getEmployeeId());
+employee.setName(emp.getName());
+employee.setDesignationCode(emp.getDesignationCode());
+employee.setDateOfBirth(emp.getDateOfBirth());
+employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
+employee.setIsIndian(emp.getIsIndian());
+employee.setBasicSalary(emp.getBasicSalary());
+employee.setPANNumber(emp.getPANNumber());
+employee.setAadharCardNumber(emp.getAadharCardNumber());
+return employee;
 }
 public EmployeeInterface getEmployeeByAadharCardNumber(String aadharCardNumber) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+if(aadharCardNumber==null) blException.addPropertyException("aadharCardNumber","Aadhar number required.");
+else if((aadharCardNumber=aadharCardNumber.trim()).length()==0) blException.addPropertyException("aadharCardNumber","Aadhar card number required.");
+else if(aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber)==false) blException.addPropertyException("aadharCardNumber","Aadhar card number does not exists.");
+if(blException.hasExceptions()) throw blException;
+EmployeeInterface employee=new Employee();
+EmployeeInterface emp=this.aadharCardNumberWiseEmployeeMap.get(aadharCardNumber);
+employee.setEmployeeId(emp.getEmployeeId());
+employee.setName(emp.getName());
+employee.setDesignationCode(emp.getDesignationCode());
+employee.setDateOfBirth(emp.getDateOfBirth());
+employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
+employee.setIsIndian(emp.getIsIndian());
+employee.setBasicSalary(emp.getBasicSalary());
+employee.setPANNumber(emp.getPANNumber());
+employee.setAadharCardNumber(emp.getAadharCardNumber());
+return employee;
 }
-public boolean employeeDesignationCodeAlloted() throws BLException
+public boolean employeeDesignationCodeAlloted(int designationCode) throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.designationCodeWiseEmployeeMap.containsKey(designationCode);
 }
 public boolean employeeEmployeeIdExists(String employeeId) throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.employeeIdWiseEmployeeMap.containsKey(employeeId);
 }
 public boolean employeePANNumberExists(String panNumber) throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.panNumberWiseEmployeeMap.containsKey(panNumber);
 }
 public boolean employeeAadharCardNumberExists(String aadharCardNumber) throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber);
 }
 public int getEmployeesCount() throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
+return this.employeeSet.size();
 }
-public int getEmployeesDesignationCodeCount() throws BLException
+public int getEmployeesDesignationCodeCount(int designationCode) throws BLException
 {
-BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
-throw blException;
-
+Set<EmployeeInterface> list=this.designationCodeWiseEmployeeMap.get(designationCode);
+if(list==null) return 0;
+return list.size();
 }
 }
