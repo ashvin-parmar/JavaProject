@@ -1,8 +1,8 @@
-package com.ashvin.hr.nexus.bl.pojo.manager;
+package com.ashvin.hr.nexus.bl.manager;
 
 import com.ashvin.hr.nexus.bl.exceptions.*;
 import com.ashvin.hr.nexus.bl.interfaces.pojo.*;
-import com.ashvin.hr.nexus.bl.interfaces.pojo.manager.*;
+import com.ashvin.hr.nexus.bl.interfaces.manager.*;
 import com.ashvin.hr.nexus.bl.pojo.*;
 import com.ashvin.hr.nexus.dl.exceptions.*;
 import com.ashvin.hr.nexus.dl.interfaces.dto.*;
