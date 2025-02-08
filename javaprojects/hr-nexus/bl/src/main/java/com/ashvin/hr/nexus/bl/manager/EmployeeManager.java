@@ -12,7 +12,6 @@ import com.ashvin.hr.nexus.dl.interfaces.dto.*;
 import com.ashvin.hr.nexus.dl.interfaces.dao.*;
 import com.ashvin.hr.nexus.dl.dto.*;
 import com.ashvin.hr.nexus.dl.dao.*;
-
 import java.util.*;
 import java.math.*;
 
@@ -285,7 +284,7 @@ blException.setGenericException(daoException.getMessage());
 throw blException;
 }
 }
-public Set<EmployeeInterface> getEmployees() throws BLException
+public Set<EmployeeInterface> getEmployees()
 {
 Set<EmployeeInterface> employees;
 employees=new TreeSet<>();
@@ -397,19 +396,19 @@ public boolean employeeDesignationCodeAlloted(int designationCode) throws BLExce
 {
 return this.designationCodeWiseEmployeeMap.containsKey(designationCode);
 }
-public boolean employeeEmployeeIdExists(String employeeId) throws BLException
+public boolean employeeEmployeeIdExists(String employeeId)
 {
 return this.employeeIdWiseEmployeeMap.containsKey(employeeId);
 }
-public boolean employeePANNumberExists(String panNumber) throws BLException
+public boolean employeePANNumberExists(String panNumber)
 {
 return this.panNumberWiseEmployeeMap.containsKey(panNumber);
 }
-public boolean employeeAadharCardNumberExists(String aadharCardNumber) throws BLException
+public boolean employeeAadharCardNumberExists(String aadharCardNumber)
 {
 return this.aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber);
 }
-public int getEmployeesCount() throws BLException
+public int getEmployeesCount()
 {
 return this.employeeSet.size();
 }

@@ -166,20 +166,34 @@ blException.setGenericException(daoException.getMessage());
 throw blException;
 }
 }
+//Only accesible from inside package
+DesignationInterface getDSDesignationByCode(int code)
+{
+return this.codeWiseDesignationMap.get(code);
+}
 public DesignationInterface getDesignationByCode(int code) throws BLException
 {
+if(code<=0)
+{
 BLException blException=new BLException();
-if(code<=0) blException.addPropertyException("code","Code should not be negative or zero.");
+ blException.addPropertyException("code","Code should not be negative or zero.");
+throw blException;
+}
 else if(this.codeWiseDesignationMap.containsKey(code)==false)
 {
+BLException blException=new BLException();
 blException.addPropertyException("code","Invalid code: "+code);
+throw blException;
 }
-if(blException.hasExceptions()) throw blException;
 DesignationInterface designation=new Designation();
 DesignationInterface fDesignation=this.codeWiseDesignationMap.get(code);
 designation.setCode(fDesignation.getCode());
 designation.setTitle(fDesignation.getTitle());
 return designation;
+}
+DesignationInterface getDSDesignationByTitle(String title)
+{
+return this.titleWiseDesignationMap.get(title.toUpperCase());
 }
 public DesignationInterface getDesignationByTitle(String title) throws BLException
 {
@@ -197,22 +211,22 @@ designation.setCode(fDesignation.getCode());
 designation.setTitle(fDesignation.getTitle());
 return designation;
 }
-public int getDesignationCount() throws BLException
+public int getDesignationCount()
 {
 return this.designationSet.size();
 }
-public boolean designationCodeExists(int code) throws BLException
+public boolean designationCodeExists(int code)
 {
 return this.codeWiseDesignationMap.containsKey(code);
 }
-public boolean designationTitleExists(String title) throws BLException
+public boolean designationTitleExists(String title)
 {
 if(title==null) return false;
 title=title.trim();
 if(title.length()==0) return false;
 return this.titleWiseDesignationMap.containsKey(title.toUpperCase());
 }
-public Set<DesignationInterface> getDesignations() throws BLException
+public Set<DesignationInterface> getDesignations()
 {
 Set<DesignationInterface> designations;
 designations=new TreeSet<>();
