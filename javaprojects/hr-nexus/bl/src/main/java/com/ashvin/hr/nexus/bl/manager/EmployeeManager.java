@@ -20,7 +20,7 @@ public class EmployeeManager implements EmployeeManagerInterface
 private Map<String,EmployeeInterface> employeeIdWiseEmployeeMap;
 private Map<String,EmployeeInterface> panNumberWiseEmployeeMap;
 private Map<String,EmployeeInterface> aadharCardNumberWiseEmployeeMap;
-//private Map<Integer,Set<EmployeeInterface>> designationCodeWiseEmployeeMap;
+private Map<Integer,Set<EmployeeInterface>> designationCodeWiseEmployeeMap;
 private Set<EmployeeInterface> employeeSet;
 private static EmployeeManager employeeManager;
 private EmployeeManager() throws BLException
@@ -32,7 +32,7 @@ private void populateDataStrcutures() throws BLException
 employeeIdWiseEmployeeMap=new HashMap<String,EmployeeInterface>();
 panNumberWiseEmployeeMap=new HashMap<String,EmployeeInterface>();
 aadharCardNumberWiseEmployeeMap=new HashMap<String,EmployeeInterface>();
-//designationCodeWiseEmployeeMap=new HashMap<Integer,Set<EmployeeInterface>>();
+designationCodeWiseEmployeeMap=new HashMap<Integer,Set<EmployeeInterface>>();
 employeeSet=new TreeSet<EmployeeInterface>();
 try
 {
@@ -56,18 +56,16 @@ employee.setAadharCardNumber(dlEmployee.getAadharCardNumber());
 employeeIdWiseEmployeeMap.put(employee.getEmployeeId(),employee);
 panNumberWiseEmployeeMap.put(employee.getPANNumber(),employee);
 aadharCardNumberWiseEmployeeMap.put(employee.getAadharCardNumber(),employee);
-/*
-if(designationCodeWiseEmployeeMap.containsKey(employee.getDesignationCode()))
+if(designationCodeWiseEmployeeMap.containsKey(dlEmployee.getDesignationCode()))
 {
-list=designationCodeWiseEmployeeMap.get(employee.getDesignationCode());
+list=designationCodeWiseEmployeeMap.get(dlEmployee.getDesignationCode());
 }
 else
 {
 list=new TreeSet<>();
 }
 list.add(employee);
-designationCodeWiseEmployeeMap.put(employee.getDesignationCode(),list);
-*/
+designationCodeWiseEmployeeMap.put(dlEmployee.getDesignationCode(),list);
 employeeSet.add(employee);
 }
 }catch(DAOException daoException)
@@ -161,13 +159,13 @@ employeeIdWiseEmployeeMap.put(employeeId.toUpperCase(),blEmployee);
 panNumberWiseEmployeeMap.put(panNumber.toUpperCase(),blEmployee);
 aadharCardNumberWiseEmployeeMap.put(aadharCardNumber.toUpperCase(),blEmployee);
 Set<EmployeeInterface> list;
-//list=designationCodeWiseEmployeeMap.get(designationCode);
-//if(list==null)
-//{
-//list=new TreeSet<>();
-//}
-//list.add(blEmployee);
-//designationCodeWiseEmployeeMap.put(designationCode,list);
+list=designationCodeWiseEmployeeMap.get(designationCode);
+if(list==null)
+{
+list=new TreeSet<>();
+}
+list.add(blEmployee);
+designationCodeWiseEmployeeMap.put(designationCode,list);
 employeeSet.add(blEmployee);
 }catch(DAOException daoException)
 {
@@ -242,8 +240,8 @@ fEmployee=employeeIdWiseEmployeeMap.get(employeeId.toUpperCase());
 employeeIdWiseEmployeeMap.remove(employeeId.toUpperCase());
 panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber().toUpperCase());
 aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber().toUpperCase());
-//list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
-//list.remove(fEmployee);
+list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignation().getCode());
+list.remove(fEmployee);
 employeeSet.remove(fEmployee);
 
 //Add new in D.S.
@@ -262,13 +260,13 @@ blEmployee.setAadharCardNumber(aadharCardNumber);
 employeeIdWiseEmployeeMap.put(employeeId.toUpperCase(),blEmployee);
 panNumberWiseEmployeeMap.put(panNumber.toUpperCase(),blEmployee);
 aadharCardNumberWiseEmployeeMap.put(aadharCardNumber.toUpperCase(),blEmployee);
-//list=designationCodeWiseEmployeeMap.get(designationCode);
-//if(list==null)
-//{
-//list=new TreeSet<>();
-//}
-//list.add(blEmployee);
-//designationCodeWiseEmployeeMap.put(designationCode,list);
+list=designationCodeWiseEmployeeMap.get(designationCode);
+if(list==null)
+{
+list=new TreeSet<>();
+}
+list.add(blEmployee);
+designationCodeWiseEmployeeMap.put(designationCode,list);
 employeeSet.add(blEmployee);
 }catch(DAOException daoException)
 {
@@ -295,9 +293,9 @@ EmployeeInterface fEmployee;
 fEmployee=employeeIdWiseEmployeeMap.get(employeeId.toUpperCase());
 employeeIdWiseEmployeeMap.remove(employeeId.toUpperCase());
 panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber().toUpperCase());
-aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber());
-//list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
-//list.remove(fEmployee);
+aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber().toUpperCase());
+list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignation().getCode());
+list.remove(fEmployee);
 employeeSet.remove(fEmployee);
 }catch(DAOException daoException)
 {
@@ -340,7 +338,6 @@ else if((DesignationManager.getDesignationManager()).designationCodeExists(desig
 if(blException.hasExceptions()) throw blException;
 Set<EmployeeInterface> employees;
 employees=new TreeSet<>();
-/*
 EmployeeInterface employee;
 Set<EmployeeInterface> list=this.designationCodeWiseEmployeeMap.get(designationCode);
 if(list==null) return employees;
@@ -364,7 +361,6 @@ employee.setPANNumber(emp.getPANNumber());
 employee.setAadharCardNumber(emp.getAadharCardNumber());
 employees.add(employee);
 }
-*/
 return employees;
 }
 public EmployeeInterface getEmployeeByEmployeeId(String employeeId) throws BLException
@@ -447,8 +443,7 @@ return employee;
 }
 public boolean employeeDesignationCodeAlloted(int designationCode) throws BLException
 {
-return false;
-//return this.designationCodeWiseEmployeeMap.containsKey(designationCode);
+return this.designationCodeWiseEmployeeMap.containsKey(designationCode);
 }
 public boolean employeeEmployeeIdExists(String employeeId)
 {
@@ -468,11 +463,8 @@ return this.employeeSet.size();
 }
 public int getEmployeesDesignationCodeCount(int designationCode) throws BLException
 {
-/*
 Set<EmployeeInterface> list=this.designationCodeWiseEmployeeMap.get(designationCode);
 if(list==null) return 0;
 return list.size();
-*/
-return 0;
 }
 }
