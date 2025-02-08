@@ -121,11 +121,11 @@ else if(basicSalary.signum()<0) blException.addPropertyException("basicSalary","
 String panNumber=employee.getPANNumber();
 if(panNumber==null) blException.addPropertyException("panNumber","PAN number required.");
 else if((panNumber=panNumber.trim()).length()==0) blException.addPropertyException("panNumber","PAN number required.");
-else if(panNumberWiseEmployeeMap.containsKey(panNumber)==true) blException.addPropertyException("panNumber","PAN number exists.");
+else if(panNumberWiseEmployeeMap.containsKey(panNumber.toUpperCase())==true) blException.addPropertyException("panNumber","PAN number exists.");
 String aadharCardNumber=employee.getAadharCardNumber();
 if(aadharCardNumber==null) blException.addPropertyException("aadharCardNumber","Aadhar number required.");
 else if((aadharCardNumber=aadharCardNumber.trim()).length()==0) blException.addPropertyException("aadharCardNumber","Aadhar card number required.");
-else if(aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber)==true) blException.addPropertyException("aadharCardNumber","Aadhar card number exists.");
+else if(aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber.toUpperCase())==true) blException.addPropertyException("aadharCardNumber","Aadhar card number exists.");
 if(blException.hasExceptions()) throw blException;
 try
 {
@@ -157,9 +157,9 @@ blEmployee.setBasicSalary(basicSalary);
 blEmployee.setPANNumber(panNumber);
 blEmployee.setAadharCardNumber(aadharCardNumber);
 
-employeeIdWiseEmployeeMap.put(employeeId,blEmployee);
-panNumberWiseEmployeeMap.put(panNumber,blEmployee);
-aadharCardNumberWiseEmployeeMap.put(aadharCardNumber,blEmployee);
+employeeIdWiseEmployeeMap.put(employeeId.toUpperCase(),blEmployee);
+panNumberWiseEmployeeMap.put(panNumber.toUpperCase(),blEmployee);
+aadharCardNumberWiseEmployeeMap.put(aadharCardNumber.toUpperCase(),blEmployee);
 Set<EmployeeInterface> list;
 //list=designationCodeWiseEmployeeMap.get(designationCode);
 //if(list==null)
@@ -186,7 +186,7 @@ throw blException;
 String employeeId=employee.getEmployeeId();
 if(employeeId==null) blException.addPropertyException("employeeId","Employee Id required");
 else if((employeeId=employeeId.trim()).length()==0) blException.addPropertyException("employeeId","Employee Id required");
-else if(employeeIdWiseEmployeeMap.containsKey(employeeId)==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
+else if(employeeIdWiseEmployeeMap.containsKey(employeeId.toUpperCase())==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
 String name=employee.getName();
 if(name==null) blException.addPropertyException("name","Name required");
 else if((name=name.trim()).length()==0) blException.addPropertyException("name","Name required");
@@ -214,11 +214,11 @@ String panNumber=employee.getPANNumber();
 EmployeeInterface fEmployee;
 if(panNumber==null) blException.addPropertyException("panNumber","PAN number required.");
 else if((panNumber=panNumber.trim()).length()==0) blException.addPropertyException("panNumber","PAN number required.");
-else if((fEmployee=panNumberWiseEmployeeMap.get(panNumber))!=null && fEmployee.getEmployeeId().equals(employeeId)==false) blException.addPropertyException("panNumber","PAN number exists against another employee.");
+else if((fEmployee=panNumberWiseEmployeeMap.get(panNumber.toUpperCase()))!=null && fEmployee.getEmployeeId().equalsIgnoreCase(employeeId)==false) blException.addPropertyException("panNumber","PAN number exists against another employee.");
 String aadharCardNumber=employee.getAadharCardNumber();
 if(aadharCardNumber==null) blException.addPropertyException("aadharCardNumber","Aadhar number required.");
 else if((aadharCardNumber=aadharCardNumber.trim()).length()==0) blException.addPropertyException("aadharCardNumber","Aadhar card number required.");
-else if((fEmployee=aadharCardNumberWiseEmployeeMap.get(aadharCardNumber))!=null && fEmployee.getEmployeeId().equals(employeeId)==false) blException.addPropertyException("aadharCardNumber","Aadhar card number exists against another employee.");
+else if((fEmployee=aadharCardNumberWiseEmployeeMap.get(aadharCardNumber.toUpperCase()))!=null && fEmployee.getEmployeeId().equalsIgnoreCase(employeeId)==false) blException.addPropertyException("aadharCardNumber","Aadhar card number exists against another employee.");
 if(blException.hasExceptions()) throw blException;
 try
 {
@@ -238,10 +238,10 @@ dlEmployee.setAadharCardNumber(aadharCardNumber);
 //if updated in Data Layer
 Set<EmployeeInterface> list;
 //Remove from D.S.
-fEmployee=employeeIdWiseEmployeeMap.get(employeeId);
-employeeIdWiseEmployeeMap.remove(employeeId);
-panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber());
-aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber());
+fEmployee=employeeIdWiseEmployeeMap.get(employeeId.toUpperCase());
+employeeIdWiseEmployeeMap.remove(employeeId.toUpperCase());
+panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber().toUpperCase());
+aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber().toUpperCase());
 //list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
 //list.remove(fEmployee);
 employeeSet.remove(fEmployee);
@@ -259,9 +259,9 @@ blEmployee.setBasicSalary(basicSalary);
 blEmployee.setPANNumber(panNumber);
 blEmployee.setAadharCardNumber(aadharCardNumber);
 
-employeeIdWiseEmployeeMap.put(employeeId,blEmployee);
-panNumberWiseEmployeeMap.put(panNumber,blEmployee);
-aadharCardNumberWiseEmployeeMap.put(aadharCardNumber,blEmployee);
+employeeIdWiseEmployeeMap.put(employeeId.toUpperCase(),blEmployee);
+panNumberWiseEmployeeMap.put(panNumber.toUpperCase(),blEmployee);
+aadharCardNumberWiseEmployeeMap.put(aadharCardNumber.toUpperCase(),blEmployee);
 //list=designationCodeWiseEmployeeMap.get(designationCode);
 //if(list==null)
 //{
@@ -281,7 +281,7 @@ public void removeEmployee(String employeeId) throws BLException
 BLException blException=new BLException();
 if(employeeId==null) blException.addPropertyException("employeeId","Employee Id required");
 else if((employeeId=employeeId.trim()).length()==0) blException.addPropertyException("employeeId","Employee Id required");
-else if(employeeIdWiseEmployeeMap.containsKey(employeeId)==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
+else if(employeeIdWiseEmployeeMap.containsKey(employeeId.toUpperCase())==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
 if(blException.hasExceptions()) throw blException;
 try
 {
@@ -292,9 +292,9 @@ try
 Set<EmployeeInterface> list;
 EmployeeInterface fEmployee;
 //Remove from D.S.
-fEmployee=employeeIdWiseEmployeeMap.get(employeeId);
-employeeIdWiseEmployeeMap.remove(employeeId);
-panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber());
+fEmployee=employeeIdWiseEmployeeMap.get(employeeId.toUpperCase());
+employeeIdWiseEmployeeMap.remove(employeeId.toUpperCase());
+panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber().toUpperCase());
 aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber());
 //list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
 //list.remove(fEmployee);
@@ -372,12 +372,12 @@ public EmployeeInterface getEmployeeByEmployeeId(String employeeId) throws BLExc
 BLException blException=new BLException();
 if(employeeId==null) blException.addPropertyException("employeeId","Employee Id required");
 else if((employeeId=employeeId.trim()).length()==0) blException.addPropertyException("employeeId","Employee Id required");
-else if(employeeIdWiseEmployeeMap.containsKey(employeeId)==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
+else if(employeeIdWiseEmployeeMap.containsKey(employeeId.toUpperCase())==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
 if(blException.hasExceptions()) throw blException;
 DesignationInterface designation;
 DesignationInterface cloneDesignation;
 EmployeeInterface employee=new Employee();
-EmployeeInterface emp=this.employeeIdWiseEmployeeMap.get(employeeId);
+EmployeeInterface emp=this.employeeIdWiseEmployeeMap.get(employeeId.toUpperCase());
 employee.setEmployeeId(emp.getEmployeeId());
 employee.setName(emp.getName());
 designation=emp.getDesignation();
@@ -398,12 +398,12 @@ public EmployeeInterface getEmployeeByPANNumber(String panNumber) throws BLExcep
 BLException blException=new BLException();
 if(panNumber==null) blException.addPropertyException("panNumber","PAN number required.");
 else if((panNumber=panNumber.trim()).length()==0) blException.addPropertyException("panNumber","PAN number required.");
-else if(panNumberWiseEmployeeMap.containsKey(panNumber)==false) blException.addPropertyException("panNumber","PAN number does not exists.");
+else if(panNumberWiseEmployeeMap.containsKey(panNumber.toUpperCase())==false) blException.addPropertyException("panNumber","PAN number does not exists.");
 if(blException.hasExceptions()) throw blException;
 DesignationInterface designation;
 DesignationInterface cloneDesignation;
 EmployeeInterface employee=new Employee();
-EmployeeInterface emp=this.panNumberWiseEmployeeMap.get(panNumber);
+EmployeeInterface emp=this.panNumberWiseEmployeeMap.get(panNumber.toUpperCase());
 employee.setEmployeeId(emp.getEmployeeId());
 employee.setName(emp.getName());
 designation=emp.getDesignation();
@@ -424,12 +424,12 @@ public EmployeeInterface getEmployeeByAadharCardNumber(String aadharCardNumber) 
 BLException blException=new BLException();
 if(aadharCardNumber==null) blException.addPropertyException("aadharCardNumber","Aadhar number required.");
 else if((aadharCardNumber=aadharCardNumber.trim()).length()==0) blException.addPropertyException("aadharCardNumber","Aadhar card number required.");
-else if(aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber)==false) blException.addPropertyException("aadharCardNumber","Aadhar card number does not exists.");
+else if(aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber.toUpperCase())==false) blException.addPropertyException("aadharCardNumber","Aadhar card number does not exists.");
 if(blException.hasExceptions()) throw blException;
 DesignationInterface designation;
 DesignationInterface cloneDesignation;
 EmployeeInterface employee=new Employee();
-EmployeeInterface emp=this.aadharCardNumberWiseEmployeeMap.get(aadharCardNumber);
+EmployeeInterface emp=this.aadharCardNumberWiseEmployeeMap.get(aadharCardNumber.toUpperCase());
 employee.setEmployeeId(emp.getEmployeeId());
 employee.setName(emp.getName());
 designation=emp.getDesignation();
@@ -452,15 +452,15 @@ return false;
 }
 public boolean employeeEmployeeIdExists(String employeeId)
 {
-return this.employeeIdWiseEmployeeMap.containsKey(employeeId);
+return this.employeeIdWiseEmployeeMap.containsKey(employeeId.toUpperCase());
 }
 public boolean employeePANNumberExists(String panNumber)
 {
-return this.panNumberWiseEmployeeMap.containsKey(panNumber);
+return this.panNumberWiseEmployeeMap.containsKey(panNumber.toUpperCase());
 }
 public boolean employeeAadharCardNumberExists(String aadharCardNumber)
 {
-return this.aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber);
+return this.aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber.toUpperCase());
 }
 public int getEmployeesCount()
 {
