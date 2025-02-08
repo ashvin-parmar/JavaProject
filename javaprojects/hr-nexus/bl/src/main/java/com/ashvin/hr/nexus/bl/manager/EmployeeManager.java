@@ -53,9 +53,9 @@ employee.setBasicSalary(dlEmployee.getBasicSalary());
 employee.setPANNumber(dlEmployee.getPANNumber());
 employee.setAadharCardNumber(dlEmployee.getAadharCardNumber());
 
-employeeIdWiseEmployeeMap.put(employee.getEmployeeId(),employee);
-panNumberWiseEmployeeMap.put(employee.getPANNumber(),employee);
-aadharCardNumberWiseEmployeeMap.put(employee.getAadharCardNumber(),employee);
+employeeIdWiseEmployeeMap.put(employee.getEmployeeId().toUpperCase(),employee);
+panNumberWiseEmployeeMap.put(employee.getPANNumber().toUpperCase(),employee);
+aadharCardNumberWiseEmployeeMap.put(employee.getAadharCardNumber().toUpperCase(),employee);
 if(designationCodeWiseEmployeeMap.containsKey(dlEmployee.getDesignationCode()))
 {
 list=designationCodeWiseEmployeeMap.get(dlEmployee.getDesignationCode());

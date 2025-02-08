@@ -19,9 +19,11 @@ return ;
 }
 EmployeeInterface employee=new Employee();
 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+DesignationInterface designation=new Designation();
 employee.setEmployeeId(gg[0]);
 employee.setName(gg[1]);
-employee.setDesignationCode(Integer.parseInt(gg[2]));
+designation.setCode(Integer.parseInt(gg[2]));
+employee.setDesignation(designation);
 try
 {
 employee.setDateOfBirth(simpleDateFormat.parse(gg[3]));

@@ -15,11 +15,14 @@ try
 {
 Set<EmployeeInterface> employees=EmployeeManager.getEmployeeManager().getEmployees();
 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+DesignationInterface designation;
 for(EmployeeInterface employee:employees)
 {
 System.out.println("Employee id: "+employee.getEmployeeId());
 System.out.println("Name: "+employee.getName());
-System.out.println("Designation Code: "+employee.getDesignationCode());
+designation=employee.getDesignation();
+System.out.println("Designation Code: "+designation.getCode());
+System.out.println("Designation Title: "+designation.getTitle());
 System.out.println("Date of birth: "+simpleDateFormat.format(employee.getDateOfBirth()));
 System.out.println("Gender: "+(employee.getGender()=='M'?"Male":"Female"));
 System.out.println("Is Indian: "+(employee.getIsIndian()?"Yes":"No"));
