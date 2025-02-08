@@ -8,7 +8,7 @@ public class Employee implements EmployeeInterface
 {
 private String employeeId;
 private String name;
-private int designationCode;
+private DesignationInterface designation;
 private Date dateOfBirth;
 private char gender;
 private boolean isIndian;
@@ -19,7 +19,7 @@ public Employee()
 {
 this.employeeId="";
 this.name="";
-this.designationCode=0;
+this.designation=null;
 this.dateOfBirth=null;
 this.gender=' ';
 this.isIndian=false;
@@ -43,13 +43,13 @@ public java.lang.String getName()
 {
 return this.name;
 }
-public void setDesignationCode(int designationCode)
+public void setDesignation(DesignationInterface designation)
 {
-this.designationCode=designationCode;
+this.designation=designation;
 }
-public int getDesignationCode()
+public DesignationInterface getDesignation()
 {
-return this.designationCode;
+return this.designation;
 }
 public void setDateOfBirth(java.util.Date dateOfBirth)
 {

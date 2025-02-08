@@ -20,7 +20,7 @@ public class EmployeeManager implements EmployeeManagerInterface
 private Map<String,EmployeeInterface> employeeIdWiseEmployeeMap;
 private Map<String,EmployeeInterface> panNumberWiseEmployeeMap;
 private Map<String,EmployeeInterface> aadharCardNumberWiseEmployeeMap;
-private Map<Integer,Set<EmployeeInterface>> designationCodeWiseEmployeeMap;
+//private Map<Integer,Set<EmployeeInterface>> designationCodeWiseEmployeeMap;
 private Set<EmployeeInterface> employeeSet;
 private static EmployeeManager employeeManager;
 private EmployeeManager() throws BLException
@@ -32,7 +32,7 @@ private void populateDataStrcutures() throws BLException
 employeeIdWiseEmployeeMap=new HashMap<String,EmployeeInterface>();
 panNumberWiseEmployeeMap=new HashMap<String,EmployeeInterface>();
 aadharCardNumberWiseEmployeeMap=new HashMap<String,EmployeeInterface>();
-designationCodeWiseEmployeeMap=new HashMap<Integer,Set<EmployeeInterface>>();
+//designationCodeWiseEmployeeMap=new HashMap<Integer,Set<EmployeeInterface>>();
 employeeSet=new TreeSet<EmployeeInterface>();
 try
 {
@@ -45,7 +45,7 @@ for(EmployeeDTOInterface dlEmployee:dlEmployees)
 EmployeeInterface employee=new Employee();
 employee.setEmployeeId(dlEmployee.getEmployeeId());
 employee.setName(dlEmployee.getName());
-employee.setDesignationCode(dlEmployee.getDesignationCode());
+employee.setDesignation(((DesignationManager)(DesignationManager.getDesignationManager())).getDSDesignationByCode(dlEmployee.getDesignationCode()));
 employee.setDateOfBirth(dlEmployee.getDateOfBirth());
 employee.setGender(dlEmployee.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
 employee.setIsIndian(dlEmployee.isIndian());
@@ -56,6 +56,7 @@ employee.setAadharCardNumber(dlEmployee.getAadharCardNumber());
 employeeIdWiseEmployeeMap.put(employee.getEmployeeId(),employee);
 panNumberWiseEmployeeMap.put(employee.getPANNumber(),employee);
 aadharCardNumberWiseEmployeeMap.put(employee.getAadharCardNumber(),employee);
+/*
 if(designationCodeWiseEmployeeMap.containsKey(employee.getDesignationCode()))
 {
 list=designationCodeWiseEmployeeMap.get(employee.getDesignationCode());
@@ -66,6 +67,7 @@ list=new TreeSet<>();
 }
 list.add(employee);
 designationCodeWiseEmployeeMap.put(employee.getDesignationCode(),list);
+*/
 employeeSet.add(employee);
 }
 }catch(DAOException daoException)
@@ -96,9 +98,18 @@ if((employeeId=employeeId.trim()).length()!=0) blException.addPropertyException(
 String name=employee.getName();
 if(name==null) blException.addPropertyException("name","Name required");
 else if((name=name.trim()).length()==0) blException.addPropertyException("name","Name required");
-int designationCode=employee.getDesignationCode();
+DesignationInterface designation=employee.getDesignation();
+int designationCode=0;
+if(designation==null)
+{
+blException.addPropertyException("designation","Designation required");
+}
+else
+{
+designationCode=designation.getCode();
 if(designationCode<=0) blException.addPropertyException("designationCode","Designation code should not be negative or zero.");
-else if((DesignationManager.getDesignationManager()).designationCodeExists(designationCode)==false) blException.addPropertyException("designationCode","Invalid designation code.");
+else if((DesignationManager.getDesignationManager()).designationCodeExists(designationCode)==false) blException.addPropertyException("designationCode","Invalid designation code: "+designationCode);
+}
 Date dateOfBirth=employee.getDateOfBirth();
 if(dateOfBirth==null) blException.addPropertyException("dateOfBirth","Date of birth required");
 char gender=employee.getGender();
@@ -134,10 +145,11 @@ employeeId=dlEmployee.getEmployeeId();
 employee.setEmployeeId(employeeId);	//Add in employee
 //if added in Data Layer
 
+DesignationInterface fDesignation=((DesignationManager)(DesignationManager.getDesignationManager())).getDSDesignationByCode(designationCode);
 EmployeeInterface blEmployee=new Employee();
 blEmployee.setEmployeeId(employeeId);
 blEmployee.setName(name);
-blEmployee.setDesignationCode(designationCode);
+blEmployee.setDesignation(fDesignation);
 blEmployee.setDateOfBirth(dateOfBirth);
 blEmployee.setGender(gender=='M'?GENDER.MALE:GENDER.FEMALE);
 blEmployee.setIsIndian(isIndian);
@@ -149,13 +161,13 @@ employeeIdWiseEmployeeMap.put(employeeId,blEmployee);
 panNumberWiseEmployeeMap.put(panNumber,blEmployee);
 aadharCardNumberWiseEmployeeMap.put(aadharCardNumber,blEmployee);
 Set<EmployeeInterface> list;
-list=designationCodeWiseEmployeeMap.get(designationCode);
-if(list==null)
-{
-list=new TreeSet<>();
-}
-list.add(blEmployee);
-designationCodeWiseEmployeeMap.put(designationCode,list);
+//list=designationCodeWiseEmployeeMap.get(designationCode);
+//if(list==null)
+//{
+//list=new TreeSet<>();
+//}
+//list.add(blEmployee);
+//designationCodeWiseEmployeeMap.put(designationCode,list);
 employeeSet.add(blEmployee);
 }catch(DAOException daoException)
 {
@@ -178,9 +190,18 @@ else if(employeeIdWiseEmployeeMap.containsKey(employeeId)==false) blException.ad
 String name=employee.getName();
 if(name==null) blException.addPropertyException("name","Name required");
 else if((name=name.trim()).length()==0) blException.addPropertyException("name","Name required");
-int designationCode=employee.getDesignationCode();
+DesignationInterface designation=employee.getDesignation();
+int designationCode=0;
+if(designation==null)
+{
+blException.addPropertyException("designation","Designation required");
+}
+else
+{
+designationCode=designation.getCode();
 if(designationCode<=0) blException.addPropertyException("designationCode","Designation code should not be negative or zero.");
-else if((DesignationManager.getDesignationManager()).designationCodeExists(designationCode)==false) blException.addPropertyException("designationCode","Invalid designation code.");
+else if((DesignationManager.getDesignationManager()).designationCodeExists(designationCode)==false) blException.addPropertyException("designationCode","Invalid designation code: "+designationCode);
+}
 Date dateOfBirth=employee.getDateOfBirth();
 if(dateOfBirth==null) blException.addPropertyException("dateOfBirth","Date of birth required");
 char gender=employee.getGender();
@@ -215,22 +236,22 @@ dlEmployee.setAadharCardNumber(aadharCardNumber);
 //update in Data Layer
 (new EmployeeDAO()).update(dlEmployee);
 //if updated in Data Layer
-
 Set<EmployeeInterface> list;
 //Remove from D.S.
 fEmployee=employeeIdWiseEmployeeMap.get(employeeId);
 employeeIdWiseEmployeeMap.remove(employeeId);
 panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber());
 aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber());
-list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
-list.remove(fEmployee);
+//list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
+//list.remove(fEmployee);
 employeeSet.remove(fEmployee);
 
 //Add new in D.S.
+DesignationInterface fDesignation=((DesignationManager)(DesignationManager.getDesignationManager())).getDSDesignationByCode(designationCode);
 EmployeeInterface blEmployee=new Employee();
 blEmployee.setEmployeeId(employeeId);
 blEmployee.setName(name);
-blEmployee.setDesignationCode(designationCode);
+blEmployee.setDesignation(fDesignation);
 blEmployee.setDateOfBirth(dateOfBirth);
 blEmployee.setGender(gender=='M'?GENDER.MALE:GENDER.FEMALE);
 blEmployee.setIsIndian(isIndian);
@@ -241,13 +262,13 @@ blEmployee.setAadharCardNumber(aadharCardNumber);
 employeeIdWiseEmployeeMap.put(employeeId,blEmployee);
 panNumberWiseEmployeeMap.put(panNumber,blEmployee);
 aadharCardNumberWiseEmployeeMap.put(aadharCardNumber,blEmployee);
-list=designationCodeWiseEmployeeMap.get(designationCode);
-if(list==null)
-{
-list=new TreeSet<>();
-}
-list.add(blEmployee);
-designationCodeWiseEmployeeMap.put(designationCode,list);
+//list=designationCodeWiseEmployeeMap.get(designationCode);
+//if(list==null)
+//{
+//list=new TreeSet<>();
+//}
+//list.add(blEmployee);
+//designationCodeWiseEmployeeMap.put(designationCode,list);
 employeeSet.add(blEmployee);
 }catch(DAOException daoException)
 {
@@ -275,8 +296,8 @@ fEmployee=employeeIdWiseEmployeeMap.get(employeeId);
 employeeIdWiseEmployeeMap.remove(employeeId);
 panNumberWiseEmployeeMap.remove(fEmployee.getPANNumber());
 aadharCardNumberWiseEmployeeMap.remove(fEmployee.getAadharCardNumber());
-list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
-list.remove(fEmployee);
+//list=designationCodeWiseEmployeeMap.get(fEmployee.getDesignationCode());
+//list.remove(fEmployee);
 employeeSet.remove(fEmployee);
 }catch(DAOException daoException)
 {
@@ -289,12 +310,18 @@ public Set<EmployeeInterface> getEmployees()
 Set<EmployeeInterface> employees;
 employees=new TreeSet<>();
 EmployeeInterface employee;
+DesignationInterface designation;
+DesignationInterface cloneDesignation;
 for(EmployeeInterface emp:this.employeeSet)
 {
 employee=new Employee();
 employee.setEmployeeId(emp.getEmployeeId());
 employee.setName(emp.getName());
-employee.setDesignationCode(emp.getDesignationCode());
+designation=emp.getDesignation();
+cloneDesignation=new Designation();
+cloneDesignation.setCode(designation.getCode());
+cloneDesignation.setTitle(designation.getTitle());
+employee.setDesignation(cloneDesignation);
 employee.setDateOfBirth(emp.getDateOfBirth());
 employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
 employee.setIsIndian(emp.getIsIndian());
@@ -313,15 +340,22 @@ else if((DesignationManager.getDesignationManager()).designationCodeExists(desig
 if(blException.hasExceptions()) throw blException;
 Set<EmployeeInterface> employees;
 employees=new TreeSet<>();
+/*
 EmployeeInterface employee;
 Set<EmployeeInterface> list=this.designationCodeWiseEmployeeMap.get(designationCode);
 if(list==null) return employees;
+DesignationInterface designation;
+DesignationInterface cloneDesignation;
 for(EmployeeInterface emp:list)
 {
 employee=new Employee();
 employee.setEmployeeId(emp.getEmployeeId());
 employee.setName(emp.getName());
-employee.setDesignationCode(emp.getDesignationCode());
+designation=emp.getDesignation();
+cloneDesignation=new Designation();
+cloneDesignation.setCode(designation.getCode());
+cloneDesignation.setTitle(designation.getTitle());
+employee.setDesignation(cloneDesignation);
 employee.setDateOfBirth(emp.getDateOfBirth());
 employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
 employee.setIsIndian(emp.getIsIndian());
@@ -330,6 +364,7 @@ employee.setPANNumber(emp.getPANNumber());
 employee.setAadharCardNumber(emp.getAadharCardNumber());
 employees.add(employee);
 }
+*/
 return employees;
 }
 public EmployeeInterface getEmployeeByEmployeeId(String employeeId) throws BLException
@@ -339,11 +374,17 @@ if(employeeId==null) blException.addPropertyException("employeeId","Employee Id 
 else if((employeeId=employeeId.trim()).length()==0) blException.addPropertyException("employeeId","Employee Id required");
 else if(employeeIdWiseEmployeeMap.containsKey(employeeId)==false) blException.addPropertyException("employeeId","Invalid employee id: "+employeeId);
 if(blException.hasExceptions()) throw blException;
+DesignationInterface designation;
+DesignationInterface cloneDesignation;
 EmployeeInterface employee=new Employee();
 EmployeeInterface emp=this.employeeIdWiseEmployeeMap.get(employeeId);
 employee.setEmployeeId(emp.getEmployeeId());
 employee.setName(emp.getName());
-employee.setDesignationCode(emp.getDesignationCode());
+designation=emp.getDesignation();
+cloneDesignation=new Designation();
+cloneDesignation.setCode(designation.getCode());
+cloneDesignation.setTitle(designation.getTitle());
+employee.setDesignation(cloneDesignation);
 employee.setDateOfBirth(emp.getDateOfBirth());
 employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
 employee.setIsIndian(emp.getIsIndian());
@@ -359,11 +400,17 @@ if(panNumber==null) blException.addPropertyException("panNumber","PAN number req
 else if((panNumber=panNumber.trim()).length()==0) blException.addPropertyException("panNumber","PAN number required.");
 else if(panNumberWiseEmployeeMap.containsKey(panNumber)==false) blException.addPropertyException("panNumber","PAN number does not exists.");
 if(blException.hasExceptions()) throw blException;
+DesignationInterface designation;
+DesignationInterface cloneDesignation;
 EmployeeInterface employee=new Employee();
 EmployeeInterface emp=this.panNumberWiseEmployeeMap.get(panNumber);
 employee.setEmployeeId(emp.getEmployeeId());
 employee.setName(emp.getName());
-employee.setDesignationCode(emp.getDesignationCode());
+designation=emp.getDesignation();
+cloneDesignation=new Designation();
+cloneDesignation.setCode(designation.getCode());
+cloneDesignation.setTitle(designation.getTitle());
+employee.setDesignation(cloneDesignation);
 employee.setDateOfBirth(emp.getDateOfBirth());
 employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
 employee.setIsIndian(emp.getIsIndian());
@@ -379,11 +426,17 @@ if(aadharCardNumber==null) blException.addPropertyException("aadharCardNumber","
 else if((aadharCardNumber=aadharCardNumber.trim()).length()==0) blException.addPropertyException("aadharCardNumber","Aadhar card number required.");
 else if(aadharCardNumberWiseEmployeeMap.containsKey(aadharCardNumber)==false) blException.addPropertyException("aadharCardNumber","Aadhar card number does not exists.");
 if(blException.hasExceptions()) throw blException;
+DesignationInterface designation;
+DesignationInterface cloneDesignation;
 EmployeeInterface employee=new Employee();
 EmployeeInterface emp=this.aadharCardNumberWiseEmployeeMap.get(aadharCardNumber);
 employee.setEmployeeId(emp.getEmployeeId());
 employee.setName(emp.getName());
-employee.setDesignationCode(emp.getDesignationCode());
+designation=emp.getDesignation();
+cloneDesignation=new Designation();
+cloneDesignation.setCode(designation.getCode());
+cloneDesignation.setTitle(designation.getTitle());
+employee.setDesignation(cloneDesignation);
 employee.setDateOfBirth(emp.getDateOfBirth());
 employee.setGender(emp.getGender()=='M'?GENDER.MALE:GENDER.FEMALE);
 employee.setIsIndian(emp.getIsIndian());
@@ -394,7 +447,8 @@ return employee;
 }
 public boolean employeeDesignationCodeAlloted(int designationCode) throws BLException
 {
-return this.designationCodeWiseEmployeeMap.containsKey(designationCode);
+return false;
+//return this.designationCodeWiseEmployeeMap.containsKey(designationCode);
 }
 public boolean employeeEmployeeIdExists(String employeeId)
 {
@@ -414,8 +468,11 @@ return this.employeeSet.size();
 }
 public int getEmployeesDesignationCodeCount(int designationCode) throws BLException
 {
+/*
 Set<EmployeeInterface> list=this.designationCodeWiseEmployeeMap.get(designationCode);
 if(list==null) return 0;
 return list.size();
+*/
+return 0;
 }
 }
