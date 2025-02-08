@@ -34,7 +34,7 @@ for(DesignationDTOInterface dlDesignation:dlDesignations)
 designation=new Designation();
 designation.setCode(dlDesignation.getCode());
 designation.setTitle(dlDesignation.getTitle());
-this.codeWiseDesignationMap.put(new Integer(designation.getCode()),designation);
+this.codeWiseDesignationMap.put((designation.getCode()),designation);
 this.titleWiseDesignationMap.put(designation.getTitle().toUpperCase(),designation);
 this.designationSet.add(designation);
 }
@@ -85,7 +85,7 @@ designation.setCode(code);
 DesignationInterface blDesignation=new Designation();
 blDesignation.setCode(code);
 blDesignation.setTitle(designation.getTitle());
-this.codeWiseDesignationMap.put(new Integer(blDesignation.getCode()),blDesignation);
+this.codeWiseDesignationMap.put((blDesignation.getCode()),blDesignation);
 this.titleWiseDesignationMap.put(blDesignation.getTitle().toUpperCase(),blDesignation);
 this.designationSet.add(blDesignation);
 }catch(DAOException daoException)
@@ -149,6 +149,9 @@ if(code<=0) blException.addPropertyException("code","Code should not be negative
 else if(this.codeWiseDesignationMap.containsKey(code)==false)
 {
 blException.addPropertyException("code","Invalid code: "+code);
+}else if(EmployeeManager.getEmployeeManager().employeeDesignationCodeAlloted(code)==true)
+{
+blException.addPropertyException("code","Code "+code+" has been alloted to employee, Can't remove.");
 }
 if(blException.hasExceptions()) throw blException;
 try

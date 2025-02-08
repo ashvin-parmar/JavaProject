@@ -443,6 +443,12 @@ return employee;
 }
 public boolean employeeDesignationCodeAlloted(int designationCode) throws BLException
 {
+if(designationCode<=0 || DesignationManager.getDesignationManager().designationCodeExists(designationCode)==false)
+{
+BLException blException=new BLException();
+blException.addPropertyException("designationCode","Invalid designation code: "+designationCode);
+throw blException;
+}
 return this.designationCodeWiseEmployeeMap.containsKey(designationCode);
 }
 public boolean employeeEmployeeIdExists(String employeeId)
@@ -464,7 +470,12 @@ return this.employeeSet.size();
 public int getEmployeesDesignationCodeCount(int designationCode) throws BLException
 {
 Set<EmployeeInterface> list=this.designationCodeWiseEmployeeMap.get(designationCode);
-if(list==null) return 0;
+if(list==null)
+{
+BLException blException=new BLException();
+blException.addPropertyException("designationCode","Invalid designation code: "+designationCode);
+throw blException;
+}
 return list.size();
 }
 }
