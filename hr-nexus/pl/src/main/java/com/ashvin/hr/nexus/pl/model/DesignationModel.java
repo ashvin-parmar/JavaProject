@@ -11,13 +11,14 @@ import javax.swing.table.*;
 
 public class DesignationModel extends AbstractTableModel
 {
-private List<DesignationInterface> designations;
+private List<DesignationInterface> designations;		//Wrong DS
 private String columnTitles[];
 private DesignationManagerInterface designationManager;
 public DesignationModel()
 {
 populateDataStructure();
 }
+//Model Specific Methods
 public int getColumnCount()
 {
 return columnTitles.length;
@@ -45,6 +46,7 @@ if(columnIndex==0) return rowIndex+1;
 return designations.get(rowIndex).getTitle(); 
 }
 
+//private methods for internal uses
 private void populateDataStructure()
 {
 columnTitles=new String[2];
@@ -68,4 +70,83 @@ for(DesignationInterface designation:blDesignations)
 designations.add(designation);
 }
 }
+
+//Project Specific Methods
+public void add(DesignationInterface designation) throws BLException
+{
+designationManager.addDesignation(designation);
+designations.add(designation);
+//Sorting
+
+}
+public int indexOfDesignation(DesignationInterface designation) throws BLException
+{
+Iterator<DesignationInterface> iterator=designations.iterator();
+DesignationInterface d;
+int index=0;
+while(iterator.hasNext())
+{
+d=iterator.next();
+if(d.equals(designation))
+{
+return index;
+}
+index++;
+}
+BLException blException=new BLException();
+blException.setGenericException("Invalid designation: "+designation.getTitle());
+throw blException;
+}
+public int indexOfTitle(String title,boolean isPartial) throws BLException
+{
+Iterator<DesignationInterface> iterator=designations.iterator();
+DesignationInterface d;
+int index=0;
+while(iterator.hasNext())
+{
+d=iterator.next();
+if(isPartial)
+{
+if(d.getTitle().toUpperCase().startsWith(title.toUpperCase()))
+{
+return index;
+}
+}
+else
+{
+if(d.getTitle().equalsIgnoreCase(title))
+{
+return index;
+}
+}
+index++;
+}
+BLException blException=new BLException();
+blException.setGenericException("Invalid designation: "+title);
+throw blException;
+}
+public void update(DesignationInterface designation) throws BLException
+{
+designationManager.updateDesignation(designation);
+designations.remove(designation);
+designations.add(designation);
+//Sorting
+
+}
+public void delete(int code) throws BLException
+{
+designationManager.removeDesignation(code);
+DesignationInterface d;
+Iterator<DesignationInterface> iterator=designations.iterator();
+while(iterator.hasNext())
+{
+d=iterator.next();
+if(d.getCode()==code)
+{
+designations.remove(d);
+break;
+}
+}
+}
+
 }
