@@ -89,6 +89,7 @@ public int compare(DesignationInterface left,DesignationInterface right)
 return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
 }
 });
+fireTableDataChanged();
 }
 public int indexOfDesignation(DesignationInterface designation) throws BLException
 {
@@ -139,7 +140,7 @@ throw blException;
 public void update(DesignationInterface designation) throws BLException
 {
 designationManager.updateDesignation(designation);
-designations.remove(designation);
+designations.remove(indexOfDesignation(designation));
 designations.add(designation);
 //Sorting
 Collections.sort(designations,new Comparator<DesignationInterface>(){
@@ -148,21 +149,30 @@ public int compare(DesignationInterface left,DesignationInterface right)
 return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
 }
 });
+fireTableDataChanged();
 }
 public void delete(int code) throws BLException
 {
 designationManager.removeDesignation(code);
 DesignationInterface d;
 Iterator<DesignationInterface> iterator=designations.iterator();
+boolean flag=false;
 while(iterator.hasNext())
 {
 d=iterator.next();
 if(d.getCode()==code)
 {
-designations.remove(d);
+designations.remove(indexOfDesignation(d));
+flag=true;
 break;
 }
 }
+if(!flag)
+{
+BLException blException=new BLException();
+blException.setGenericException("Invalid code: "+code);
+throw blException;
 }
-
+fireTableDataChanged();
+}
 }
