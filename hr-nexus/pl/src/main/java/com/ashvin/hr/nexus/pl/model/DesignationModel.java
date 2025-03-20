@@ -69,6 +69,12 @@ for(DesignationInterface designation:blDesignations)
 {
 designations.add(designation);
 }
+Collections.sort(designations,new Comparator<DesignationInterface>(){
+public int compare(DesignationInterface left,DesignationInterface right)
+{
+return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
+}
+});
 }
 
 //Project Specific Methods
@@ -77,7 +83,12 @@ public void add(DesignationInterface designation) throws BLException
 designationManager.addDesignation(designation);
 designations.add(designation);
 //Sorting
-
+Collections.sort(designations,new Comparator<DesignationInterface>(){
+public int compare(DesignationInterface left,DesignationInterface right)
+{
+return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
+}
+});
 }
 public int indexOfDesignation(DesignationInterface designation) throws BLException
 {
@@ -131,7 +142,12 @@ designationManager.updateDesignation(designation);
 designations.remove(designation);
 designations.add(designation);
 //Sorting
-
+Collections.sort(designations,new Comparator<DesignationInterface>(){
+public int compare(DesignationInterface left,DesignationInterface right)
+{
+return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
+}
+});
 }
 public void delete(int code) throws BLException
 {

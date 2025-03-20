@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.*;
-
+import java.awt.event.*;
 
 class HRNexusUI extends JFrame
 {
@@ -110,7 +110,13 @@ setDefaultCloseOperation(EXIT_ON_CLOSE);
 }
 private void addActions()
 {
-
+search.addActionListener(new ActionListener()
+{
+public void actionPerformed(ActionEvent event)
+{
+System.out.printf("Action Performed");
+}
+});
 }
 }
 class testUI
