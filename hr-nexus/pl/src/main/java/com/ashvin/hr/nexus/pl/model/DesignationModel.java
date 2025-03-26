@@ -175,4 +175,14 @@ throw blException;
 }
 fireTableDataChanged();
 }
+public DesignationInterface getDesignationAt(int index) throws BLException
+{
+if(index<0 || index>=designations.size())
+{
+BLException blException=new BLException();
+blException.setGenericException("Invalid index "+index);
+throw blException;
+}
+return designations.get(index);
+}
 }
