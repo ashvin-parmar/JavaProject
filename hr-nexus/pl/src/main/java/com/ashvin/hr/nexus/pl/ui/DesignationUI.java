@@ -19,18 +19,20 @@ private JLabel searchErrorLabel;
 private JLabel searchLabel;
 private JTextField searchTextField;
 private JButton clearSearchButton;
-
-
 private JTable designationTable;
 private JScrollPane jsp;
 private DesignationModel designationModel;
 private DesignationPanel designationPanel;
 private Container container;
+private enum MODE{VIEW,ADD,EDIT,DELETE,EXPORT_TO_PDF};
+private MODE mode;
 public DesignationUI()
 {
 initComponents();
 setAppearance();
 addListeners();
+setViewMode();
+designationPanel.setViewMode();
 }
 private void initComponents()
 {
@@ -162,6 +164,51 @@ designationPanel.setDesignation(designation);
 designationPanel.clearDesignation();
 }
 }
+private void setViewMode()
+{
+this.mode=MODE.VIEW;
+if(designationModel.getRowCount()==0)
+{
+searchTextField.setEnabled(false);
+clearSearchButton.setEnabled(false);
+designationTable.setEnabled(false);
+}
+else
+{
+searchTextField.setEnabled(true);
+clearSearchButton.setEnabled(true);
+designationTable.setEnabled(true);
+}
+}
+private void setAddMode()
+{
+this.mode=MODE.ADD;
+searchTextField.setEnabled(false);
+clearSearchButton.setEnabled(false);
+designationTable.setEnabled(false);
+}
+private void setEditMode()
+{
+this.mode=MODE.EDIT;
+searchTextField.setEnabled(false);
+clearSearchButton.setEnabled(false);
+designationTable.setEnabled(false);
+}
+private void setDeleteMode()
+{
+this.mode=MODE.DELETE;
+searchTextField.setEnabled(false);
+clearSearchButton.setEnabled(false);
+designationTable.setEnabled(false);
+}
+private void setExportToPDFMode()
+{
+this.mode=MODE.EXPORT_TO_PDF;
+searchTextField.setEnabled(false);
+clearSearchButton.setEnabled(false);
+designationTable.setEnabled(false);
+}
+//inner_class
 class DesignationPanel extends JPanel
 {
 private JLabel titleDesignationLabel;
@@ -210,8 +257,8 @@ int lm=0;
 int tm=0;
 titleDesignationLabel.setBounds(lm+10,tm+20,110,30);
 titleLabel.setBounds(lm+110+10+10,tm+20,350,30);
-titleTextField.setBounds(lm+10+110+10,tm+20,350,30);
-clearTitleTextFieldButton.setBounds(lm+10+110+10+350+10-50,tm+20,30,30);
+titleTextField.setBounds(lm+10+110+10,tm+20,300,30);
+clearTitleTextFieldButton.setBounds(lm+10+110+10+300+10-50,tm+20,30,30);
 buttonsPanel.setBounds(10,tm+20+30+30-5,460,75);
 buttonsPanel.setBorder(BorderFactory.createLineBorder(new Color(170,170,170)));
 addButton.setBounds(70,12,50,50);
@@ -242,59 +289,66 @@ private void addListeners()
 addButton.addActionListener(new ActionListener(){
 public void actionPerformed(ActionEvent ev)
 {
-saveButton.setBounds(70,12,50,50);
-addButton.setVisible(false);
-saveButton.setVisible(true);
-titleTextField.setText("");
-titleTextField.setVisible(true);
-titleLabel.setVisible(false);
-
+if(DesignationUI.this.mode==MODE.VIEW)
+{
+setAddMode();
+}
+else
+{
+addDesignation();
+setViewMode();
+}
 }
 });
-saveButton.addActionListener(new ActionListener(){
+editButton.addActionListener(new ActionListener(){
 public void actionPerformed(ActionEvent ev)
 {
-if(!addButton.isVisible())
+if(DesignationUI.this.mode==MODE.VIEW)
 {
-saveButton.setVisible(false);
-addButton.setVisible(true);
-String title=titleTextField.getText().trim();
-titleTextField.setVisible(false);
-titleLabel.setVisible(true);
-titleTextField.setText("");
-DesignationInterface d=new Designation();
-d.setTitle(title);
-try
-{
-designationModel.add(d);
-}catch(BLException blException)
-{
-//Some message
+setEditMode();
 }
-}
-if(!editButton.isVisible())
+else
 {
-
+updateDesignation();
+setViewMode();
 }
 }
 });
 cancelButton.addActionListener(new ActionListener(){
 public void actionPerformed(ActionEvent ev)
 {
-titleTextField.setVisible(false);
-titleTextField.setText("");
-titleLabel.setVisible(true);
-saveButton.setVisible(false);
-if(!addButton.isVisible())
-{
-addButton.setVisible(true);
-}
-if(!editButton.isVisible())
-{
-editButton.setVisible(true);
-}
+setViewMode();
 }
 });
+}
+public void addDesignation()
+{
+String title=titleTextField.getText().trim();
+DesignationInterface d=new Designation();
+d.setTitle(title);
+try
+{
+designationModel.add(d);
+designation=d;
+}catch(BLException blException)
+{
+//Some message
+}
+}
+public void updateDesignation()
+{
+String newTitle=titleTextField.getText().trim();
+DesignationInterface d=new Designation();
+d.setTitle(newTitle);
+d.setCode(designation.getCode());
+try
+{
+designationModel.update(d);
+designation=d;
+}catch(BLException blException)
+{
+//Some message
+}
 }
 public void setDesignation(DesignationInterface designation)
 {
@@ -305,6 +359,83 @@ public void clearDesignation()
 {
 titleLabel.setText("");
 this.designation=null;
+}
+private void setViewMode()
+{
+DesignationUI.this.setViewMode();
+this.titleTextField.setVisible(false);
+this.titleLabel.setVisible(true);
+this.addButton.setEnabled(true);
+this.cancelButton.setEnabled(false);
+this.clearTitleTextFieldButton.setVisible(false);
+this.addButton.setText("A");
+this.editButton.setText("E");
+if(designationModel.getRowCount()>0)
+{
+this.editButton.setEnabled(true);
+this.deleteButton.setEnabled(true);
+this.exportToPDFButton.setEnabled(true);
+}
+else
+{
+this.editButton.setEnabled(false);
+this.deleteButton.setEnabled(false);
+this.exportToPDFButton.setEnabled(false);
+}
+}
+private void setAddMode()
+{
+DesignationUI.this.setAddMode();
+this.titleTextField.setText("");
+this.titleLabel.setVisible(false);
+this.titleTextField.setVisible(true);
+this.clearTitleTextFieldButton.setVisible(true);
+this.addButton.setText("S");
+this.cancelButton.setEnabled(true);
+this.editButton.setEnabled(false);
+this.deleteButton.setEnabled(false);
+this.exportToPDFButton.setEnabled(false);
+}
+private void setEditMode()
+{
+if(designationTable.getSelectedRow()<0 || designationTable.getSelectedRow()>=designationTable.getRowCount())
+{
+JOptionPane.showMessageDialog(this,"Select designation to edit");
+return;
+}
+DesignationUI.this.setEditMode();
+if(designation!=null) this.titleTextField.setText(designation.getTitle());
+this.titleLabel.setVisible(false);
+this.titleTextField.setVisible(true);
+this.clearTitleTextFieldButton.setVisible(true);
+this.editButton.setText("U");
+this.cancelButton.setEnabled(true);
+this.addButton.setEnabled(false);
+this.deleteButton.setEnabled(false);
+this.exportToPDFButton.setEnabled(false);
+}
+private void setDeleteMode()
+{
+if(designationTable.getSelectedRow()<0 || designationTable.getSelectedRow()>=designationTable.getRowCount())
+{
+JOptionPane.showMessageDialog(this,"Select designation to edit");
+return;
+}
+DesignationUI.this.setDeleteMode();
+this.deleteButton.setText("D");
+this.cancelButton.setEnabled(true);
+this.addButton.setEnabled(false);
+this.editButton.setEnabled(false);
+this.exportToPDFButton.setEnabled(false);
+}
+private void setExportToPDFMode()
+{
+DesignationUI.this.setExportToPDFMode();
+this.exportToPDFButton.setText("<\\>");
+this.cancelButton.setEnabled(true);
+this.addButton.setEnabled(false);
+this.editButton.setEnabled(false);
+this.deleteButton.setEnabled(false);
 }
 }
 }
