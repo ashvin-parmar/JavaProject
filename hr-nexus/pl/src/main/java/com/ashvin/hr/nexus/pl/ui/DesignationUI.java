@@ -11,6 +11,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
+import java.util.*;
 
 public class DesignationUI extends JFrame implements DocumentListener,ListSelectionListener
 {
@@ -258,7 +259,7 @@ int tm=0;
 titleDesignationLabel.setBounds(lm+10,tm+20,110,30);
 titleLabel.setBounds(lm+110+10+10,tm+20,350,30);
 titleTextField.setBounds(lm+10+110+10,tm+20,300,30);
-clearTitleTextFieldButton.setBounds(lm+10+110+10+300+10-50,tm+20,30,30);
+clearTitleTextFieldButton.setBounds(lm+10+110+10+300+10,tm+20,30,30);
 buttonsPanel.setBounds(10,tm+20+30+30-5,460,75);
 buttonsPanel.setBorder(BorderFactory.createLineBorder(new Color(170,170,170)));
 addButton.setBounds(70,12,50,50);
@@ -320,6 +321,32 @@ public void actionPerformed(ActionEvent ev)
 setViewMode();
 }
 });
+deleteButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent ev)
+{
+if(DesignationUI.this.mode==MODE.VIEW)
+{
+setDeleteMode();
+}
+else
+{
+deleteDesignation();
+setViewMode();
+}
+}
+});
+exportToPDFButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent ev)
+{
+setViewMode();
+}
+});
+clearTitleTextFieldButton.addActionListener(new ActionListener(){
+public void actionPerformed(ActionEvent ev)
+{
+titleTextField.setText("");
+}
+});
 }
 public void addDesignation()
 {
@@ -329,10 +356,29 @@ d.setTitle(title);
 try
 {
 designationModel.add(d);
-designation=d;
+int rowIndex=designationModel.indexOfTitle(title,false);
+designationTable.setRowSelectionInterval(rowIndex,rowIndex);
+Rectangle visibleRectangle=designationTable.getCellRect(rowIndex,0,true);
+designationTable.scrollRectToVisible(visibleRectangle);
 }catch(BLException blException)
 {
-//Some message
+String exceptionMessage="";
+if(blException.hasExceptions())
+{
+exceptionMessage+=blException.getGenericException()+"\n";
+java.util.List<String> properties=blException.getProperties();
+for(String property:properties)
+{
+String exception=blException.getPropertyException(property);
+exceptionMessage+=(property+": "+exception+"\n");
+//System.out.printf("[%s]:  %s\n",property,blException.getPropertyException(property));
+}
+}
+else
+{
+exceptionMessage="Cannot add designation title\n";
+}
+JOptionPane.showMessageDialog(this,exceptionMessage);
 }
 }
 public void updateDesignation()
@@ -344,11 +390,36 @@ d.setCode(designation.getCode());
 try
 {
 designationModel.update(d);
-designation=d;
+int rowIndex=designationModel.indexOfTitle(newTitle,false);
+designationTable.setRowSelectionInterval(rowIndex,rowIndex);
+Rectangle visibleRectangle=designationTable.getCellRect(rowIndex,0,true);
+designationTable.scrollRectToVisible(visibleRectangle);
 }catch(BLException blException)
 {
-//Some message
+String exceptionMessage="";
+if(blException.hasExceptions())
+{
+exceptionMessage+=blException.getGenericException()+"\n";
+
+java.util.List<String> properties=blException.getProperties();
+for(String property:properties)
+{
+String exception=blException.getPropertyException(property);
+exceptionMessage+=(property+": "+exception+"\n");
+//System.out.printf("[%s]:  %s\n",property,blException.getPropertyException(property));
 }
+
+}
+else
+{
+exceptionMessage="Cannot add designation title\n";
+}
+JOptionPane.showMessageDialog(this,exceptionMessage);
+}
+}
+public void deleteDesignation()
+{
+
 }
 public void setDesignation(DesignationInterface designation)
 {
@@ -407,6 +478,7 @@ DesignationUI.this.setEditMode();
 if(designation!=null) this.titleTextField.setText(designation.getTitle());
 this.titleLabel.setVisible(false);
 this.titleTextField.setVisible(true);
+this.titleTextField.requestFocus();
 this.clearTitleTextFieldButton.setVisible(true);
 this.editButton.setText("U");
 this.cancelButton.setEnabled(true);
