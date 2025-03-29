@@ -242,7 +242,7 @@ addButton=new JButton("A");
 editButton=new JButton("E");
 deleteButton=new JButton("D");
 cancelButton=new JButton("C");
-exportToPDFButton=new JButton("D");
+exportToPDFButton=new JButton("P");
 saveButton=new JButton("S");
 designation=null;
 }
@@ -296,8 +296,7 @@ setAddMode();
 }
 else
 {
-addDesignation();
-setViewMode();
+if(addDesignation()) setViewMode();
 }
 }
 });
@@ -310,8 +309,10 @@ setEditMode();
 }
 else
 {
-updateDesignation();
+if(updateDesignation())
+{
 setViewMode();
+}
 }
 }
 });
@@ -324,20 +325,13 @@ setViewMode();
 deleteButton.addActionListener(new ActionListener(){
 public void actionPerformed(ActionEvent ev)
 {
-if(DesignationUI.this.mode==MODE.VIEW)
-{
 setDeleteMode();
-}
-else
-{
-deleteDesignation();
-setViewMode();
-}
 }
 });
 exportToPDFButton.addActionListener(new ActionListener(){
 public void actionPerformed(ActionEvent ev)
 {
+//Necessary Methdods
 setViewMode();
 }
 });
@@ -345,12 +339,19 @@ clearTitleTextFieldButton.addActionListener(new ActionListener(){
 public void actionPerformed(ActionEvent ev)
 {
 titleTextField.setText("");
+titleTextField.requestFocus();
 }
 });
 }
-public void addDesignation()
+public boolean addDesignation()
 {
 String title=titleTextField.getText().trim();
+if(title.length()==0)
+{
+JOptionPane.showMessageDialog(this,"Designation required");
+titleTextField.requestFocus();
+return false;
+}
 DesignationInterface d=new Designation();
 d.setTitle(title);
 try
@@ -365,13 +366,11 @@ designationTable.scrollRectToVisible(visibleRectangle);
 String exceptionMessage="";
 if(blException.hasExceptions())
 {
-exceptionMessage+=blException.getGenericException()+"\n";
+if(blException.hasGenericException()) exceptionMessage+=blException.getGenericException()+"\n";
 java.util.List<String> properties=blException.getProperties();
 for(String property:properties)
 {
-String exception=blException.getPropertyException(property);
-exceptionMessage+=(property+": "+exception+"\n");
-//System.out.printf("[%s]:  %s\n",property,blException.getPropertyException(property));
+exceptionMessage+=(blException.getPropertyException(property)+"\n");
 }
 }
 else
@@ -379,11 +378,20 @@ else
 exceptionMessage="Cannot add designation title\n";
 }
 JOptionPane.showMessageDialog(this,exceptionMessage);
+titleTextField.requestFocus();
+return false;
 }
+return true;
 }
-public void updateDesignation()
+public boolean updateDesignation()
 {
 String newTitle=titleTextField.getText().trim();
+if(newTitle.length()==0) 
+{
+JOptionPane.showMessageDialog(this,"Designation required");
+titleTextField.requestFocus();
+return false;
+}
 DesignationInterface d=new Designation();
 d.setTitle(newTitle);
 d.setCode(designation.getCode());
@@ -400,26 +408,39 @@ String exceptionMessage="";
 if(blException.hasExceptions())
 {
 exceptionMessage+=blException.getGenericException()+"\n";
-
 java.util.List<String> properties=blException.getProperties();
 for(String property:properties)
 {
-String exception=blException.getPropertyException(property);
-exceptionMessage+=(property+": "+exception+"\n");
+exceptionMessage+=(blException.getPropertyException(property)+"\n");
 //System.out.printf("[%s]:  %s\n",property,blException.getPropertyException(property));
 }
-
 }
 else
 {
 exceptionMessage="Cannot add designation title\n";
 }
 JOptionPane.showMessageDialog(this,exceptionMessage);
+titleTextField.requestFocus();
+return false;
 }
+return true;
 }
 public void deleteDesignation()
 {
-
+try
+{
+String title=designation.getTitle();
+int selectedOption=JOptionPane.showConfirmDialog(this,"Delete "+title+" ?","Confirmation",JOptionPane.YES_NO_OPTION);
+if(selectedOption==JOptionPane.NO_OPTION) return;
+designationModel.delete(designation.getCode());
+JOptionPane.showMessageDialog(this,"Designation: "+title+" deleted");
+clearDesignation();
+}catch(BLException blException)
+{
+if(blException.hasGenericException()) JOptionPane.showMessageDialog(this,blException.getGenericException());
+else if(blException.hasPropertyException("title")) JOptionPane.showMessageDialog(this,"title: "+blException.getPropertyException("title"));
+else JOptionPane.showMessageDialog(this,"Unable to delete designation: "+designation.getTitle());
+}
 }
 public void setDesignation(DesignationInterface designation)
 {
@@ -490,7 +511,7 @@ private void setDeleteMode()
 {
 if(designationTable.getSelectedRow()<0 || designationTable.getSelectedRow()>=designationTable.getRowCount())
 {
-JOptionPane.showMessageDialog(this,"Select designation to edit");
+JOptionPane.showMessageDialog(this,"Select designation to delete");
 return;
 }
 DesignationUI.this.setDeleteMode();
@@ -499,6 +520,10 @@ this.cancelButton.setEnabled(true);
 this.addButton.setEnabled(false);
 this.editButton.setEnabled(false);
 this.exportToPDFButton.setEnabled(false);
+deleteDesignation();
+DesignationUI.this.searchDesignation();
+setViewMode();
+
 }
 private void setExportToPDFMode()
 {
