@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import java.util.*;
+import java.io.*;
 
 public class DesignationUI extends JFrame implements DocumentListener,ListSelectionListener
 {
@@ -41,7 +42,7 @@ titleLabel=new JLabel("Designations");
 searchLabel=new JLabel("Search");
 searchTextField=new JTextField();
 searchErrorLabel=new JLabel("");
-clearSearchButton=new JButton("Clear");
+clearSearchButton=new JButton(new ImageIcon("resources/icons/close.png"));
 
 designationModel=new DesignationModel();
 designationTable=new JTable(designationModel);
@@ -332,6 +333,7 @@ exportToPDFButton.addActionListener(new ActionListener(){
 public void actionPerformed(ActionEvent ev)
 {
 //Necessary Methdods
+exportToPDFDesignations();
 setViewMode();
 }
 });
@@ -440,6 +442,37 @@ clearDesignation();
 if(blException.hasGenericException()) JOptionPane.showMessageDialog(this,blException.getGenericException());
 else if(blException.hasPropertyException("title")) JOptionPane.showMessageDialog(this,"title: "+blException.getPropertyException("title"));
 else JOptionPane.showMessageDialog(this,"Unable to delete designation: "+designation.getTitle());
+}
+}
+public void exportToPDFDesignations()
+{
+JFileChooser fileChooser=new JFileChooser();
+fileChooser.setCurrentDirectory(new File("."));
+int selectedOption=fileChooser.showSaveDialog(DesignationUI.this);
+if(selectedOption==JFileChooser.APPROVE_OPTION)
+{
+try
+{
+File file=fileChooser.getSelectedFile();
+String pdfFilePath=file.getAbsolutePath();
+if(pdfFilePath.endsWith(".")) pdfFilePath+="pdf";
+else if(pdfFilePath.endsWith(".pdf")==false) pdfFilePath+=".pdf";
+File pdfFile=new File(pdfFilePath);
+File parentFile=new File(pdfFile.getParent());
+if(parentFile.exists()==false || parentFile.isDirectory()==false) 
+{
+JOptionPane.showMessageDialog(DesignationUI.this,"Incorrect path : "+pdfFile.getAbsolutePath());
+return;
+}
+DesignationUI.this.designationModel.exportToPDF(pdfFile);
+System.out.println(file.getName()+" PDF created.");
+}catch(BLException blException)
+{
+JOptionPane.showMessageDialog(DesignationUI.this,blException.getMessage());
+}catch(Exception exception)
+{
+JOptionPane.showMessageDialog(DesignationUI.this,exception.getMessage());
+}
 }
 }
 public void setDesignation(DesignationInterface designation)
