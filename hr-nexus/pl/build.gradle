@@ -4,4 +4,5 @@ id 'java'
 }
 dependencies {
 implementation files('../dl/dist/hr-nexus-dl-1.0.jar','../bl/build/libs/bl.jar','../common/dist/hr-nexus-common.jar')
+implementation fileTree(include:'*.jar',dir:'../dependencies/libs')
 }
