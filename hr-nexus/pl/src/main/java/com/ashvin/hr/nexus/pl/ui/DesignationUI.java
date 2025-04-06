@@ -464,7 +464,7 @@ if(parentFile.exists()==false || parentFile.isDirectory()==false)
 JOptionPane.showMessageDialog(DesignationUI.this,"Incorrect path : "+pdfFile.getAbsolutePath());
 return;
 }
-DesignationUI.this.designationModel.exportToPDF(pdfFile);
+DesignationUI.this.designationModel.exportToPDF_pdfbox(pdfFile);
 System.out.println(file.getName()+" PDF created.");
 }catch(BLException blException)
 {

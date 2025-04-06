@@ -10,6 +10,7 @@ import java.util.*;
 import java.io.*;
 import javax.swing.table.*;
 
+//For itextpdf
 import com.itextpdf.kernel.colors.*;
 import com.itextpdf.kernel.font.*;
 import com.itextpdf.kernel.pdf.*;
@@ -17,9 +18,13 @@ import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.layout.*;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.properties.*;
-import com.itextpdf.io.image.ImageType;
-import com.itextpdf.io.image.ImageData;
-import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.layout.borders.*;
+import com.itextpdf.io.image.*;
+
+//For pdfbox
+import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.pdmodel.font.*;
+import org.apache.pdfbox.pdmodel.graphics.image.*;
 
 public class DesignationModel extends AbstractTableModel
 {
@@ -220,7 +225,7 @@ Paragraph creator=new Paragraph("Creator: Ashvin Parmar");
 creator.setFont(titleFont).setFontSize(18).setFontColor(ColorConstants.BLACK);
 
 int sno=0;
-int pageSize=22;
+int pageSize=21;
 boolean newPage=true;
 int pageNumber=0;
 for(int i=0;i<designations.size();i++)
@@ -261,6 +266,156 @@ System.out.println("New page to add");
 newPage=true;
 }
 }
+document.close();
+}catch(IOException ioException)
+{
+System.out.println(ioException.getMessage());
+BLException blException=new BLException();
+blException.setGenericException("Unable to create "+file.getName());
+throw blException;
+}
+}
+public void exportToPDF_pdfbox(File file) throws BLException
+{
+try
+{
+if(file.exists()) file.delete();
+PDDocument document=new PDDocument();
+PDPage page=new PDPage();;
+
+PDType1Font titleFont=new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD);
+PDType1Font dataFont=new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN);
+PDPageContentStream contentStream=new PDPageContentStream(document,page);
+
+//Header
+//PDImageXObject logo=PDImageXObject.createFromFile(getClass().getResource("/icons/logo.png").toString());
+String companyName="HR-Nexus";
+
+String title="Designations";
+String header1="S.No.";
+String header2="Designation";
+String designer="Designer: Ashvin Parmar";
+//table creation variables
+
+float tableTopY=680;
+float margin=50;
+float tableWidth=page.getMediaBox().getWidth()-2*margin;
+float rowHeight=25;
+float col1Width=tableWidth/5;
+float col2Width=tableWidth-col1Width;
+float dataXMargin=5;
+float dataYMargin=20;
+int rowNumber=0;
+
+//pdf creation variables
+int sno=0;
+int pageSize=22;
+boolean newPage=true;
+int pageNumber=0;
+for(int i=0;i<designations.size();i++)
+{
+if(newPage)
+{
+page=new PDPage();
+document.addPage(page);
+contentStream.close();
+contentStream=new PDPageContentStream(document,page);
+//contentStream.drawImage(logo,30,tableTopY+100+80);
+contentStream.beginText();
+contentStream.setFont(titleFont,30);
+contentStream.newLineAtOffset(30+180+20,tableTopY+60);
+contentStream.showText(companyName);
+contentStream.endText();
+
+contentStream.beginText();
+contentStream.setFont(titleFont,20);
+contentStream.newLineAtOffset(margin+10,tableTopY+20);
+contentStream.showText(title);
+contentStream.endText();
+contentStream.beginText();
+contentStream.setFont(dataFont,16);
+contentStream.newLineAtOffset(180+300+5,tableTopY+10);
+contentStream.showText("Page no: "+String.valueOf(pageNumber+1));
+contentStream.endText();
+
+contentStream.moveTo(margin,tableTopY);
+contentStream.lineTo(margin+tableWidth,tableTopY);
+contentStream.moveTo(margin,tableTopY-rowHeight);
+contentStream.lineTo(margin+tableWidth,tableTopY-rowHeight);
+
+contentStream.moveTo(margin,tableTopY);
+contentStream.lineTo(margin,tableTopY-rowHeight);
+contentStream.moveTo(margin+col1Width,tableTopY);
+contentStream.lineTo(margin+col1Width,tableTopY-rowHeight);
+contentStream.moveTo(margin+tableWidth,tableTopY);
+contentStream.lineTo(margin+tableWidth,tableTopY-rowHeight);
+
+contentStream.stroke();
+
+contentStream.beginText();
+contentStream.setFont(titleFont,18);
+contentStream.newLineAtOffset(margin+dataXMargin,tableTopY-dataYMargin);
+contentStream.showText(header1);
+contentStream.endText();
+contentStream.beginText();
+contentStream.setFont(titleFont,18);
+contentStream.newLineAtOffset(margin+col1Width+dataXMargin,tableTopY-dataYMargin);
+contentStream.showText(header2);
+contentStream.endText();
+rowNumber=1;
+//create Header
+newPage=false;
+}
+//Add row to table
+sno++;
+
+float x=rowNumber*rowHeight;
+ 
+contentStream.moveTo(margin,tableTopY-x-rowHeight);
+contentStream.lineTo(margin+tableWidth,tableTopY-x-rowHeight);
+
+contentStream.moveTo(margin,tableTopY-x);
+contentStream.lineTo(margin,tableTopY-x-rowHeight);
+contentStream.moveTo(margin+col1Width,tableTopY-x-rowHeight);
+contentStream.lineTo(margin+col1Width,tableTopY-x);
+contentStream.moveTo(margin+tableWidth,tableTopY-x-rowHeight);
+contentStream.lineTo(margin+tableWidth,tableTopY-x);
+
+contentStream.stroke();
+
+contentStream.beginText();
+contentStream.setFont(dataFont,14);
+contentStream.newLineAtOffset(margin+dataXMargin,tableTopY-dataYMargin-x);
+contentStream.showText(String.valueOf(sno));
+contentStream.endText();
+contentStream.beginText();
+contentStream.newLineAtOffset(margin+col1Width+dataXMargin,tableTopY-dataYMargin-x);
+
+contentStream.showText(designations.get(i).getTitle());
+contentStream.endText();
+rowNumber++;
+if(sno%pageSize==0 || sno==designations.size())
+{
+//add table to page
+//add creator name
+
+contentStream.beginText();
+contentStream.setFont(titleFont,14);
+contentStream.newLineAtOffset(margin,tableTopY-x-2*rowHeight);
+contentStream.showText(designer);
+contentStream.endText();
+
+if(sno<designations.size())
+{
+//add new page
+System.out.println("New page to add");
+
+}
+newPage=true;
+}
+}
+contentStream.close();
+document.save(file.getAbsolutePath());
 document.close();
 }catch(IOException ioException)
 {
