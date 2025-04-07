@@ -469,6 +469,11 @@ if(selectedOption==JFileChooser.APPROVE_OPTION)
 try
 {
 File file=fileChooser.getSelectedFile();
+if(file.getName().trim().length()==0) 
+{
+JOptionPane.showMessageDialog(DesignationUI.this,"Incorrect path : "+file.getAbsolutePath());
+return;
+}
 String pdfFilePath=file.getAbsolutePath();
 if(pdfFilePath.endsWith(".")) pdfFilePath+="pdf";
 else if(pdfFilePath.endsWith(".pdf")==false) pdfFilePath+=".pdf";
@@ -479,12 +484,14 @@ if(parentFile.exists()==false || parentFile.isDirectory()==false)
 JOptionPane.showMessageDialog(DesignationUI.this,"Incorrect path : "+pdfFile.getAbsolutePath());
 return;
 }
-DesignationUI.this.designationModel.exportToPDF(pdfFile);
+DesignationUI.this.designationModel.exportToPDF_tm(pdfFile);
+//DesignationUI.this.designationModel.exportToPDF(pdfFile);
 //DesignationUI.this.designationModel.exportToPDF_pdfbox(pdfFile);
-System.out.println(file.getName()+" PDF created.");
+JOptionPane.showMessageDialog(DesignationUI.this,"Export to PDF: "+pdfFile.getName());
+System.out.println(pdfFile.getName()+" PDF created.");
 }catch(BLException blException)
 {
-JOptionPane.showMessageDialog(DesignationUI.this,blException.getMessage());
+JOptionPane.showMessageDialog(DesignationUI.this,"Incorrect path: "+blException.getMessage());
 }catch(Exception exception)
 {
 JOptionPane.showMessageDialog(DesignationUI.this,exception.getMessage());

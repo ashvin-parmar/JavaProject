@@ -226,7 +226,7 @@ Paragraph creator=new Paragraph("Creator: Ashvin Parmar");
 creator.setFont(titleFont).setFontSize(18).setFontColor(ColorConstants.BLACK);
 
 int sno=0;
-int pageSize=21;
+int pageSize=20;
 boolean newPage=true;
 int pageNumber=0;
 for(int i=0;i<designations.size();i++)
@@ -423,6 +423,117 @@ document.close();
 System.out.println(ioException.getMessage());
 BLException blException=new BLException();
 blException.setGenericException("Unable to create "+file.getName());
+throw blException;
+}
+}
+public void exportToPDF_tm(File file) throws BLException
+{
+try
+{
+if(file.exists()) file.delete();
+PdfWriter pdfWriter=new PdfWriter(file);
+PdfDocument pdfDocument=new PdfDocument(pdfWriter);
+Document document=new Document(pdfDocument);
+
+PdfFont companyNameFont=PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+PdfFont reportTitleFont=PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+PdfFont columnTitleFont=PdfFontFactory.createFont(StandardFonts.TIMES_BOLD);
+PdfFont dataFont=PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN);
+PdfFont pageNumberFont=PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN);
+
+Image logo=new Image(ImageDataFactory.create(this.getClass().getResource("/icons/hr_nexus_logo1.png")));
+Paragraph logoPara=new Paragraph();
+logoPara.add(logo);
+Paragraph companyNamePara=new Paragraph();
+companyNamePara.add("  HR-Nexus");
+companyNamePara.setFont(companyNameFont).setFontSize(18);
+Paragraph reportTitlePara=new Paragraph("List of designations");
+reportTitlePara.setFont(reportTitleFont).setFontSize(15);
+Paragraph columnTitle1=new Paragraph("S.No.");
+columnTitle1.setFont(columnTitleFont).setFontSize(14);
+Paragraph columnTitle2=new Paragraph("Designations");
+columnTitle1.setFont(columnTitleFont).setFontSize(14);
+Paragraph pageNumberParagraph;
+Paragraph dataParagraph;
+
+float topTableColumnWidths[]={1,5};
+float dataTableColumnWidths[]={1,5};
+
+Table topTable;
+Table pageNumberTable;
+Table dataTable=null;
+Cell cell;
+
+int sno=0;
+int pageSize=26;
+boolean newPage=true;
+int numberOfPages=this.designations.size()/pageSize+(this.designations.size()%pageSize!=0?1:0);
+int pageNumber=0;
+for(int i=0;i<this.designations.size();i++)
+{
+if(newPage)
+{
+pageNumber++;
+topTable=new Table(UnitValue.createPercentArray(topTableColumnWidths)).useAllAvailableWidth();
+cell=new Cell();
+cell.setBorder(Border.NO_BORDER);
+cell.add(logoPara);
+topTable.addCell(cell);
+cell=new Cell();
+cell.setBorder(Border.NO_BORDER);
+cell.add(companyNamePara);
+cell.setVerticalAlignment(VerticalAlignment.MIDDLE);
+topTable.addCell(cell);
+document.add(topTable);
+pageNumberParagraph=new Paragraph("Page: "+pageNumber+"/"+numberOfPages);
+pageNumberParagraph.setFont(pageNumberFont).setFontSize(15);
+pageNumberTable=new Table(1);
+pageNumberTable.setWidth(UnitValue.createPercentValue(100));
+cell=new Cell();
+cell.setBorder(Border.NO_BORDER);
+cell.add(pageNumberParagraph);
+cell.setTextAlignment(TextAlignment.RIGHT);
+pageNumberTable.addCell(cell);
+document.add(pageNumberTable);
+dataTable=new Table(UnitValue.createPercentArray(dataTableColumnWidths)).useAllAvailableWidth();
+cell=new Cell(1,2);
+cell.add(reportTitlePara);
+cell.setTextAlignment(TextAlignment.CENTER);
+dataTable.addHeaderCell(cell);
+dataTable.addHeaderCell(cell);
+dataTable.addHeaderCell(cell);
+newPage=false;
+}
+sno++;
+cell=new Cell();
+dataParagraph=new Paragraph(String.valueOf(sno));
+dataParagraph.setFont(dataFont).setFontSize(14);
+cell.add(dataParagraph);
+cell.setTextAlignment(TextAlignment.RIGHT);
+dataTable.addCell(cell);
+cell=new Cell();
+dataParagraph=new Paragraph(designations.get(i).getTitle());
+dataParagraph.setFont(dataFont).setFontSize(14);
+cell.add(dataParagraph);
+dataTable.addCell(cell);
+
+if(sno%pageSize==0 || sno==designations.size())
+{
+document.add(dataTable);
+document.add(new Paragraph("Software by: Ashvin Parmar"));
+if(sno<designations.size()) 
+{
+//new page created
+document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+newPage=true;
+}
+}
+}
+document.close();
+}catch(Exception exception)
+{
+BLException blException=new BLException();
+blException.setGenericException(""+file.getName());
 throw blException;
 }
 }
