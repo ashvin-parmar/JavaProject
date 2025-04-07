@@ -25,6 +25,8 @@ private JTable designationTable;
 private JScrollPane jsp;
 private DesignationModel designationModel;
 private DesignationPanel designationPanel;
+private ImageIcon clearIcon;
+private ImageIcon logoIcon;
 private Container container;
 private enum MODE{VIEW,ADD,EDIT,DELETE,EXPORT_TO_PDF};
 private MODE mode;
@@ -42,7 +44,10 @@ titleLabel=new JLabel("Designations");
 searchLabel=new JLabel("Search");
 searchTextField=new JTextField();
 searchErrorLabel=new JLabel("");
-clearSearchButton=new JButton(new ImageIcon("resources/icons/close.png"));
+logoIcon=new ImageIcon(getClass().getResource("/icons/hr_nexus_logo.png"));
+setIconImage(logoIcon.getImage());
+clearIcon=new ImageIcon(getClass().getResource("/icons/clear.png"));
+clearSearchButton=new JButton(clearIcon);
 
 designationModel=new DesignationModel();
 designationTable=new JTable(designationModel);
@@ -222,9 +227,15 @@ private JButton editButton;
 private JButton deleteButton;
 private JButton cancelButton;
 private JButton exportToPDFButton;
-private JButton saveButton;
 private JPanel buttonsPanel;
 private DesignationInterface designation;
+private ImageIcon addIcon;
+private ImageIcon editIcon;
+private ImageIcon deleteIcon;
+private ImageIcon cancelIcon;
+private ImageIcon pdfIcon;
+private ImageIcon saveIcon;
+
 public DesignationPanel()
 {
 setBorder(BorderFactory.createLineBorder(new Color(160,160,160)));
@@ -237,14 +248,21 @@ private void initComponents()
 titleDesignationLabel=new JLabel("Designation");
 titleLabel=new JLabel("");
 titleTextField=new JTextField();
-clearTitleTextFieldButton=new JButton("X");
+
+addIcon=new ImageIcon(getClass().getResource("/icons/addDesignation.png"));
+editIcon=new ImageIcon(getClass().getResource("/icons/editDesignation.png"));
+cancelIcon=new ImageIcon(getClass().getResource("/icons/cancelDesignation.png"));
+deleteIcon=new ImageIcon(getClass().getResource("/icons/deleteDesignation.png"));
+pdfIcon=new ImageIcon(getClass().getResource("/icons/exportToPdf.png"));
+saveIcon=new ImageIcon(getClass().getResource("/icons/saveDesignation.png"));
+
+clearTitleTextFieldButton=new JButton(DesignationUI.this.clearIcon);
 buttonsPanel=new JPanel();
-addButton=new JButton("A");
-editButton=new JButton("E");
-deleteButton=new JButton("D");
-cancelButton=new JButton("C");
-exportToPDFButton=new JButton("P");
-saveButton=new JButton("S");
+addButton=new JButton(addIcon);
+editButton=new JButton(editIcon);
+deleteButton=new JButton(deleteIcon);
+cancelButton=new JButton(cancelIcon);
+exportToPDFButton=new JButton(pdfIcon);
 designation=null;
 }
 private void setAppearance()
@@ -264,7 +282,6 @@ clearTitleTextFieldButton.setBounds(lm+10+110+10+300+10,tm+20,30,30);
 buttonsPanel.setBounds(10,tm+20+30+30-5,460,75);
 buttonsPanel.setBorder(BorderFactory.createLineBorder(new Color(170,170,170)));
 addButton.setBounds(70,12,50,50);
-saveButton.setBounds(70,12,50,50);
 editButton.setBounds(70+50+20,12,50,50);
 cancelButton.setBounds(70+50+20+50+20,12,50,50);
 deleteButton.setBounds(70+50+20+50+20+50+20,12,50,50);
@@ -275,14 +292,12 @@ buttonsPanel.add(editButton);
 buttonsPanel.add(cancelButton);
 buttonsPanel.add(deleteButton);
 buttonsPanel.add(exportToPDFButton);
-buttonsPanel.add(saveButton);
 
 add(titleDesignationLabel);
 add(titleLabel);
 titleTextField.setVisible(false);
 add(titleTextField);
 add(clearTitleTextFieldButton);
-saveButton.setVisible(false);
 add(buttonsPanel);
 
 }
@@ -464,7 +479,8 @@ if(parentFile.exists()==false || parentFile.isDirectory()==false)
 JOptionPane.showMessageDialog(DesignationUI.this,"Incorrect path : "+pdfFile.getAbsolutePath());
 return;
 }
-DesignationUI.this.designationModel.exportToPDF_pdfbox(pdfFile);
+DesignationUI.this.designationModel.exportToPDF(pdfFile);
+//DesignationUI.this.designationModel.exportToPDF_pdfbox(pdfFile);
 System.out.println(file.getName()+" PDF created.");
 }catch(BLException blException)
 {
@@ -493,8 +509,8 @@ this.titleLabel.setVisible(true);
 this.addButton.setEnabled(true);
 this.cancelButton.setEnabled(false);
 this.clearTitleTextFieldButton.setVisible(false);
-this.addButton.setText("A");
-this.editButton.setText("E");
+this.addButton.setIcon(addIcon);
+this.editButton.setIcon(editIcon);
 if(designationModel.getRowCount()>0)
 {
 this.editButton.setEnabled(true);
@@ -515,7 +531,7 @@ this.titleTextField.setText("");
 this.titleLabel.setVisible(false);
 this.titleTextField.setVisible(true);
 this.clearTitleTextFieldButton.setVisible(true);
-this.addButton.setText("S");
+this.addButton.setIcon(saveIcon);
 this.cancelButton.setEnabled(true);
 this.editButton.setEnabled(false);
 this.deleteButton.setEnabled(false);
@@ -534,7 +550,7 @@ this.titleLabel.setVisible(false);
 this.titleTextField.setVisible(true);
 this.titleTextField.requestFocus();
 this.clearTitleTextFieldButton.setVisible(true);
-this.editButton.setText("U");
+this.editButton.setIcon(saveIcon);
 this.cancelButton.setEnabled(true);
 this.addButton.setEnabled(false);
 this.deleteButton.setEnabled(false);
@@ -548,7 +564,7 @@ JOptionPane.showMessageDialog(this,"Select designation to delete");
 return;
 }
 DesignationUI.this.setDeleteMode();
-this.deleteButton.setText("D");
+this.deleteButton.setIcon(deleteIcon);
 this.cancelButton.setEnabled(true);
 this.addButton.setEnabled(false);
 this.editButton.setEnabled(false);
@@ -561,7 +577,7 @@ setViewMode();
 private void setExportToPDFMode()
 {
 DesignationUI.this.setExportToPDFMode();
-this.exportToPDFButton.setText("<\\>");
+this.exportToPDFButton.setIcon(pdfIcon);
 this.cancelButton.setEnabled(true);
 this.addButton.setEnabled(false);
 this.editButton.setEnabled(false);

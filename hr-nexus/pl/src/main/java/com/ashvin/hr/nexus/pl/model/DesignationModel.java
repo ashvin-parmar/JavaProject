@@ -206,9 +206,10 @@ PdfFont dataFont=PdfFontFactory.createFont(StandardFonts.TIMES_ROMAN);
 
 //Header
 Paragraph top=new Paragraph();
-//Image logo=new Image(ImageDataFactory.create("/resources/icons/logo.png"));
-//top.add(logo);
-top.add("HR-Nexus").setFont(titleFont).setFontSize(30).setTextAlignment(TextAlignment.CENTER);
+Image logo=new Image(ImageDataFactory.create(getClass().getResource("/icons/hr_nexus_logo1.png")));
+top.add(logo);
+top.add(new Text("                         "));
+top.add("HR-Nexus").setFont(titleFont).setFontSize(30).setTextAlignment(TextAlignment.JUSTIFIED);
 Paragraph title=new Paragraph("Designation");
 title.setFont(titleFont).setFontSize(20).setTextAlignment(TextAlignment.CENTER);
 Text pageNumberText;
@@ -233,7 +234,7 @@ for(int i=0;i<designations.size();i++)
 if(newPage)
 {
 document.add(top);
-pageNumberText=new Text(new Integer(pageNumber).toString());
+pageNumberText=new Text("Page no: "+String.valueOf(++pageNumber));
 pageNumberText.setTextAlignment(TextAlignment.RIGHT).setFont(dataFont).setFontSize(18);
 document.add(title).add(new Paragraph(pageNumberText).setTextAlignment(TextAlignment.RIGHT));
 table=new Table(UnitValue.createPercentArray(columnWidth)).useAllAvailableWidth();
@@ -244,7 +245,7 @@ newPage=false;
 }
 //Add row to table
 sno++;
-cell0=new Cell().add(new Paragraph(new Integer(sno).toString()));
+cell0=new Cell().add(new Paragraph(String.valueOf(sno)));
 cell0.setFont(dataFont).setFontSize(16).setTextAlignment(TextAlignment.RIGHT);
 cell1=new Cell().add(new Paragraph(designations.get(i).getTitle()));
 cell1.setFont(dataFont).setFontSize(16).setTextAlignment(TextAlignment.JUSTIFIED);
