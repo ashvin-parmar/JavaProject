@@ -1,5 +1,4 @@
 package com.ashvin.hr.nexus.dl.dao;
-import java.io.*;
 import java.util.*;
 import java.sql.*;
 import com.ashvin.hr.nexus.dl.exceptions.*;
@@ -8,7 +7,6 @@ import com.ashvin.hr.nexus.dl.interfaces.dao.*;
 import com.ashvin.hr.nexus.dl.dto.*;
 public class DesignationDAO implements DesignationDAOInterface
 {
-static final private String DESIGNATION_FILE="designation.dat";
 public void add(DesignationDTOInterface designationDTO) throws DAOException
 {
 if(designationDTO==null) throw new DAOException("Designation is null");
@@ -44,9 +42,9 @@ resultSet.close();
 preparedStatement.close();
 connection.close();
 designationDTO.setCode(code);
-}catch(Exception exception)
+}catch(SQLException sqlException)
 {
-throw new DAOException(exception.getMessage());
+throw new DAOException(sqlException.getMessage());
 }
 }
 public void update(DesignationDTOInterface designationDTO) throws DAOException
@@ -77,19 +75,16 @@ throw new DAOException("Invalid code: "+code);
 }
 resultSet.close();
 preparedStatement.close();
-preparedStatement=connection.prepareStatement("select code from designation where title=?");
+preparedStatement=connection.prepareStatement("select code from designation where title=? and code<>?");
 preparedStatement.setString(1,title);
+preparedStatement.setInt(2,code);
 resultSet=preparedStatement.executeQuery();
 if(resultSet.next())
-{
-int fCode=resultSet.getInt("code");
-if(fCode!=code)
 {
 resultSet.close();
 preparedStatement.close();
 connection.close();
 throw new DAOException("Designation "+title+" exists");
-}
 }
 resultSet.close();
 preparedStatement.close();
@@ -99,14 +94,15 @@ preparedStatement.setInt(2,code);
 preparedStatement.executeUpdate();
 preparedStatement.close();
 connection.close();
-}catch(Exception exception)
+}catch(SQLException sqlException)
 {
-throw new DAOException(exception.getMessage());
+throw new DAOException(sqlException.getMessage());
 }
 }
 public void delete(int code) throws DAOException
 {
 if(code<=0) throw new DAOException("Invalid code: "+code);
+//Pending: Check for data code used against any employee
 try
 {
 Connection connection=DAOConnection.getConnection();
@@ -129,9 +125,9 @@ preparedStatement.setInt(1,code);
 preparedStatement.executeUpdate();
 preparedStatement.close();
 connection.close();
-}catch(Exception exception)
+}catch(SQLException sqlException)
 {
-throw new DAOException(exception.getMessage());
+throw new DAOException(sqlException.getMessage());
 }
 }
 public Set<DesignationDTOInterface> getAll() throws DAOException
@@ -155,9 +151,9 @@ resultSet.close();
 statement.close();
 connection.close();
 return designations;
-}catch(Exception exception)
+}catch(SQLException sqlException)
 {
-throw new DAOException(exception.getMessage());
+throw new DAOException(sqlException.getMessage());
 }
 }
 public DesignationDTOInterface getByCode(int code) throws DAOException
@@ -185,9 +181,9 @@ resultSet.close();
 preparedStatement.close();
 connection.close();
 return designationDTO;
-}catch(Exception exception)
+}catch(SQLException sqlException)
 {
-throw new DAOException(exception.getMessage());
+throw new DAOException(sqlException.getMessage());
 }
 }
 public DesignationDTOInterface getByTitle(String title) throws DAOException
@@ -217,9 +213,9 @@ resultSet.close();
 preparedStatement.close();
 connection.close();
 return designationDTO;
-}catch(Exception exception)
+}catch(SQLException sqlException)
 {
-throw new DAOException(exception.getMessage());
+throw new DAOException(sqlException.getMessage());
 }
 }
 public boolean codeExist(int code) throws DAOException
@@ -238,9 +234,9 @@ resultSet.close();
 preparedStatement.close();
 connection.close();
 return ans;
-}catch(Exception exception)
+}catch(SQLException sqlException)
 {
-throw new DAOException(exception.getMessage());
+throw new DAOException(sqlException.getMessage());
 }
 }
 public boolean titleExist(String title) throws DAOException
@@ -260,9 +256,9 @@ resultSet.close();
 preparedStatement.close();
 connection.close();
 return ans;
-}catch(Exception exception)
+}catch(SQLException sqlException)
 {
-throw new DAOException(exception.getMessage());
+throw new DAOException(sqlException.getMessage());
 }
 }
 public int getCount() throws DAOException
@@ -286,9 +282,9 @@ statement.close();
 connection.close();
 return 0;
 }
-catch(Exception exception)
+catch(SQLException sqlException)
 {
-throw new DAOException(exception.getMessage());
+throw new DAOException(sqlException.getMessage());
 }
 }
 }
