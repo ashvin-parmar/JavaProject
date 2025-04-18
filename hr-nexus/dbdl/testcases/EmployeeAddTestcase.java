@@ -17,7 +17,7 @@ EmployeeDTOInterface employeeDTO;
 employeeDTO=new EmployeeDTO();
 if(gg.length!=8) 
 {
-System.out.println("Usage: [EmployeeDTOInterface name designation_code Date(dd/MM/yyyy) Gender(M/F) is_indian[Y/N)] basic_salary pan_number aadhar_card_number");
+System.out.println("Usage: [EmployeeDTOInterface name designation_code Date(dd/MM/yyyy) Gender(M/F) is_indian[true/false] basic_salary pan_number aadhar_card_number");
 return;
 }
 String name=gg[0];
