@@ -1,0 +1,8 @@
+plugins
+{
+id 'java'
+}
+dependencies
+{
+implementation files('../common/dist/hr-nexus-common.jar')
+}
