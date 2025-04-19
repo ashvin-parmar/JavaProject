@@ -23,6 +23,11 @@ designationDTO=designationDAO.getByCode(designationCode);
 employees=employeeDAO.getByDesignationCode(designationCode);
 System.out.println("Designation Code: "+designationDTO.getCode()+" Desigantion Title: "+designationDTO.getTitle());
 SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+if(employees.size()==0) 
+{
+System.out.printf("There are no employee with respective designation code\n");
+return ;
+}
 employees.forEach((employee)->{
 System.out.println("Id: "+employee.getEmployeeId());
 System.out.println("Name: "+employee.getName());
