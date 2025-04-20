@@ -13,7 +13,6 @@ import java.sql.*;
 
 public class EmployeeDAO implements EmployeeDAOInterface
 {
-private static final String FILE_NAME="employee.dat";
 public void add(EmployeeDTOInterface employeeDTO) throws DAOException
 {
 if(employeeDTO==null) throw new DAOException("Employee is null");
@@ -233,7 +232,7 @@ int employeeIdInt=0;
 try
 {
 employeeIdInt=Integer.parseInt(employeeId.substring(1));
-}catch(NumberFormatException numberFormatException)
+}catch(Exception exception)
 {
 throw new DAOException("Invalid employee id. : "+employeeId);
 }

@@ -102,12 +102,11 @@ throw new DAOException(sqlException.getMessage());
 public void delete(int code) throws DAOException
 {
 if(code<=0) throw new DAOException("Invalid code: "+code);
-//Pending: Check for data code used against any employee
 try
 {
 Connection connection=DAOConnection.getConnection();
 PreparedStatement preparedStatement;
-preparedStatement=connection.prepareStatement("select code from designation where code=?");
+preparedStatement=connection.prepareStatement("select title from designation where code=?");
 preparedStatement.setInt(1,code);
 ResultSet resultSet;
 resultSet=preparedStatement.executeQuery();
@@ -117,6 +116,19 @@ resultSet.close();
 preparedStatement.close();
 connection.close();
 throw new DAOException("Invalid code: "+code);
+}
+String title=resultSet.getString("title");
+resultSet.close();
+preparedStatement.close();
+preparedStatement=connection.prepareStatement("select gender from employee where designation_code=?");
+preparedStatement.setInt(1,code);
+resultSet=preparedStatement.executeQuery();
+if(resultSet.next())
+{
+resultSet.close();
+preparedStatement.close();
+connection.close();
+throw new DAOException("Designation with "+title+" alloted to employee(s), can't delete");
 }
 resultSet.close();
 preparedStatement.close();
