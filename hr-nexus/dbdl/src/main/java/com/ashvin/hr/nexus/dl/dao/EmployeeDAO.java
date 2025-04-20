@@ -504,18 +504,23 @@ try
 preparedStatement=connection.prepareStatement("select * from employee where designation_code=?");
 preparedStatement.setInt(1,designationCode);
 resultSet=preparedStatement.executeQuery();
+java.sql.Date sqlDateOfBirth;
+java.util.Date utilDateOfBirth;
 while(resultSet.next())
 {
 employeeDTO=new EmployeeDTO();
 employeeDTO.setEmployeeId("A"+(start+resultSet.getInt("employee_id")));
-employeeDTO.setName(resultSet.getString("name"));
+employeeDTO.setName(resultSet.getString("name").trim());
 employeeDTO.setDesignationCode(resultSet.getInt("designation_code"));
-employeeDTO.setDateOfBirth(resultSet.getDate("date_of_birth"));
+sqlDateOfBirth=resultSet.getDate("date_of_birth");
+utilDateOfBirth=new java.util.Date(sqlDateOfBirth.getYear(),sqlDateOfBirth.getMonth(),sqlDateOfBirth.getDate());
+//Still the base class is java.util.Date
+employeeDTO.setDateOfBirth(utilDateOfBirth);
 employeeDTO.setBasicSalary(resultSet.getBigDecimal("basic_salary"));
-employeeDTO.setGender(resultSet.getString("gender").charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
+employeeDTO.setGender(resultSet.getString("gender").equals("M")?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(resultSet.getBoolean("is_indian"));
-employeeDTO.setPANNumber(resultSet.getString("pan_number"));
-employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number"));
+employeeDTO.setPANNumber(resultSet.getString("pan_number").trim());
+employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number").trim());
 employees.add(employeeDTO);
 }
 resultSet.close();
@@ -544,14 +549,14 @@ while(resultSet.next())
 {
 employeeDTO=new EmployeeDTO();
 employeeDTO.setEmployeeId("A"+(start+resultSet.getInt("employee_id")));
-employeeDTO.setName(resultSet.getString("name"));
+employeeDTO.setName(resultSet.getString("name").trim());
 employeeDTO.setDesignationCode(resultSet.getInt("designation_code"));
 employeeDTO.setDateOfBirth(resultSet.getDate("date_of_birth"));
 employeeDTO.setBasicSalary(resultSet.getBigDecimal("basic_salary"));
-employeeDTO.setGender(resultSet.getString("gender").charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
+employeeDTO.setGender(resultSet.getString("gender").trim().charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(resultSet.getBoolean("is_indian"));
-employeeDTO.setPANNumber(resultSet.getString("pan_number"));
-employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number"));
+employeeDTO.setPANNumber(resultSet.getString("pan_number").trim());
+employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number").trim());
 employees.add(employeeDTO);
 }
 resultSet.close();
@@ -595,14 +600,14 @@ throw new DAOException("Invalid employee id. : "+employeeId);
 EmployeeDTOInterface employeeDTO;
 employeeDTO=new EmployeeDTO();
 employeeDTO.setEmployeeId("A"+(start+resultSet.getInt("employee_id")));
-employeeDTO.setName(resultSet.getString("name"));
+employeeDTO.setName(resultSet.getString("name").trim());
 employeeDTO.setDesignationCode(resultSet.getInt("designation_code"));
 employeeDTO.setDateOfBirth(resultSet.getDate("date_of_birth"));
 employeeDTO.setBasicSalary(resultSet.getBigDecimal("basic_salary"));
-employeeDTO.setGender(resultSet.getString("gender").charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
+employeeDTO.setGender(resultSet.getString("gender").trim().charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(resultSet.getBoolean("is_indian"));
-employeeDTO.setPANNumber(resultSet.getString("pan_number"));
-employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number"));
+employeeDTO.setPANNumber(resultSet.getString("pan_number").trim());
+employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number").trim());
 resultSet.close();
 preparedStatement.close();
 connection.close();
@@ -636,14 +641,14 @@ throw new DAOException("Invalid PAN Number: "+panNumber);
 EmployeeDTOInterface employeeDTO;
 employeeDTO=new EmployeeDTO();
 employeeDTO.setEmployeeId("A"+(start+resultSet.getInt("employee_id")));
-employeeDTO.setName(resultSet.getString("name"));
+employeeDTO.setName(resultSet.getString("name").trim());
 employeeDTO.setDesignationCode(resultSet.getInt("designation_code"));
 employeeDTO.setDateOfBirth(resultSet.getDate("date_of_birth"));
 employeeDTO.setBasicSalary(resultSet.getBigDecimal("basic_salary"));
-employeeDTO.setGender(resultSet.getString("gender").charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
+employeeDTO.setGender(resultSet.getString("gender").trim().charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(resultSet.getBoolean("is_indian"));
-employeeDTO.setPANNumber(resultSet.getString("pan_number"));
-employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number"));
+employeeDTO.setPANNumber(resultSet.getString("pan_number").trim());
+employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number").trim());
 resultSet.close();
 preparedStatement.close();
 connection.close();
@@ -677,14 +682,14 @@ throw new DAOException("Invalid Aadhar Card Number: "+aadharCardNumber);
 EmployeeDTOInterface employeeDTO;
 employeeDTO=new EmployeeDTO();
 employeeDTO.setEmployeeId("A"+(start+resultSet.getInt("employee_id")));
-employeeDTO.setName(resultSet.getString("name"));
+employeeDTO.setName(resultSet.getString("name").trim());
 employeeDTO.setDesignationCode(resultSet.getInt("designation_code"));
 employeeDTO.setDateOfBirth(resultSet.getDate("date_of_birth"));
 employeeDTO.setBasicSalary(resultSet.getBigDecimal("basic_salary"));
-employeeDTO.setGender(resultSet.getString("gender").charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
+employeeDTO.setGender(resultSet.getString("gender").trim().charAt(0)=='M'?GENDER.MALE:GENDER.FEMALE);
 employeeDTO.setIsIndian(resultSet.getBoolean("is_indian"));
-employeeDTO.setPANNumber(resultSet.getString("pan_number"));
-employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number"));
+employeeDTO.setPANNumber(resultSet.getString("pan_number").trim());
+employeeDTO.setAadharCardNumber(resultSet.getString("aadhar_card_number").trim());
 resultSet.close();
 preparedStatement.close();
 connection.close();
@@ -721,9 +726,6 @@ preparedStatement.close();
 {
 throw new DAOException(sqlException.getMessage());
 }
-Set<EmployeeDTOInterface> employees;
-EmployeeDTOInterface employeeDTO;
-employees=new TreeSet<>();
 try
 {
 preparedStatement=connection.prepareStatement("select gender from employee where designation_code=?");
