@@ -1,9 +1,9 @@
 package com.ashvin.components.swing;
 import java.util.*;
 import java.time.*;
-class DatePicker
+public class DatePicker
 {
-private int[][] getDays(int months,int year)
+int[][] getDays(int months,int year)
 {
 Date firstDaysOfMonth=new Date(year-1900,months-1,1);
 Calendar firstDaysOfMonthCalendar=Calendar.getInstance();
@@ -46,6 +46,5 @@ System.out.printf("%-2d ",days[r][c]);
 }
 System.out.println();
 }
-
 }
 }
