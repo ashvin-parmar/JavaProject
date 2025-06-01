@@ -1,0 +1,7 @@
+//Reason: Why We are not using OutputStreamWriter and InputStreamReader for reade and write in the message transfer --> Cannot allow byte[] to build connection
+//+ Much more hiddent things cannot accessed. 
+
+//Example 4: Using inputStream.read(_size_) and outputStream.write(byte[],_from_where(index)_,_how_many_)
+// This allow more complexities with the data sharing things.
+
+
