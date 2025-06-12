@@ -66,7 +66,7 @@ if(file.exists()) file.delete();
 SwingUtilities.invokeLater(()->{
 fsf.updateLog("File received: "+fileName);
 });
-FileOutputStream fos=new FileOutputStream(file);
+FileOutputStream fos=new FileOutputStream("uploads"+File.separator+file);
 j=0;
 int chunkSize=4096;
 byte bytes[]=new byte[chunkSize];
@@ -189,7 +189,7 @@ serverState=true;
 }
 else
 {
-server.stop();
+//server.stop();
 button.setText("Start");
 serverState=false;
 }
