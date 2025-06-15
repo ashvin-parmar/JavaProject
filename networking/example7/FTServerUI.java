@@ -139,6 +139,16 @@ requestProcessor=new RequestProcessor(socket,fsf,UUID.randomUUID().toString());
 System.out.println(exception);
 }
 }
+public void shutdown()
+{
+try
+{
+serverSocket.close();
+}catch(Exception exception)
+{
+//System.out.println(exception);
+}
+}
 }
 
 class FTServerFrame extends JFrame implements ActionListener
@@ -190,6 +200,9 @@ serverState=true;
 else
 {
 //server.stop();
+server.shutdown();
+System.out.println("server stopped listening");
+this.ta.append("Server stopped listening"+"\n");
 button.setText("Start");
 serverState=false;
 }

@@ -217,16 +217,7 @@ for(FileUploadThread fut:fileUploadThreads)
 {
 fut.start();
 }
-for(FileUploadThread fut:fileUploadThreads)
-{
-try
-{
-fut.join();
-}catch(InterruptedException ie)
-{
-System.out.println(ie);
-}
-}
+
 }
 public void fileUploadStatusChanged(FileUploadEvent fileUploadEvent)
 {
@@ -247,11 +238,12 @@ private File file;
 private JLabel fileNameLabel;
 private JProgressBar progressBar;
 private String uploaderId;
-private long fileLengthComplete=0;
+private long fileLength;
 ProgressIndicator(File file,String uploaderId)
 {
 this.uploaderId=uploaderId;
 this.file=file;
+this.fileLength=file.length();
 fileNameLabel=new JLabel("Uploading: "+file.getAbsolutePath());
 progressBar=new JProgressBar(1,100);
 setLayout(new GridLayout(2,1));
@@ -265,12 +257,14 @@ return this.uploaderId;
 public void updateProgressBar(long bytesUploaded)
 {
 int percentage=0;
-fileLengthComplete+=bytesUploaded;
-long length=file.length();
-if(fileLengthComplete==file.length()) percentage=100;
-else percentage=(int)((fileLengthComplete*100)/file.length());
+if(bytesUploaded==fileLength) percentage=100;
+else percentage=(int)((bytesUploaded*100)/fileLength);
 progressBar.setValue(percentage);
-if(percentage==100) fileNameLabel.setText("Uploaded: "+file.getAbsolutePath());
+if(percentage==100) 
+{
+fileNameLabel.setText("Uploaded: "+file.getAbsolutePath());
+fileNameLabel.setForeground(Color.GREEN);
+}
 }
 }
 }
@@ -357,7 +351,7 @@ if(bytesReadCount==-1) continue;
 os.write(bytes,0,bytesReadCount);
 os.flush();
 x+=bytesReadCount;
-long brc=bytesReadCount;
+long brc=x;
 SwingUtilities.invokeLater(()->{
 FileUploadEvent fileUploadEvent=new FileUploadEvent();
 fileUploadEvent.setFile(file);
