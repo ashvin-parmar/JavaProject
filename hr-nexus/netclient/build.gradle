@@ -1,0 +1,6 @@
+plugins{
+id 'java'
+}
+dependencies{
+implementation files('../netcommon/build/libs/netcommon.jar')
+}
