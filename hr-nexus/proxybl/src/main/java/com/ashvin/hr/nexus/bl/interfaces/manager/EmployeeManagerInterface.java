@@ -1,0 +1,23 @@
+package com.ashvin.hr.nexus.bl.interfaces.manager;
+
+import com.ashvin.hr.nexus.bl.exceptions.*;
+import com.ashvin.hr.nexus.bl.interfaces.pojo.*;
+import java.util.*;
+public interface EmployeeManagerInterface 
+{
+public void addEmployee(EmployeeInterface employee) throws BLException;
+public void updateEmployee(EmployeeInterface employee) throws BLException;
+public void removeEmployee(String employeeId) throws BLException;
+public Set<EmployeeInterface> getEmployees();
+public Set<EmployeeInterface> getEmployeesByDesignationCode(int designationCode) throws BLException;
+
+public EmployeeInterface getEmployeeByEmployeeId(String employeeId) throws BLException;
+public EmployeeInterface getEmployeeByPANNumber(String panNumber) throws BLException;
+public EmployeeInterface getEmployeeByAadharCardNumber(String aadharCardNumber) throws BLException;
+public boolean employeeDesignationCodeAlloted(int designationCode) throws BLException;
+public boolean employeeEmployeeIdExists(String employeeId);
+public boolean employeePANNumberExists(String panNumber);
+public boolean employeeAadharCardNumberExists(String aadharCardNumber);
+public int getEmployeesCount();
+public int getEmployeesDesignationCodeCount(int designationCode) throws BLException;
+}
