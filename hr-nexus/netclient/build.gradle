@@ -3,4 +3,5 @@ id 'java'
 }
 dependencies{
 implementation files('../netcommon/build/libs/netcommon.jar')
+implementation fileTree(include:'*.jar',dir:'../dependencies/libs/gson')
 }
