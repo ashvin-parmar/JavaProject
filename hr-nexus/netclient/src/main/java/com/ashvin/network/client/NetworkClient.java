@@ -110,7 +110,6 @@ Wrap all the network/socket programming code over here.
 4. Receive back header and then the serialized form of response. 
 5. return the reference of Response object.
 */
-
 }catch(Exception exception)
 {
 System.out.println(exception);

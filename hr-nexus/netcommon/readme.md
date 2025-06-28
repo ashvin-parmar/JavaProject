@@ -13,6 +13,7 @@ To manage the server using data layer and business layer. To manage the client u
 5: Same pojo classes structures, same manager package structures.
 6: All 4 interfaces, pojo, managers, and exceptions.
 
+# Network Programming [Seperately Generalised]
 ## netcommon
 Here, All common classes that are necessary to communicate between server and client. Request, Response and NetworkException classes are stored here.
 
@@ -25,7 +26,7 @@ Here, Three properties until now, Serializable
 ### Response
 Here, Three properties until now, Serializable
 1: boolean Success --> Used for checking process is completed or not
-2: Object error --> Application developer mistakes alert.
+2: Object result --> Result exchanging as output
 3: Object exception --> Used specific mistakes alert.
 
 ### NetworkException
