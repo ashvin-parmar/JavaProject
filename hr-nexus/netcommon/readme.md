@@ -32,6 +32,10 @@ Here, Three properties until now, Serializable
 ### NetworkException
 Here, Exception message with checked exception with extended with Exception class 
 
+### Configuration
+Here, this type of class created for which host and port static get methods are provided. Data for port and host are extracted at the time of loading class Configuration, one time only in complete cycle of Application. static initializer blocks are the solution for this.
+We have to extract data from client.cfg file and if file does not exist or open ==> close the application --> "System.exit(0);"
+
 ## netclient
 Here, we are seperately client side networking send conditions to connect with business layer. Response send(Request) , used to communicate between client with server.
 

@@ -47,8 +47,9 @@ if(blException.hasException()) throw blException;
 try
 {
 Request request=new Request();
-request.setManager("DesignationManager");	//Here, we have to do such that this hard-coded string should not have to pass. Instead of that, we are passing something special such that Network side programming work as same and we pass as required string without spelling mistakes by low-ends programmer.
-request.setAction("add");
+//PROBLEM: Here, we want to pass String but here enums are passing
+request.setManager(MANAGER.DESIGNATION);
+request.setAction(DESIGNATION.ADD);
 request.setArguments(designation);
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
@@ -67,8 +68,35 @@ throw blException;
 public void updateDesignation(DesignationInterface designation) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(designation==null)
+{
+blException.setGenericException("Designation required.");
 throw blException;
+}
+int code=designation.getCode();
+if(code<=0) blException.addPropertyException("code","Code should not be negative or zero.");
+String title=designation.getTitle();
+if(title==null) blException.addPropertyException("title","Title required.");
+else if((title=title.trim()).length()==0) blException.addPropertyException("title","Title required.");
+if(blException.hasExceptions()) throw blException;
+try
+{
+Request request=new Request();
+request.setManager("DesignationManager");
+request.setAction("update");
+request.setArguments(designation);
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
+if(response.hasException())
+{
+blException=(BLException)response.getException();
+throw blException;
+}
+}catch(NetworkException networkException)
+{
+blException.setGenericException(networkException.getMessage());
+throw blException;
+}
 }
 public void removeDesignation(int code) throws BLException
 {
