@@ -47,11 +47,9 @@ if(blException.hasExceptions()) throw blException;
 try
 {
 Request request=new Request();
-//PROBLEM: Here, we want to pass String but here enums are passing
-//SOLUTION: Created a Manager class which have functionalities as getManagerType and getActionType --> which provide specific values against given arguments. 
-//Structure is not final yet.
-request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
-request.setAction(Manager.getActionType(Manager.DESIGNATION.ADD));
+//Final Structure should be like this
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getActionType(Managers.Designation.ADD));
 request.setArguments(designation);
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
@@ -84,8 +82,8 @@ if(blException.hasExceptions()) throw blException;
 try
 {
 Request request=new Request();
-request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
-request.setAction(Manager.getActionType(Manager.DESIGNATION.UPDATE));
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getActionType(Managers.Designation.UPDATE));
 request.setArguments(designation);
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
@@ -108,8 +106,8 @@ if(blException.hasExceptions()) throw blException;
 try
 {
 Request request=new Request();
-request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
-request.setAction(Manager.getActionType(Manager.DESIGNATION.REMOVE));
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getActionType(Managers.Designation.REMOVE));
 request.setArguments(code);
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
@@ -135,8 +133,8 @@ throw blException;
 try
 {
 Request request=new Request();
-request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
-request.setAction(Manager.getActionType(Manager.DESIGNATION.GET_BY_CODE));
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getActionType(Managers.Designation.GET_BY_CODE));
 request.setArguments(code);
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
@@ -162,8 +160,8 @@ if(blException.hasExceptions()) throw blException;
 try
 {
 Request request=new Request();
-request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
-request.setAction(Manager.getActionType(Manager.DESIGNATION.GET_BY_TITLE));
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getActionType(Managers.Designation.GET_BY_TITLE));
 request.setArguments(title);
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
@@ -180,92 +178,74 @@ blException.setGenericException(networkException.getMessage());
 throw blException;
 }
 }
-public int getDesignationCount() throws BLException	 //pending throws
+public int getDesignationCount()
 {
 try
 {
 Request request=new Request();
-request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
-request.setAction(Manager.getActionType(Manager.DESIGNATION.GET_COUNT));
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getActionType(Managers.Designation.GET_COUNT));
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
-if(response.hasException())
-{
-return 0;
-}
 int count=(Integer)response.getResult();
 return count;
 }catch(NetworkException networkException)
 {
-BLException blException=new BLException();
-blException.setGenericException(networkException.getMessage());
-throw blException;
+throw new RuntimeException(networkException.getMessage());
 }
 }
-public boolean designationCodeExists(int code) throws BLException
+public boolean designationCodeExists(int code)
 {
-try
-{
-Request request=new Request();
-request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
-request.setAction(Manager.getActionType(Manager.DESIGNATION.CODE_EXISTS));
-NetworkClient client=new NetworkClient();
-Response response=client.send(request);
-if(response.hasException())
+if(code<=0) 
 {
 return false;
 }
+try
+{
+Request request=new Request();
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getActionType(Managers.Designation.CODE_EXISTS));
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
 boolean exists=(Boolean)response.getResult();
 return exists;
 }catch(NetworkException networkException)
 {
-BLException blException=new BLException();
-blException.setGenericException(networkException.getMessage());
-throw blException;
+throw new RuntimeException(networkException.getMessage());
 }
 }
-public boolean designationTitleExists(String title) throws BLException
+public boolean designationTitleExists(String title)
 {
+if(title==null) return false;
+if(title.trim().length()==0) return false;
 try
 {
 Request request=new Request();
-request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
-request.setAction(Manager.getActionType(Manager.DESIGNATION.TITLE_EXISTS));
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getActionType(Managers.Designation.TITLE_EXISTS));
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
-if(response.hasException())
-{
-return false;
-}
 boolean exists=(Boolean)response.getResult();
 return exists;
 }catch(NetworkException networkException)
 {
-BLException blException=new BLException();
-blException.setGenericException(networkException.getMessage());
-throw blException;
+throw new RuntimeException(networkException.getMessage());
 }
 }
-public Set<DesignationInterface> getDesignations() throws BLException
+public Set<DesignationInterface> getDesignations()
 {
 try
 {
 Request request=new Request();
-request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
-request.setAction(Manager.getActionType(Manager.DESIGNATION.GET_ALL));
+request.setManager(Managers.getManagerType(Managers.DESIGNATION));
+request.setAction(Managers.getActionType(Managers.Designation.GET_DESIGNATIONS));
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
-if(response.hasException())
-{
-return null;
-}
 Set<DesignationInterface> designations=(Set<DesignationInterface>)response.getResult();
 return designations;
 }catch(NetworkException networkException)
 {
-BLException blException=new BLException();
-blException.setGenericException(networkException.getMessage());
-throw blException;
+throw new RuntimeException(networkException.getMessage());
 }
 }
 }
