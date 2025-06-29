@@ -84,8 +84,8 @@ if(blException.hasExceptions()) throw blException;
 try
 {
 Request request=new Request();
-request.setManager("DesignationManager");
-request.setAction("update");
+request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
+request.setAction(Manager.getActionType(Manager.DESIGNATION.UPDATE));
 request.setArguments(designation);
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
@@ -103,35 +103,169 @@ throw blException;
 public void removeDesignation(int code) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(code<=0) blException.addPropertyException("code","Code should not be negative or zero.");
+if(blException.hasExceptions()) throw blException;
+try
+{
+Request request=new Request();
+request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
+request.setAction(Manager.getActionType(Manager.DESIGNATION.REMOVE));
+request.setArguments(code);
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
+if(response.hasException())
+{
+blException=(BLException)response.getException();
 throw blException;
+}
+}catch(NetworkException networkException)
+{
+blException.setGenericException(networkException.getMessage());
+throw blException;
+}
 }
 public DesignationInterface getDesignationByCode(int code) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(code<=0)
+{
+blException.addPropertyException("code","Code should not be negative or zero.");
 throw blException;
+}
+try
+{
+Request request=new Request();
+request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
+request.setAction(Manager.getActionType(Manager.DESIGNATION.GET_BY_CODE));
+request.setArguments(code);
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
+if(response.hasException())
+{
+blException=(BLException)response.getException();
+throw blException;
+}
+DesignationInterface designation=(DesignationInterface)response.getResult();
+return designation;
+}catch(NetworkException networkException)
+{
+blException.setGenericException(networkException.getMessage());
+throw blException;
+}
 }
 public DesignationInterface getDesignationByTitle(String title) throws BLException
 {
 BLException blException=new BLException();
-blException.setGenericException("Not yet implemented");
+if(title==null) blException.addPropertyException("title","Title required.");
+else if((title=title.trim()).length()==0) blException.addPropertyException("title","Title required.");
+if(blException.hasExceptions()) throw blException;
+try
+{
+Request request=new Request();
+request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
+request.setAction(Manager.getActionType(Manager.DESIGNATION.GET_BY_TITLE));
+request.setArguments(title);
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
+if(response.hasException())
+{
+blException=(BLException)response.getException();
 throw blException;
 }
-public int getDesignationCount()
+DesignationInterface designation=(DesignationInterface)response.getResult();
+return designation;
+}catch(NetworkException networkException)
+{
+blException.setGenericException(networkException.getMessage());
+throw blException;
+}
+}
+public int getDesignationCount() throws BLException	 //pending throws
+{
+try
+{
+Request request=new Request();
+request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
+request.setAction(Manager.getActionType(Manager.DESIGNATION.GET_COUNT));
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
+if(response.hasException())
 {
 return 0;
 }
-public boolean designationCodeExists(int code)
+int count=(Integer)response.getResult();
+return count;
+}catch(NetworkException networkException)
+{
+BLException blException=new BLException();
+blException.setGenericException(networkException.getMessage());
+throw blException;
+}
+}
+public boolean designationCodeExists(int code) throws BLException
+{
+try
+{
+Request request=new Request();
+request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
+request.setAction(Manager.getActionType(Manager.DESIGNATION.CODE_EXISTS));
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
+if(response.hasException())
 {
 return false;
 }
-public boolean designationTitleExists(String title)
+boolean exists=(Boolean)response.getResult();
+return exists;
+}catch(NetworkException networkException)
+{
+BLException blException=new BLException();
+blException.setGenericException(networkException.getMessage());
+throw blException;
+}
+}
+public boolean designationTitleExists(String title) throws BLException
+{
+try
+{
+Request request=new Request();
+request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
+request.setAction(Manager.getActionType(Manager.DESIGNATION.TITLE_EXISTS));
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
+if(response.hasException())
 {
 return false;
 }
-public Set<DesignationInterface> getDesignations()
+boolean exists=(Boolean)response.getResult();
+return exists;
+}catch(NetworkException networkException)
+{
+BLException blException=new BLException();
+blException.setGenericException(networkException.getMessage());
+throw blException;
+}
+}
+public Set<DesignationInterface> getDesignations() throws BLException
+{
+try
+{
+Request request=new Request();
+request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
+request.setAction(Manager.getActionType(Manager.DESIGNATION.GET_ALL));
+NetworkClient client=new NetworkClient();
+Response response=client.send(request);
+if(response.hasException())
 {
 return null;
+}
+Set<DesignationInterface> designations=(Set<DesignationInterface>)response.getResult();
+return designations;
+}catch(NetworkException networkException)
+{
+BLException blException=new BLException();
+blException.setGenericException(networkException.getMessage());
+throw blException;
+}
 }
 }
