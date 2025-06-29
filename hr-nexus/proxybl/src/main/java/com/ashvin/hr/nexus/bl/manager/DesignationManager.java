@@ -35,15 +35,15 @@ if(code!=0)
 {
 blException.addPropertyException("code","Code should be zero");
 }
-if(title=null)
+if(title==null)
 {
 blException.addPropertyException("title","Title required");
 }
-else if(title.trim().length==0)
+else if(title.trim().length()==0)
 {
 blException.addPropertyException("title","Title required");
 }
-if(blException.hasException()) throw blException;
+if(blException.hasExceptions()) throw blException;
 try
 {
 Request request=new Request();
