@@ -48,8 +48,10 @@ try
 {
 Request request=new Request();
 //PROBLEM: Here, we want to pass String but here enums are passing
-request.setManager(MANAGER.DESIGNATION);
-request.setAction(DESIGNATION.ADD);
+//SOLUTION: Created a Manager class which have functionalities as getManagerType and getActionType --> which provide specific values against given arguments. 
+//Structure is not final yet.
+request.setManager(Manager.getManagerType(Manager.MANAGER.DESIGNATION));
+request.setAction(Manager.getActionType(Manager.DESIGNATION.ADD));
 request.setArguments(designation);
 NetworkClient client=new NetworkClient();
 Response response=client.send(request);
