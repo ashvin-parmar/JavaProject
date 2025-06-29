@@ -1,4 +1,4 @@
-package com.ashvin.network.common;
+package com.ashvin.network.client;
 import com.google.gson.*;
 import java.io.*;
 
@@ -28,7 +28,7 @@ static
 //We have to extract data from client.cfg file and if file does not exist or open ==> close the application --> "System.exit(0);"
 try
 {
-String filename="/client.cfg";
+String filename="client.cfg";
 File file=new File(filename);
 if(file.exists()==false) 
 {
@@ -54,12 +54,15 @@ x+=bytesReadCount;
 String jsonString=bytes.toString();
 
 Gson gson=new Gson();
+//Here some problem
 Configuration c=(Configuration)gson.fromJson(jsonString,Configuration.class);
 port=c.getPort();
 host=c.getHost();
 }catch(Exception exception)
 {
 System.out.println("Unable to load client.cfg file, it does not match correct.");
+System.out.println(exception.getMessage());
+System.out.println("Bye");
 System.exit(0);
 }
 }
