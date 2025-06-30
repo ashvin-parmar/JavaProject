@@ -10,8 +10,8 @@ public void updateDesignation(DesignationInterface designation) throws BLExcepti
 public void removeDesignation(int code) throws BLException;
 public DesignationInterface getDesignationByCode(int code) throws BLException;
 public DesignationInterface getDesignationByTitle(String title) throws BLException;
-public int getDesignationCount();
-public boolean designationCodeExists(int code);
+public int getDesignationCount() ;
+public boolean designationCodeExists(int code) ;
 public boolean designationTitleExists(String title);
-public Set<DesignationInterface> getDesignations();
+public Set<DesignationInterface> getDesignations() ;
 }

@@ -2,7 +2,7 @@ package com.ashvin.network.common;
 public class Response implements java.io.Serializable
 {
 private boolean success;
-private Object error;
+private Object result;
 private Object exception;
 public void setSuccess(boolean success)
 {
@@ -12,13 +12,13 @@ public boolean getSuccess()
 {
 return this.success;
 }
-public void setError(Object error)
+public void setResult(Object result)
 {
-this.error=error;
+this.result=result;
 }
-public Object getError()
+public Object getResult()
 {
-return this.error;
+return this.result;
 }
 public void setException(Object exception)
 {

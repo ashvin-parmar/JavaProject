@@ -2,5 +2,5 @@ plugins{
 id 'java'
 }
 dependencies{
-implementation files('../common/dist/hr-nexus-common.jar')
+implementation files('../common/dist/hr-nexus-common.jar','../netcommon/build/libs/netcommon.jar','../netclient/build/libs/netclient.jar')
 }
