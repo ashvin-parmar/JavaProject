@@ -1,69 +1,50 @@
 package com.ashvin.network.client;
-import com.google.gson.*;
+import org.xml.sax.*;
+import javax.xml.xpath.*;
 import java.io.*;
-
+import com.ashvin.network.common.exceptions.*;
 public class Configuration implements java.io.Serializable
 {
-static private int port;
-static private String host;
-static public int getPort()
+private static int port=-1;
+private static String host="";
+private static boolean fileMissing=false;
+private static boolean malformed=false;
+static public int getPort() throws NetworkException
 {
+if(fileMissing) throw new NetworkException("Missing file server.xml, read documentation.");
+if(malformed) throw new NetworkException("server.xml not configured according to documentation.");
+if(port<0 || port>49151) throw new NetworkException("server.xml contain invalid port number, read documentation.");
 return port;
 }
-static public String getHost()
+static public String getHost()	 throws NetworkException
 {
+if(fileMissing) throw new NetworkException("Missing file server.xml, read documentation");
+if(malformed) throw new NetworkException("server.xml not configured according to documentation.");
+if(host==null || host.trim().length()==0) throw new NetworkException("server.cml not configured according to documentation.");
 return host;
-}
-public void setHost(String h)
-{
-host=h;
-}
-public void setPort(int p)
-{
-port=p;
 }
 static
 {
-//Here, this type of class created for which host and port static get methods are provided. Data for port and host are extracted at the time of loading class Configuration, one time only in complete cycle of Application. static initializer blocks are the solution for this.
-//We have to extract data from client.cfg file and if file does not exist or open ==> close the application --> "System.exit(0);"
 try
 {
-String filename="client.cfg";
-File file=new File(filename);
-if(file.exists()==false) 
+File file=new File("server.xml");
+if(file.exists()) 
 {
-System.out.println("client.cfg file not available, Client configuration not matched.");
-System.exit(0);
+InputSource inputSource=new InputSource("server.xml");
+XPath xpath=XPathFactory.newInstance().newXPath();
+String host=xpath.evaluate("//server/@host",inputSource);
+String port=xpath.evaluate("//server/@port",inputSource);
+Configuration.port=Integer.parseInt(port);
+Configuration.host=host;
 }
-int bytesReadCount=0;
-long length=file.length();
-byte bytes[]=new byte[(int)length];
-byte tmp[]=new byte[1024];
-int i,j;
-long x;
-FileInputStream fis=new FileInputStream(file);
-x=0;
-j=0;
-while(x<length)
+else
 {
-bytesReadCount=fis.read(tmp);
-if(bytesReadCount==-1) continue;
-for(i=0;i<bytesReadCount;i++) bytes[j]=tmp[i];
-x+=bytesReadCount;
+System.out.println("Missing file server.xml, read documentation.");
+fileMissing=true;
 }
-String jsonString=bytes.toString();
-
-Gson gson=new Gson();
-//Here some problem
-Configuration c=(Configuration)gson.fromJson(jsonString,Configuration.class);
-port=c.getPort();
-host=c.getHost();
 }catch(Exception exception)
 {
-System.out.println("Unable to load client.cfg file, it does not match correct.");
-System.out.println(exception.getMessage());
-System.out.println("Bye");
-System.exit(0);
+malformed=true;
 }
 }
 }

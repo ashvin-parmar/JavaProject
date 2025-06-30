@@ -13,12 +13,8 @@ public Response send(Request request) throws NetworkException
 Response response=null;
 try
 {
-String host="localhost";
-int port=5050;
-
-//host=Configuration.getHost();
-//port=Configuration.getPort();	//Here, this type of class created for which host and port static get methods are provided. Data for port and host are extracted at the time of loading class Configuration, one time only in complete cycle of Application. static initializer blocks are the solution for this.
-//We have to extract data from client.cfg file and if file does not exist or open ==> close the application --> "System.exit(0);"
+String host=Configuration.getHost();
+int port=Configuration.getPort();
 
 Gson gson;
 String requestJson,responseJson;
