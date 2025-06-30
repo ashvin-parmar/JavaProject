@@ -48,6 +48,15 @@ InputStream is=socket.getInputStream();
 os.write(header,0,1024);
 os.flush();
 
+byte ack[]=new byte[1];
+int byteReadCount;
+while(true)
+{
+byteReadCount=is.read(ack);
+if(byteReadCount==-1) continue;
+break;
+}
+
 bytes=new byte[1024];
 bytesReadCount=0;
 chunkSize=1024;
@@ -84,6 +93,10 @@ j*=10;
 i--;
 }
 
+ack[0]=1;
+os.write(ack,0,1);
+os.flush();
+
 responseBytes=new byte[(int)x];
 length=x;
 i=0;
@@ -96,9 +109,10 @@ if(bytesReadCount==-1) continue;
 for(i=0;i<bytesReadCount;i++) responseBytes[j++]=tmp[i];
 x+=bytesReadCount;
 }
+ack[0]=1;
+os.write(ack,0,1);
+os.flush();
 
-os.close();
-is.close();
 socket.close();
 responseJson=responseBytes.toString();
 response=(Response)gson.fromJson(responseJson,Response.class);
