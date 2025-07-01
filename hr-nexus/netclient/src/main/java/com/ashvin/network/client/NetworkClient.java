@@ -10,30 +10,22 @@ public class NetworkClient
 {
 public Response send(Request request) throws NetworkException
 {
-Response response=null;
+Response res=null;
 try
 {
 String host=Configuration.getHost();
 int port=Configuration.getPort();
 
-Gson gson;
-String requestJson,responseJson;
-byte requestBytes[],responseBytes[];
-byte header[],tmp[],bytes[];
-long length;
-int i,j,k;
-long x;
-int bytesReadCount,chunkSize;
+ByteArrayOutputStream baos=new ByteArrayOutputStream();
+ObjectOutputStream oos=new ObjectOutputStream(baos);
+oos.writeObject(request);
+byte[] objectsByte=baos.toByteArray();
+int requestLength=objectsByte.length;
+byte[] header=new byte[1024];
+int i,x,j,k;
 
-gson=new Gson();
-requestJson=gson.toJson(request);
-System.out.println(requestJson);
-requestBytes=requestJson.getBytes();
-length=requestBytes.length;
-j=0;
 i=1023;
-x=length;
-header=new byte[1024];
+x=requestLength;
 while(x>0)
 {
 header[i]=(byte)(x%10);
@@ -45,9 +37,11 @@ Socket socket=new Socket(host,port);
 OutputStream os=socket.getOutputStream();
 InputStream is=socket.getInputStream();
 
+//Header Sends
 os.write(header,0,1024);
 os.flush();
 
+//Acknowledgement Receive
 byte ack[]=new byte[1];
 int byteReadCount;
 while(true)
@@ -57,78 +51,84 @@ if(byteReadCount==-1) continue;
 break;
 }
 
-bytes=new byte[1024];
-bytesReadCount=0;
-chunkSize=1024;
-x=0;
-i=0;
-while(x<length)
+//Data sends to Server side
+int bytesToSend=requestLength;
+int chunkSize=1024;
+j=0;
+while(j<bytesToSend)
 {
-if(length-x<chunkSize) chunkSize=(int)(length-x);
-os.write(requestBytes,(int)x,chunkSize);
+if((bytesToSend-j)<chunkSize) chunkSize=bytesToSend-j;
+os.write(objectsByte,j,chunkSize);
 os.flush();
-x+=chunkSize;
+j=j+chunkSize;
 }
 
-length=1024;
-tmp=new byte[1024];
+//Response Header received from server
+int bytesToReceive=1024;
 header=new byte[1024];
-x=0;
+byte tmp[]=new byte[1024];
+int bytesReadCount;
+i=0;
 j=0;
-while(x<1024)
+while(j<bytesToReceive)		//Read data until we get given amount of data
 {
 bytesReadCount=is.read(tmp);
 if(bytesReadCount==-1) continue;
-for(i=0;i<bytesReadCount;i++) header[j++]=tmp[i];
-x+=bytesReadCount;
+for(k=0;k<bytesReadCount;k++)
+{
+header[i]=tmp[k];
+i++;
+}
+j=j+bytesReadCount;
 }
 
-x=0;
+//Create ResponseLength extract from header
+int responseLength=0;
 i=1023;
 j=1;
 while(i>=0)
 {
-x=x+(header[i]*j);
-j*=10;
+responseLength=responseLength+(header[i]*j);
+j=j*10;
 i--;
 }
 
+//Sends Acknowledgement
 ack[0]=1;
 os.write(ack,0,1);
 os.flush();
 
-responseBytes=new byte[(int)x];
-length=x;
+//Response Data Receive
+byte response[]=new byte[responseLength];
+bytesToReceive=responseLength;
 i=0;
 j=0;
-x=0;
-while(x<length)
+while(j<bytesToReceive)
 {
 bytesReadCount=is.read(tmp);
 if(bytesReadCount==-1) continue;
-for(i=0;i<bytesReadCount;i++) responseBytes[j++]=tmp[i];
-x+=bytesReadCount;
+for(k=0;k<bytesReadCount;k++)
+{
+response[i]=tmp[k];
+i++;
 }
+j+=bytesReadCount;
+}
+
+//Acknowledgement sends
 ack[0]=1;
 os.write(ack,0,1);
 os.flush();
 
 socket.close();
-responseJson=responseBytes.toString();
-response=(Response)gson.fromJson(responseJson,Response.class);
-/*
-Wrap all the network/socket programming code over here.
-1. Serialize Request Object.
-2. Connect to the server.
-3. Send header and then the serialized form in chunks.
-4. Receive back header and then the serialized form of response. 
-5. return the reference of Response object.
-*/
+ByteArrayInputStream bais=new ByteArrayInputStream(response);
+ObjectInputStream ois=new ObjectInputStream(bais);
+res=(Response)ois.readObject();
 }catch(Exception exception)
 {
 System.out.println(exception);
 throw new NetworkException(exception.getMessage());
 }
-return response;
+return res;
 }
 }
