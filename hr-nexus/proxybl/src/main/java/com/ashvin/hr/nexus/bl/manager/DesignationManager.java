@@ -58,7 +58,7 @@ if(response.hasException())
 blException=(BLException)response.getException();
 throw blException;
 }
-designation.setCode(((Designation)response.getResult()).getCode());
+designation.setCode(((DesignationInterface)response.getResult()).getCode());
 }catch(NetworkException networkException)
 {
 blException.setGenericException(networkException.getMessage());
