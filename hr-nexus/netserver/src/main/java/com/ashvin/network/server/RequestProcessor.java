@@ -113,7 +113,7 @@ chunkSize=1024;
 while(j<bytesToSend)
 {
 if((bytesToSend-j)<=chunkSize) chunkSize=bytesToSend-j;
-os.write(responseBytes,0,chunkSize);
+os.write(responseBytes,j,chunkSize);
 os.flush();
 j+=chunkSize;
 }
