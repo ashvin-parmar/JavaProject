@@ -27,7 +27,7 @@ System.out.println("Designtaion added with code: "+designation.getCode());
 int code=designation.getCode();
 designation=new Designation();
 designation.setCode(code);
-designation.setTitle("New Title");
+designation.setTitle(gg[1]);
 designationManager.updateDesignation(designation);
 System.out.println("Designtaion Updated with title: "+designation.getTitle());
 

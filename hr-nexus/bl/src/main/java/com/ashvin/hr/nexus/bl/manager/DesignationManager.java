@@ -128,9 +128,10 @@ blDesignation.setCode(code);
 blDesignation.setTitle(title);
 DesignationInterface fDesignation;
 fDesignation=this.codeWiseDesignationMap.get(code);
+
 this.codeWiseDesignationMap.remove(code);
 this.codeWiseDesignationMap.put(code,blDesignation);
-this.titleWiseDesignationMap.remove(title.toUpperCase());
+this.titleWiseDesignationMap.remove(fDesignation.getTitle().toUpperCase());	  // bug: We are removing new name, instead remove old-name against same code string.
 this.titleWiseDesignationMap.put(title.toUpperCase(),blDesignation);
 this.designationSet.remove(fDesignation);
 this.designationSet.add(blDesignation);
