@@ -1,0 +1,6 @@
+plugins{
+id 'java'
+}
+dependencies{
+implementation files('../netcommon/build/libs/netcommon.jar','../netserver/build/libs/netserver.jar','../bl/build/libs/bl.jar','../dl/dist/hr-nexus-dl-1.0.jar','../common/dist/hr-nexus-common.jar')
+}

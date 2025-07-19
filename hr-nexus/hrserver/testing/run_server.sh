@@ -1,0 +1,1 @@
+java -classpath ../../dbdl/build/libs/dbdl.jar:/media/ashvin/code/my-libs/java/mysql/mysql.jar:../../bl/build/libs/bl.jar:../../common/dist/hr-nexus-common.jar:../../netcommon/build/libs/netcommon.jar:../../netserver/build/libs/netserver.jar:../build/libs/hrserver.jar:. com.ashvin.hr.nexus.server.main.Main
