@@ -28,7 +28,7 @@ import org.apache.pdfbox.pdmodel.graphics.image.*;
 
 public class EmployeeModel extends AbstractTableModel
 {
-private java.util.List<EmployeeInterface> employees;		//Wrong DS
+private java.util.Set<EmployeeInterface> employees;
 private String columnTitles[];
 private EmployeeManagerInterface employeeManager;
 public EmployeeModel()
@@ -60,7 +60,9 @@ return false;
 public Object getValueAt(int rowIndex,int columnIndex)
 {
 if(columnIndex==0) return rowIndex+1;
-return employees.get(rowIndex).getDesignation().getTitle(); 
+if(columnIndex==1) return employees.get(rowIndex).getEmployeeId();
+if(columnIndex==2) return employees.get(rowIndex).getName();
+if(columnIndex==3) return employees.get(rowIndex).getDesignation().getTitle(); 
 }
 
 //private methods for internal uses
@@ -68,30 +70,21 @@ private void populateDataStructure()
 {
 columnTitles=new String[2];
 columnTitles[0]="S. No.";
-columnTitles[1]="Employee Title";
-
-Set<EmployeeInterface> blEmployees;
+columnTitles[1]="ID";
+columnTitles[2]="Name";
+columnTitles[3]="Designation";
+TreeSet<EmployeeInterface> blEmployees;
 try
 {
 employeeManager=EmployeeManager.getEmployeeManager();
 blEmployees=employeeManager.getEmployees();
 }catch(BLException blException)
 {
-blEmployees=new TreeSet<EmployeeInterface>();
+blEmployees=new TreeSet<>();
 System.out.println("User Specific Message");
 //Something to do
 }
-employees=new LinkedList<>();
-for(EmployeeInterface employee:blEmployees)
-{
-employees.add(employee);
-}
-Collections.sort(employees,new Comparator<EmployeeInterface>(){
-public int compare(EmployeeInterface left,EmployeeInterface right)
-{
-return left.getDesignation().getTitle().toUpperCase().compareTo(right.getDesignation().getTitle().toUpperCase());
-}
-});
+employees=new TreeSet<>(blEmployees);
 }
 
 //Project Specific Methods
@@ -99,14 +92,6 @@ public void add(EmployeeInterface employee) throws BLException
 {
 employeeManager.addEmployee(employee);
 employees.add(employee);
-//Sorting
-Collections.sort(employees,new Comparator<EmployeeInterface>(){
-public int compare(EmployeeInterface left,EmployeeInterface right)
-{
-return 1;
-//return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
-}
-});
 fireTableDataChanged();
 }
 public int indexOfEmployee(EmployeeInterface employee) throws BLException
