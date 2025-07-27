@@ -1,0 +1,10 @@
+plugins{
+id 'java'
+}
+dependencies {
+implementation files('/media/ashvin/code/my-libs/java/gson/gson-2.13.1.jar')
+}
+jar
+{
+archiveBaseName='nframework-common'
+}
