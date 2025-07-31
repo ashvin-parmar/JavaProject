@@ -46,7 +46,6 @@ if(bytesReadCount==-1) continue;
 for(i=0;i<bytesReadCount;i++)
 {
 header[k]=tmp[i];
-i++;
 k++;
 }
 j+=bytesReadCount;
@@ -56,7 +55,7 @@ i=1023;
 j=1;
 while(i>=0)
 {
-requestLength+=((int)(header[i])*j);
+requestLength=requestLength+(header[i]*j);
 j*=10;
 i--;
 }
@@ -74,7 +73,6 @@ for(i=0;i<bytesReadCount;i++)
 {
 requestBytes[k]=tmp[i];
 k++;
-i++;
 }
 j+=bytesReadCount;
 }
@@ -113,6 +111,11 @@ response.setException(new RuntimeException("Unable to create object to service c
 }
 catch(InvocationTargetException invocationTargetException)
 {
+Throwable cause=invocationTargetException.getCause();
+//if(cause instanceof ???) 		//We can use this for specific type of exception handling
+response.setSuccess(false);
+response.setResult("");
+response.setException(cause);
 //Something to learn related to invocation throwable exception management with actual exception rising from invoked method.
 }
 }
