@@ -1,0 +1,1 @@
+java -classpath ../server/build/libs/nframework-server.jar:../client/build/libs/nframework-client.jar:../common/build/libs/nframework-common.jar:/media/ashvin/code/my-libs/java/gson/gson-2.13.1.jar:. BankUI $1
