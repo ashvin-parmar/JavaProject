@@ -1,0 +1,11 @@
+plugins{
+id 'java'
+}
+dependencies
+{
+implementation files('../common/build/libs/nframework-common.jar')
+}
+jar
+{
+archiveBaseName='nframework-server'
+}

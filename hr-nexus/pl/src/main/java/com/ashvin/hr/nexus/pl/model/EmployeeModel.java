@@ -26,12 +26,12 @@ import org.apache.pdfbox.pdmodel.*;
 import org.apache.pdfbox.pdmodel.font.*;
 import org.apache.pdfbox.pdmodel.graphics.image.*;
 
-public class DesignationModel extends AbstractTableModel
+public class EmployeeModel extends AbstractTableModel
 {
-private java.util.List<DesignationInterface> designations;		//Wrong DS
+private java.util.Set<EmployeeInterface> employees;
 private String columnTitles[];
-private DesignationManagerInterface designationManager;
-public DesignationModel()
+private EmployeeManagerInterface employeeManager;
+public EmployeeModel()
 {
 populateDataStructure();
 }
@@ -42,7 +42,7 @@ return columnTitles.length;
 }
 public int getRowCount()
 {
-return designations.size();
+return employees.size();
 }
 public String getColumnName(int columnIndex)
 {
@@ -60,7 +60,9 @@ return false;
 public Object getValueAt(int rowIndex,int columnIndex)
 {
 if(columnIndex==0) return rowIndex+1;
-return designations.get(rowIndex).getTitle(); 
+if(columnIndex==1) return employees.get(rowIndex).getEmployeeId();
+if(columnIndex==2) return employees.get(rowIndex).getName();
+if(columnIndex==3) return employees.get(rowIndex).getDesignation().getTitle(); 
 }
 
 //private methods for internal uses
@@ -68,82 +70,66 @@ private void populateDataStructure()
 {
 columnTitles=new String[2];
 columnTitles[0]="S. No.";
-columnTitles[1]="Designation Title";
-
-Set<DesignationInterface> blDesignations;
+columnTitles[1]="ID";
+columnTitles[2]="Name";
+columnTitles[3]="Designation";
+TreeSet<EmployeeInterface> blEmployees;
 try
 {
-designationManager=DesignationManager.getDesignationManager();
-blDesignations=designationManager.getDesignations();
+employeeManager=EmployeeManager.getEmployeeManager();
+blEmployees=employeeManager.getEmployees();
 }catch(BLException blException)
 {
-blDesignations=new TreeSet<DesignationInterface>();
+blEmployees=new TreeSet<>();
 System.out.println("User Specific Message");
 //Something to do
 }
-designations=new LinkedList<>();
-for(DesignationInterface designation:blDesignations)
-{
-designations.add(designation);
-}
-Collections.sort(designations,new Comparator<DesignationInterface>(){
-public int compare(DesignationInterface left,DesignationInterface right)
-{
-return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
-}
-});
+employees=new TreeSet<>(blEmployees);
 }
 
 //Project Specific Methods
-public void add(DesignationInterface designation) throws BLException
+public void add(EmployeeInterface employee) throws BLException
 {
-designationManager.addDesignation(designation);
-designations.add(designation);
-//Sorting
-Collections.sort(designations,new Comparator<DesignationInterface>(){
-public int compare(DesignationInterface left,DesignationInterface right)
-{
-return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
-}
-});
+employeeManager.addEmployee(employee);
+employees.add(employee);
 fireTableDataChanged();
 }
-public int indexOfDesignation(DesignationInterface designation) throws BLException
+public int indexOfEmployee(EmployeeInterface employee) throws BLException
 {
-Iterator<DesignationInterface> iterator=designations.iterator();
-DesignationInterface d;
+Iterator<EmployeeInterface> iterator=employees.iterator();
+EmployeeInterface d;
 int index=0;
 while(iterator.hasNext())
 {
 d=iterator.next();
-if(d.equals(designation))
+if(d.equals(employee))
 {
 return index;
 }
 index++;
 }
 BLException blException=new BLException();
-blException.setGenericException("Invalid designation: "+designation.getTitle());
+//blException.setGenericException("Invalid employee: "+employee.getTitle());
 throw blException;
 }
 public int indexOfTitle(String title,boolean isPartial) throws BLException
 {
-Iterator<DesignationInterface> iterator=designations.iterator();
-DesignationInterface d;
+Iterator<EmployeeInterface> iterator=employees.iterator();
+EmployeeInterface d;
 int index=0;
 while(iterator.hasNext())
 {
 d=iterator.next();
 if(isPartial)
 {
-if(d.getTitle().toUpperCase().startsWith(title.toUpperCase()))
+if(d.getDesignation().getTitle().toUpperCase().startsWith(title.toUpperCase()))
 {
 return index;
 }
 }
 else
 {
-if(d.getTitle().equalsIgnoreCase(title))
+if(d.getDesignation().getTitle().equalsIgnoreCase(title))
 {
 return index;
 }
@@ -151,35 +137,37 @@ return index;
 index++;
 }
 BLException blException=new BLException();
-blException.setGenericException("Invalid designation: "+title);
+blException.setGenericException("Invalid employee: "+title);
 throw blException;
 }
-public void update(DesignationInterface designation) throws BLException
+public void update(EmployeeInterface employee) throws BLException
 {
-designationManager.updateDesignation(designation);
-designations.remove(indexOfDesignation(designation));
-designations.add(designation);
+employeeManager.updateEmployee(employee);
+employees.remove(indexOfEmployee(employee));
+employees.add(employee);
 //Sorting
-Collections.sort(designations,new Comparator<DesignationInterface>(){
-public int compare(DesignationInterface left,DesignationInterface right)
+Collections.sort(employees,new Comparator<EmployeeInterface>(){
+public int compare(EmployeeInterface left,EmployeeInterface right)
 {
-return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
+return 1;
+//return left.getTitle().toUpperCase().compareTo(right.getTitle().toUpperCase());
 }
 });
 fireTableDataChanged();
 }
 public void delete(int code) throws BLException
 {
-designationManager.removeDesignation(code);
-DesignationInterface d;
-Iterator<DesignationInterface> iterator=designations.iterator();
+//employeeManager.removeEmployee(code);
+EmployeeInterface d;
+Iterator<EmployeeInterface> iterator=employees.iterator();
 boolean flag=false;
 while(iterator.hasNext())
 {
 d=iterator.next();
-if(d.getCode()==code)
+//if(d.getCode()==code)
+if(d.getDesignation().getCode()==code)
 {
-designations.remove(indexOfDesignation(d));
+employees.remove(indexOfEmployee(d));
 flag=true;
 break;
 }
@@ -210,7 +198,7 @@ Image logo=new Image(ImageDataFactory.create(getClass().getResource("/icons/hr_n
 top.add(logo);
 top.add(new Text("                         "));
 top.add("HR-Nexus").setFont(titleFont).setFontSize(30).setTextAlignment(TextAlignment.JUSTIFIED);
-Paragraph title=new Paragraph("Designation");
+Paragraph title=new Paragraph("Employee");
 title.setFont(titleFont).setFontSize(20).setTextAlignment(TextAlignment.CENTER);
 Text pageNumberText;
 
@@ -220,7 +208,7 @@ Cell cell0;
 Cell cell1;
 
 Cell headerCell0=new Cell().add(new Paragraph("S.No.").setFont(titleFont).setFontSize(18).setBackgroundColor(ColorConstants.BLUE));
-Cell headerCell1=new Cell().add(new Paragraph("Designation").setFont(titleFont).setFontSize(18).setBackgroundColor(ColorConstants.BLUE)); 
+Cell headerCell1=new Cell().add(new Paragraph("Employee").setFont(titleFont).setFontSize(18).setBackgroundColor(ColorConstants.BLUE)); 
 
 Paragraph creator=new Paragraph("Creator: Ashvin Parmar");
 creator.setFont(titleFont).setFontSize(18).setFontColor(ColorConstants.BLACK);
@@ -229,7 +217,7 @@ int sno=0;
 int pageSize=20;
 boolean newPage=true;
 int pageNumber=0;
-for(int i=0;i<designations.size();i++)
+for(int i=0;i<employees.size();i++)
 {
 if(newPage)
 {
@@ -247,18 +235,18 @@ newPage=false;
 sno++;
 cell0=new Cell().add(new Paragraph(String.valueOf(sno)));
 cell0.setFont(dataFont).setFontSize(16).setTextAlignment(TextAlignment.RIGHT);
-cell1=new Cell().add(new Paragraph(designations.get(i).getTitle()));
-cell1.setFont(dataFont).setFontSize(16).setTextAlignment(TextAlignment.JUSTIFIED);
+//cell1=new Cell().add(new Paragraph(employees.get(i).getTitle()));
+//cell1.setFont(dataFont).setFontSize(16).setTextAlignment(TextAlignment.JUSTIFIED);
 table.addCell(cell0);
-table.addCell(cell1);
+//table.addCell(cell1);
 
-if(sno%pageSize==0 || sno==designations.size())
+if(sno%pageSize==0 || sno==employees.size())
 {
 //add table to page
 //add creator name
 document.add(table);
 document.add(creator);
-if(sno<designations.size())
+if(sno<employees.size())
 {
 //add new page
 System.out.println("New page to add");
@@ -292,9 +280,9 @@ PDPageContentStream contentStream=new PDPageContentStream(document,page);
 //PDImageXObject logo=PDImageXObject.createFromFile(getClass().getResource("/icons/logo.png").toString());
 String companyName="HR-Nexus";
 
-String title="Designations";
+String title="Employees";
 String header1="S.No.";
-String header2="Designation";
+String header2="Employee";
 String designer="Designer: Ashvin Parmar";
 //table creation variables
 
@@ -313,7 +301,7 @@ int sno=0;
 int pageSize=22;
 boolean newPage=true;
 int pageNumber=0;
-for(int i=0;i<designations.size();i++)
+for(int i=0;i<employees.size();i++)
 {
 if(newPage)
 {
@@ -392,10 +380,10 @@ contentStream.endText();
 contentStream.beginText();
 contentStream.newLineAtOffset(margin+col1Width+dataXMargin,tableTopY-dataYMargin-x);
 
-contentStream.showText(designations.get(i).getTitle());
+//contentStream.showText(employees.get(i).getTitle());
 contentStream.endText();
 rowNumber++;
-if(sno%pageSize==0 || sno==designations.size())
+if(sno%pageSize==0 || sno==employees.size())
 {
 //add table to page
 //add creator name
@@ -406,6 +394,12 @@ contentStream.newLineAtOffset(margin,tableTopY-x-2*rowHeight);
 contentStream.showText(designer);
 contentStream.endText();
 
+if(sno<employees.size())
+{
+//add new page
+System.out.println("New page to add");
+
+}
 newPage=true;
 }
 }
@@ -441,11 +435,11 @@ logoPara.add(logo);
 Paragraph companyNamePara=new Paragraph();
 companyNamePara.add("  HR-Nexus");
 companyNamePara.setFont(companyNameFont).setFontSize(18);
-Paragraph reportTitlePara=new Paragraph("List of designations");
+Paragraph reportTitlePara=new Paragraph("List of employees");
 reportTitlePara.setFont(reportTitleFont).setFontSize(15);
 Paragraph columnTitle1=new Paragraph("S.No.");
 columnTitle1.setFont(columnTitleFont).setFontSize(14);
-Paragraph columnTitle2=new Paragraph("Designations");
+Paragraph columnTitle2=new Paragraph("Employees");
 columnTitle1.setFont(columnTitleFont).setFontSize(14);
 Paragraph pageNumberParagraph;
 Paragraph dataParagraph;
@@ -461,9 +455,9 @@ Cell cell;
 int sno=0;
 int pageSize=26;
 boolean newPage=true;
-int numberOfPages=this.designations.size()/pageSize+(this.designations.size()%pageSize!=0?1:0);
+int numberOfPages=this.employees.size()/pageSize+(this.employees.size()%pageSize!=0?1:0);
 int pageNumber=0;
-for(int i=0;i<this.designations.size();i++)
+for(int i=0;i<this.employees.size();i++)
 {
 if(newPage)
 {
@@ -506,16 +500,16 @@ cell.add(dataParagraph);
 cell.setTextAlignment(TextAlignment.RIGHT);
 dataTable.addCell(cell);
 cell=new Cell();
-dataParagraph=new Paragraph(designations.get(i).getTitle());
+//dataParagraph=new Paragraph(employees.get(i).getTitle());
 dataParagraph.setFont(dataFont).setFontSize(14);
 cell.add(dataParagraph);
 dataTable.addCell(cell);
 
-if(sno%pageSize==0 || sno==designations.size())
+if(sno%pageSize==0 || sno==employees.size())
 {
 document.add(dataTable);
 document.add(new Paragraph("Software by: Ashvin Parmar"));
-if(sno<designations.size()) 
+if(sno<employees.size()) 
 {
 //new page created
 document.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
@@ -531,14 +525,14 @@ blException.setGenericException(""+file.getName());
 throw blException;
 }
 }
-public DesignationInterface getDesignationAt(int index) throws BLException
+public EmployeeInterface getEmployeeAt(int index) throws BLException
 {
-if(index<0 || index>=designations.size())
+if(index<0 || index>=employees.size())
 {
 BLException blException=new BLException();
 blException.setGenericException("Invalid index "+index);
 throw blException;
 }
-return designations.get(index);
+return employees.get(index);
 }
 }

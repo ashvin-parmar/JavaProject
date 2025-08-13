@@ -1,1 +1,1 @@
-java -classpath ../dbdl/build/libs/dbdl.jar:../bl/build/libs/bl.jar:../common/dist/hr-nexus-common.jar:../pl/build/libs/pl.jar:/media/ashvin/code/my-libs/java/itext/itext9/*:/media/ashvin/code/my-libs/java/pdfbox/*:/media/ashvin/code/my-libs/java/mysql/*:. com.ashvin.hr.nexus.pl.Main
+java -classpath ../../dbdl/build/libs/dbdl.jar:../../bl/build/libs/bl.jar:../../common/dist/hr-nexus-common.jar:../../pl/build/libs/pl.jar:/media/ashvin/code/my-libs/java/itext/itext9/*:/media/ashvin/code/my-libs/java/pdfbox/*:/media/ashvin/code/my-libs/java/mysql/*:. com.ashvin.hr.nexus.pl.Main

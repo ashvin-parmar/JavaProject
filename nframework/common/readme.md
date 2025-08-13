@@ -1,0 +1,3 @@
+NFramework created to replace complete data-layer[later-on] part of any project with direct access using reflection API's. Creating a framework to manage server to client side data management through direct calling functions from framework using help of Annotations. Annotations and reflection are majorly used in this project. Also, Network programming is crucial part, obiously it's a web server.
+[Current project: ] Replaces seperately calling of function based on passing arguments and thier annotations based string only for class and method references.
+All part are done using reflections. -> object creation, method invoke, exception throwing, and all that.
