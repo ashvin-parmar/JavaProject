@@ -6,7 +6,7 @@ import java.nio.charset.*;
 import java.io.*;
 public class NFrameworkClient
 {
-public Object execute(String servicePath,Object arguments[])
+public Object execute(String servicePath,Object arguments[]) throws Throwable
 {
 try
 {
@@ -102,6 +102,10 @@ Response response=JSONUtil.fromJSON(responseJSONString,Response.class);
 if(response.getSuccess()==true)
 {
 return response.getResult();
+}
+else
+{
+throw response.getException();
 }
 }catch(Exception exception)
 {

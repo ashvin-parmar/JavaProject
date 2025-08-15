@@ -5,7 +5,7 @@ import com.ashvin.nframework.server.*;
 public class Bank
 {
 @Path("/getBranch")
-public String getBranch(String area)
+public String getBranch(String area) throws BankingException
 {
 if(area.equals("Ujjain"))
 {
@@ -19,7 +19,7 @@ else if(area.equals("Bengaluru"))
 {
 return "Shivoham Shiva Temple";
 }
-return "No branch available";
+throw new BankingException("No branch available");
 }
 public static void main(String gg[])
 {
