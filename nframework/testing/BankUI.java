@@ -15,10 +15,24 @@ String area=gg[0];
 Object arguments[]={area};
 NFrameworkClient client=new NFrameworkClient();
 String result=(String)client.execute("/banking/getBranch",arguments);
-System.out.println("Branch name: "+result);
+System.out.println("Branch name : "+result);
 }catch(BankingException be)
 {
+//System.out.println("Banking exception 1");
+System.out.println(be.getMessage());		//Arrived for this case
+}catch(Throwable t)
+{
+if(t instanceof BankingException)
+{
+//System.out.println("Banking exception");
+BankingException be=(BankingException)t;
 System.out.println(be.getMessage());
+}
+else
+{
+//System.out.println("Throwable exception");
+System.out.println(t.getMessage());
+}
 }
 }
 }

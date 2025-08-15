@@ -96,8 +96,8 @@ j+=bytesReadCount;
 os.write(ack);
 os.flush();
 socket.close();
-
 String responseJSONString=new String(responseBytes,StandardCharsets.UTF_8);
+//System.out.println(responseJSONString);
 Response response=JSONUtil.fromJSON(responseJSONString,Response.class);
 if(response.getSuccess()==true)
 {
@@ -106,11 +106,16 @@ return response.getResult();
 else
 {
 throw response.getException();
+//Throwable t=response.getException();
+//System.out.println(t);
+//throw response.getException();
+//Class c=Class.forName(t.getClass().getName());
+//throw (Throwable) (c.getConstructor(String.class).newInstance(t.getMessage()));
 }
-}catch(Exception exception)
+}catch(IOException ioException)
 {
-System.out.println(exception.getMessage());
-}
+System.out.println(ioException.getMessage());
 return null;
+}
 }
 }
