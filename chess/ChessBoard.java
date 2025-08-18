@@ -10,6 +10,8 @@ public class ChessBoard extends JFrame
 {
 private java.util.List<java.util.List<JButton>> board;
 private Container container;
+private static String piecesName[][]={{"rook","knight","bishop","king","queen","bishop","knight","rook"},{"pawn","pawn","pawn","pawn","pawn","pawn","pawn","pawn"}};
+
 public ChessBoard()
 {
 initChessBoard();
@@ -56,8 +58,7 @@ public boolean isClicked()
 return false;
 }
 });
-*/
-/*
+
 button.addMouseListener(new MouseAdapter(){
 public void mousePressed(MouseEvent e)
 {
@@ -141,13 +142,33 @@ setDefaultCloseOperation(EXIT_ON_CLOSE);
 }
 public void initializeChessPieces()
 {
-String places[][]={{"rook","knight","bishop","king","queen","bishop","knight","rook"},{"pawn","pawn","pawn","pawn","pawn","pawn","pawn","pawn"}}
+for(int j=0;j<=1;j++)
+{
+for(int i=0;i<8;i++)
+{
+board.get(j).get(i).setIcon(PiecesManagement.getPiece("black"+piecesName[j][i]));
+}
+}
+/*		//Optimize
+ImageIcon icon=PiecesManagement.getPiece("blackpawn");
+for(int i=0;i<8;i++)
+{
+board.get(1).get(i).setIcon(icon);
+}
+*/
+for(int j=1;j>=0;j--)
+{
+for(int i=0;i<8;i++)
+{
+board.get(7-j).get(i).setIcon(PiecesManagement.getPiece("white"+piecesName[j][i]));
+}
+}
 
 }
-public class PiecesManagement 
+class PiecesManagement 
 {
 private static Map<String,ImageIcon> pieces;
-public PiecesManagement()
+PiecesManagement()
 {
 }
 static 
@@ -156,10 +177,16 @@ pieces=new HashMap<>();
 //(String piece1,String piece2)->{
 //return piece1.compareToIgnoreCase(piece2);
 //}
-ImageIcon image=new ImageIcon("/chess-resources/black_pawn.png");
-if(image==null) System.out.println("image is null");
-pieces.put("blackpawn",new ImageIcon("chess-resources/black_pawn.png"));
-pieces.put("whitepawn",new ImageIcon("/chess-resources/white-pawn.png"));
+String pieceName;
+for(int j=0;j<=1;j++)
+{
+for(int i=0;i<8;i++)
+{
+pieceName=ChessBoard.piecesName[j][i];
+pieces.put("black"+pieceName,new ImageIcon("chess-resources/black_"+pieceName+".png"));
+pieces.put("white"+pieceName,new ImageIcon("chess-resources/white_"+pieceName+".png"));
+}
+}
 }
 public static ImageIcon getPiece(String piece)
 {
