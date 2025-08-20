@@ -8,10 +8,16 @@ import java.io.*;
 
 public class ChessBoard extends JFrame
 {
+Icon selectedPiece=null;
+JButton selectedButton=null;
+private boolean whiteMove=true;
 private java.util.List<java.util.List<JButton>> board;
 private Container container;
-private static String piecesName[][]={{"rook","knight","bishop","king","queen","bishop","knight","rook"},{"pawn","pawn","pawn","pawn","pawn","pawn","pawn","pawn"}};
-
+private static String piecesName[][]={
+{"rook","knight","bishop","king","queen","bishop","knight","rook"},
+{"pawn","pawn","pawn","pawn","pawn","pawn","pawn","pawn"}
+};
+public static int buttonSize=80;
 public ChessBoard()
 {
 initChessBoard();
@@ -38,43 +44,54 @@ backgroundColor=Color.BLUE;
 }
 else
 {
-backgroundColor=new Color(255,255,224,100);
-//backgroundColor=Color.WHITE;
+//backgroundColor=new Color(255,255,224,100);
+backgroundColor=Color.WHITE;
 }
 button.setBackground(backgroundColor);
 button.setOpaque(true);
 button.setBorderPainted(false);
 button.setFocusPainted(false);
-
-/*
+button.setOpaque(true);
 Color bc=new Color(backgroundColor.getRGB());		//final
 button.setModel(new DefaultButtonModel(){
 public boolean isRollover()
 {
 return false;
 }
+/*
 public boolean isClicked()
 {
 return false;
 }
+*/
 });
-
 button.addMouseListener(new MouseAdapter(){
 public void mousePressed(MouseEvent e)
 {
 JButton button=(JButton)e.getSource();
-if(button.isEnabled())
+if(selectedPiece==null) 
 {
-button.setBackground(bc.darker());
+selectedPiece=button.getIcon();
+selectedButton=button;
+}
+else
+{
+int x=button.getX();
+int y=button.getY();
+int sx=selectedButton.getX();
+int sy=selectedButton.getY();
+if(x==sx && y==sy) return;
+button.setIcon(selectedPiece);
+selectedButton.setIcon(null);
+selectedPiece=null;
+whiteMove=!whiteMove;
+System.out.println("end==? x: "+x+" y: "+y+" sx: "+sx+" sy: "+sy);
+//System.out.println("Now Move: "+(whiteMove==false?"Black":"White"));
 }
 }
 public void mouseReleased(MouseEvent e)
 {
 JButton button=(JButton)e.getSource();
-if(button.isEnabled())
-{
-button.setBackground(bc);
-}
 }
 public void mouseClicked(MouseEvent e)
 {
@@ -83,25 +100,12 @@ JButton button=(JButton)e.getSource();
 public void mouseEntered(MouseEvent e)
 {
 JButton button=(JButton)e.getSource();
-if(button.isEnabled())
-{
-if(button.getModel().isPressed())
-{
-button.setBackground(bc.darker());
-}
-else
-{
-button.setBackground(bc);
-}
-}
 }
 public void mouseExited(MouseEvent e)
 {
 JButton button=(JButton)e.getSource();
-button.setBackground(bc);
 }
 });
-*/
 row.add(button);
 color=!color;
 }
@@ -109,17 +113,14 @@ color=!color;
 board.add(row);
 }
 
-
-
-
 container=getContentPane();
 }
 private void setAppearance()
 {
 JButton button;
 container.setLayout(null);
-int lm=10;
-int tm=10;
+int lm=0;
+int tm=0;
 for(int i=0;i<8;i++)
 {
 for(int j=0;j<8;j++)
@@ -133,8 +134,8 @@ container.add(button);
 
 initializeChessPieces();
 
-int w=80*8+20;
-int h=80*8+20+40;
+int w=80*8;
+int h=80*8+40;
 setSize(w,h);
 Dimension d=Toolkit.getDefaultToolkit().getScreenSize();
 setLocation((d.width/2)-(w/2),(d.height/2)-(h/2));
@@ -168,7 +169,7 @@ board.get(7-j).get(i).setIcon(PiecesManagement.getPiece("white"+piecesName[j][i]
 class PiecesManagement 
 {
 private static Map<String,ImageIcon> pieces;
-PiecesManagement()
+private PiecesManagement()
 {
 }
 static 
@@ -192,9 +193,80 @@ public static ImageIcon getPiece(String piece)
 {
 return pieces.get(piece);
 }
+public static boolean isBlack(Icon piece)
+{
+if(piece==null) return false;
+if(isBlackPawn(piece)) return true;
+for(int i=0;i<5;i++)
+{
+if(pieces.get("black"+piecesName[0][i]).equals(piece)) return true;
 }
-
-
+return false;
+}
+public static boolean isWhite(Icon piece)
+{
+if(piece==null) return false;
+if(isWhitePawn(piece)) return true;
+for(int i=0;i<5;i++)
+{
+if(pieces.get("white"+piecesName[0][i]).equals(piece)) return true;
+}
+return false;
+}
+public static boolean isBlackPawn(Icon piece)
+{
+ImageIcon p=pieces.get("blackpawn");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isWhitePawn(Icon piece)
+{
+ImageIcon p=pieces.get("whitepawn");
+p=pieces.get("whitepawn");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isKing(ImageIcon piece)
+{
+ImageIcon p=pieces.get("blackking");
+if(piece.equals(p)) return true;
+p=pieces.get("whiteking");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isQueen(ImageIcon piece)
+{
+ImageIcon p=pieces.get("blackqueen");
+if(piece.equals(p)) return true;
+p=pieces.get("whitequeen");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isRook(ImageIcon piece)
+{
+ImageIcon p=pieces.get("blackrook");
+if(piece.equals(p)) return true;
+p=pieces.get("whiterook");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isKnight(ImageIcon piece)
+{
+ImageIcon p=pieces.get("blackknight");
+if(piece.equals(p)) return true;
+p=pieces.get("whiteknight");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isBishop(ImageIcon piece)
+{
+ImageIcon p=pieces.get("blackknight");
+if(piece==p) return true;
+p=pieces.get("whiteknight");
+if(piece.equals(p)) return true;
+return false;
+}
+}
 
 public static void main(String gg[])
 {
