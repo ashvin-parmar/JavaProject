@@ -81,6 +81,56 @@ int y=button.getY();
 int sx=selectedButton.getX();
 int sy=selectedButton.getY();
 if(x==sx && y==sy) return;
+
+Icon buttonPiece=button.getIcon();
+//Something crazy
+
+if(PiecesManagement.isBlack(selectedPiece))
+{
+if(PiecesManagement.isBlack(buttonPiece))
+{
+selectedButton=button;
+selectedPiece=buttonPiece;
+return;
+}
+//Black Pawn move validation
+if(PiecesManagement.isBlackPawn(selectedPiece))
+{
+if(button.getIcon()==null)
+{
+System.out.println("black: x: "+x+" y: "+y+" sx: "+sx+" sy: "+sy);
+if(!((sx==x && sy==(y-buttonSize)) || (sy==buttonSize && sx==x && sy==(y-2*buttonSize)))) return;
+}
+else
+{
+if(sx!=(x-buttonSize) && sx!=(x+buttonSize)) return ;
+if(sy!=(y-buttonSize)) return ;
+}
+}
+}
+else
+{
+if(PiecesManagement.isWhite(buttonPiece))
+{
+selectedButton=button;
+selectedPiece=buttonPiece;
+return ;
+}
+//White Pawn coding
+if(PiecesManagement.isWhitePawn(selectedPiece))
+{
+if(button.getIcon()==null)
+{
+System.out.println("x: "+x+" y: "+y+" sx: "+sx+" sy: "+sy);
+if(!((sx==x && sy==(y+buttonSize)) || (sy==6*buttonSize && sx==x && sy==(y+2*buttonSize)))) return;
+}
+else
+{
+if(sx!=(x-buttonSize) && sx!=(x+buttonSize)) return ;
+if(sy!=(y+buttonSize)) return ;
+}
+}
+}
 button.setIcon(selectedPiece);
 selectedButton.setIcon(null);
 selectedPiece=null;
