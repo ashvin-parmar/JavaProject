@@ -318,23 +318,26 @@ public static boolean isValidPlusPath(JButton fromButton,JButton toButton)
 //int rx=sy+buttonSize;
 //int uy=sy-buttonSize;
 //int dy=sy+buttonSize;
-int si=(fromButton.getX()/buttonSize)-1;
-int sj=(fromButton.getY()/buttonSize)-1;
-int i=(toButton.getX()/buttonSize)-1;
-int j=(toButton.getY()/buttonSize)-1; 
+int si=(fromButton.getX()/buttonSize);
+int sj=(fromButton.getY()/buttonSize);
+int i=(toButton.getX()/buttonSize);
+int j=(toButton.getY()/buttonSize); 
 if(!(i==si || j==sj)) return false;
 int li=si-1;
 int ri=si+1;
 int uj=sj-1;
 int dj=sj+1;
+//System.out.printf("si: %d, sj: %d, i: %d, j:%d\n",si,sj,i,j);
+//System.out.printf("li: %d ri: %d uj: %d dj: %d\n",li,ri,uj,dj);
 JButton midButton;
-if(i==si)
+if(sj==j)
 {
 while(li>=0 || ri<8)
 {
 if(li>=0) 
 {
 if(li==i && sj==j) return true;
+//System.out.printf("li: %d ri: %d uj: %d dj: %d\n",li,ri,uj,dj);
 midButton=board.get(sj).get(li);
 if(midButton.getIcon()!=null) li=0;
 li--;
@@ -342,6 +345,7 @@ li--;
 if(ri<8)
 {
 if(ri==i && sj==j) return true;
+//System.out.printf("li: %d ri: %d uj: %d dj: %d\n",li,ri,uj,dj);
 midButton=board.get(sj).get(ri);
 if(midButton.getIcon()!=null) ri=8;
 ri++;
@@ -356,13 +360,15 @@ if(uj>=0)
 {
 if(uj==j && si==i) return true;
 midButton=board.get(uj).get(si);
+//System.out.printf("li: %d ri: %d uj: %d dj: %d\n",li,ri,uj,dj);
 if(midButton.getIcon()!=null) uj=0;
-li--;
+uj--;
 }
 if(dj<8)
 {
 if(dj==j && si==i) return true;
-midButton=board.get(dj).get(sj);
+midButton=board.get(dj).get(si);
+//System.out.printf("li: %d ri: %d uj: %d dj: %d\n",li,ri,uj,dj);
 if(midButton.getIcon()!=null) dj=8;
 dj++;
 }
