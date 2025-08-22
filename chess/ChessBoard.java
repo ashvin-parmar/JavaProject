@@ -296,28 +296,80 @@ board.get(7-j).get(i).setIcon(PiecesManagement.getPiece("white"+piecesName[j][i]
 }
 public static boolean isValidCrossPath(JButton fromButton,JButton toButton)
 {
-int sx=fromButton.getX();		//selected button x
-int sy=fromButton.getY();		//selected button y
-int x=toButton.getX();
-int y=toButton.getY();
-int lx=sx-buttonSize;
-int rx=sy+buttonSize;
-int uy=sy-buttonSize;
-int dy=sy+buttonSize;
-
+int si=(fromButton.getX()/buttonSize);
+int sj=(fromButton.getY()/buttonSize);
+int i=(toButton.getX()/buttonSize);
+int j=(toButton.getY()/buttonSize); 
+if(si==i || sj==j) return false;
+int li=si-1;
+int ri=si+1;
+int uj=sj-1;
+int dj=sj+1;
+Boolean diagonals[]={true,true,true,true};
+//System.out.printf("si: %d, sj: %d, i: %d, j:%d\n",si,sj,i,j);
+//System.out.printf("li: %d ri: %d uj: %d dj: %d\n",li,ri,uj,dj);
+JButton midButton;
+java.util.List<JButton> list1=null;
+java.util.List<JButton> list2=null;
+while(li>=0 || ri<8 || uj>=0 || dj<8)
+{
+if(uj>=0) 
+{
+list1=board.get(uj);
+}
+if(dj<8)
+{
+list2=board.get(dj);
+}
+if(list1==null)
+{
+diagonals[0]=false;
+diagonals[1]=false;
+}
+if(list2==null)
+{
+diagonals[2]=false;
+diagonals[3]=false;
+}
+if(li>=0)
+{
+if(diagonals[0])
+{
+if(li==i && uj==j) return true;
+midButton=list1.get(li);
+if(midButton.getIcon()!=null) diagonals[0]=false;
+}
+if(diagonals[2])
+{
+if(li==i && dj==j) return true;
+midButton=list2.get(li);
+if(midButton.getIcon()!=null) diagonals[2]=false;
+}
+}
+if(ri<8)
+{
+if(diagonals[1])
+{
+if(ri==i && uj==j) return true;
+midButton=list1.get(ri);
+if(midButton.getIcon()!=null) diagonals[1]=false;
+}
+if(diagonals[3])
+{
+if(ri==i && dj==j) return true;
+midButton=list2.get(ri);
+if(midButton.getIcon()!=null) diagonals[3]=false;
+}
+}
+li--;
+ri++;
+uj--;
+dj++;
+}
 return false;
 }
 public static boolean isValidPlusPath(JButton fromButton,JButton toButton)
 {
-//int sx=fromButton.getX();		//selected button x
-//int sy=fromButton.getY();		//selected button y
-//int x=toButton.getX();
-//int y=toButton.getY();
-//if(!(x==sx || y==sy)) return false;
-//int lx=sx-buttonSize;
-//int rx=sy+buttonSize;
-//int uy=sy-buttonSize;
-//int dy=sy+buttonSize;
 int si=(fromButton.getX()/buttonSize);
 int sj=(fromButton.getY()/buttonSize);
 int i=(toButton.getX()/buttonSize);
@@ -470,9 +522,9 @@ return false;
 }
 public static boolean isBishop(Icon piece)
 {
-ImageIcon p=pieces.get("blackknight");
+ImageIcon p=pieces.get("blackbishop");
 if(piece==p) return true;
-p=pieces.get("whiteknight");
+p=pieces.get("whitebishop");
 if(piece.equals(p)) return true;
 return false;
 }
@@ -502,7 +554,7 @@ return false;
 }
 public static boolean isBlackBishop(Icon piece)
 {
-ImageIcon p=pieces.get("blackknight");
+ImageIcon p=pieces.get("blackbishop");
 if(piece==p) return true;
 return false;
 }
@@ -532,7 +584,7 @@ return false;
 }
 public static boolean isWhiteBishop(Icon piece)
 {
-ImageIcon p=pieces.get("whiteknight");
+ImageIcon p=pieces.get("whitebishop");
 if(piece.equals(p)) return true;
 return false;
 }
