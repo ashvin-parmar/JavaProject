@@ -309,7 +309,65 @@ return false;
 }
 public static boolean isValidPlusPath(JButton fromButton,JButton toButton)
 {
-
+//int sx=fromButton.getX();		//selected button x
+//int sy=fromButton.getY();		//selected button y
+//int x=toButton.getX();
+//int y=toButton.getY();
+//if(!(x==sx || y==sy)) return false;
+//int lx=sx-buttonSize;
+//int rx=sy+buttonSize;
+//int uy=sy-buttonSize;
+//int dy=sy+buttonSize;
+int si=(fromButton.getX()/buttonSize)-1;
+int sj=(fromButton.getY()/buttonSize)-1;
+int i=(toButton.getX()/buttonSize)-1;
+int j=(toButton.getY()/buttonSize)-1; 
+if(!(i==si || j==sj)) return false;
+int li=si-1;
+int ri=si+1;
+int uj=sj-1;
+int dj=sj+1;
+JButton midButton;
+if(i==si)
+{
+while(li>=0 || ri<8)
+{
+if(li>=0) 
+{
+if(li==i && sj==j) return true;
+midButton=board.get(sj).get(li);
+if(midButton.getIcon()!=null) li=0;
+li--;
+}
+if(ri<8)
+{
+if(ri==i && sj==j) return true;
+midButton=board.get(sj).get(ri);
+if(midButton.getIcon()!=null) ri=8;
+ri++;
+}
+}
+}
+else
+{
+while(uj>=0 || dj<8)
+{
+if(uj>=0) 
+{
+if(uj==j && si==i) return true;
+midButton=board.get(uj).get(si);
+if(midButton.getIcon()!=null) uj=0;
+li--;
+}
+if(dj<8)
+{
+if(dj==j && si==i) return true;
+midButton=board.get(dj).get(sj);
+if(midButton.getIcon()!=null) dj=8;
+dj++;
+}
+}
+}
 return false;
 }
 class PiecesManagement 
