@@ -10,8 +10,7 @@ public class ChessBoard extends JFrame
 {
 Icon selectedPiece=null;
 JButton selectedButton=null;
-private boolean whiteMove=true;
-private java.util.List<java.util.List<JButton>> board;
+private static java.util.List<java.util.List<JButton>> board;
 private Container container;
 private static String piecesName[][]={
 {"rook","knight","bishop","king","queen","bishop","knight","rook"},
@@ -73,6 +72,7 @@ if(selectedPiece==null)
 {
 selectedPiece=button.getIcon();
 selectedButton=button;
+//effect of selection [pending]
 }
 else
 {
@@ -81,9 +81,9 @@ int y=button.getY();
 int sx=selectedButton.getX();
 int sy=selectedButton.getY();
 if(x==sx && y==sy) return;
+System.out.println("x: "+x+" y: "+y+" sx: "+sx+" sy: "+sy);
 
 Icon buttonPiece=button.getIcon();
-//Something crazy
 
 if(PiecesManagement.isBlack(selectedPiece))
 {
@@ -91,6 +91,7 @@ if(PiecesManagement.isBlack(buttonPiece))
 {
 selectedButton=button;
 selectedPiece=buttonPiece;
+//effect of selection [pending]
 return;
 }
 //Black Pawn move validation
@@ -98,13 +99,64 @@ if(PiecesManagement.isBlackPawn(selectedPiece))
 {
 if(button.getIcon()==null)
 {
-System.out.println("black: x: "+x+" y: "+y+" sx: "+sx+" sy: "+sy);
 if(!((sx==x && sy==(y-buttonSize)) || (sy==buttonSize && sx==x && sy==(y-2*buttonSize)))) return;
 }
 else
 {
 if(sx!=(x-buttonSize) && sx!=(x+buttonSize)) return ;
 if(sy!=(y-buttonSize)) return ;
+}
+}
+else if(PiecesManagement.isBlackKing(selectedPiece))
+{
+if(sx==x)
+{
+if(!(sy==y || sy==y-buttonSize || sy==y+buttonSize)) return;
+}
+else if(sx-buttonSize==x || sx+buttonSize==x)
+{
+if(!(sy==y || sy==y-buttonSize || sy==y+buttonSize)) return ;
+}
+else return ;
+//
+//if(!(sy==y && sx==(x-buttonSize) && sx==(x+buttonSize))) isTrue=false;
+//if(!(sx==x && sy==(y-buttonSize) && sy==(y+buttonSize))) isTrue=false;
+//if(isTrue==false) return ;
+}
+else if(PiecesManagement.isBlackQueen(selectedPiece))
+{
+if(sx==x || sy==y)
+{
+if(ChessBoard.isValidPlusPath(selectedButton,button)==false) return ; 
+}
+else
+{
+if(isValidCrossPath(selectedButton,button)==false) return ;
+}
+}
+else if(PiecesManagement.isBlackRook(selectedPiece))
+{
+if(sx==x || sy==y)
+{
+if(isValidPlusPath(selectedButton,button)==false) return ; 
+}
+else
+{
+return ;
+}
+}
+else if(PiecesManagement.isBlackKnight(selectedPiece))
+{
+}
+else if(PiecesManagement.isBlackBishop(selectedPiece))	//We can use only else
+{
+if(sx==x || sy==y)
+{
+return ;
+}
+else
+{
+if(isValidCrossPath(selectedButton,button)==false) return ;
 }
 }
 }
@@ -114,6 +166,7 @@ if(PiecesManagement.isWhite(buttonPiece))
 {
 selectedButton=button;
 selectedPiece=buttonPiece;
+//effect of selection [pending]
 return ;
 }
 //White Pawn coding
@@ -121,7 +174,6 @@ if(PiecesManagement.isWhitePawn(selectedPiece))
 {
 if(button.getIcon()==null)
 {
-System.out.println("x: "+x+" y: "+y+" sx: "+sx+" sy: "+sy);
 if(!((sx==x && sy==(y+buttonSize)) || (sy==6*buttonSize && sx==x && sy==(y+2*buttonSize)))) return;
 }
 else
@@ -130,13 +182,41 @@ if(sx!=(x-buttonSize) && sx!=(x+buttonSize)) return ;
 if(sy!=(y+buttonSize)) return ;
 }
 }
+else if(PiecesManagement.isWhiteKing(selectedPiece))
+{
+if(sx==x)
+{
+if(!(sy==y || sy==y-buttonSize || sy==y+buttonSize)) return;
+}
+else if(sx-buttonSize==x || sx+buttonSize==x)
+{
+if(!(sy==y || sy==y-buttonSize || sy==y+buttonSize)) return ;
+}
+else return ;
+//if(!(sx==(x-buttonSize) && sx==(x+buttonSize) && sx==x)) return ;
+//if(!(sy==(y-buttonSize) && sy==(y+buttonSize) && sy==y)) return ;
+}
+else if(PiecesManagement.isWhiteQueen(selectedPiece))
+{
+
+}
+else if(PiecesManagement.isWhiteRook(selectedPiece))
+{
+
+}
+else if(PiecesManagement.isWhiteKnight(selectedPiece))
+{
+
+}
+else if(PiecesManagement.isWhiteBishop(selectedPiece))	//We can use only else
+{
+
+}
 }
 button.setIcon(selectedPiece);
 selectedButton.setIcon(null);
 selectedPiece=null;
-whiteMove=!whiteMove;
-System.out.println("end==? x: "+x+" y: "+y+" sx: "+sx+" sy: "+sy);
-//System.out.println("Now Move: "+(whiteMove==false?"Black":"White"));
+//unselect effect
 }
 }
 public void mouseReleased(MouseEvent e)
@@ -162,7 +242,6 @@ color=!color;
 color=!color;
 board.add(row);
 }
-
 container=getContentPane();
 }
 private void setAppearance()
@@ -214,7 +293,24 @@ for(int i=0;i<8;i++)
 board.get(7-j).get(i).setIcon(PiecesManagement.getPiece("white"+piecesName[j][i]));
 }
 }
+}
+public static boolean isValidCrossPath(JButton fromButton,JButton toButton)
+{
+int sx=fromButton.getX();		//selected button x
+int sy=fromButton.getY();		//selected button y
+int x=toButton.getX();
+int y=toButton.getY();
+int lx=sx-buttonSize;
+int rx=sy+buttonSize;
+int uy=sy-buttonSize;
+int dy=sy+buttonSize;
 
+return false;
+}
+public static boolean isValidPlusPath(JButton fromButton,JButton toButton)
+{
+
+return false;
 }
 class PiecesManagement 
 {
@@ -276,7 +372,7 @@ p=pieces.get("whitepawn");
 if(piece.equals(p)) return true;
 return false;
 }
-public static boolean isKing(ImageIcon piece)
+public static boolean isKing(Icon piece)
 {
 ImageIcon p=pieces.get("blackking");
 if(piece.equals(p)) return true;
@@ -284,7 +380,7 @@ p=pieces.get("whiteking");
 if(piece.equals(p)) return true;
 return false;
 }
-public static boolean isQueen(ImageIcon piece)
+public static boolean isQueen(Icon piece)
 {
 ImageIcon p=pieces.get("blackqueen");
 if(piece.equals(p)) return true;
@@ -292,7 +388,7 @@ p=pieces.get("whitequeen");
 if(piece.equals(p)) return true;
 return false;
 }
-public static boolean isRook(ImageIcon piece)
+public static boolean isRook(Icon piece)
 {
 ImageIcon p=pieces.get("blackrook");
 if(piece.equals(p)) return true;
@@ -300,7 +396,7 @@ p=pieces.get("whiterook");
 if(piece.equals(p)) return true;
 return false;
 }
-public static boolean isKnight(ImageIcon piece)
+public static boolean isKnight(Icon piece)
 {
 ImageIcon p=pieces.get("blackknight");
 if(piece.equals(p)) return true;
@@ -308,11 +404,71 @@ p=pieces.get("whiteknight");
 if(piece.equals(p)) return true;
 return false;
 }
-public static boolean isBishop(ImageIcon piece)
+public static boolean isBishop(Icon piece)
 {
 ImageIcon p=pieces.get("blackknight");
 if(piece==p) return true;
 p=pieces.get("whiteknight");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isBlackKing(Icon piece)
+{
+ImageIcon p=pieces.get("blackking");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isBlackQueen(Icon piece)
+{
+ImageIcon p=pieces.get("blackqueen");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isBlackRook(Icon piece)
+{
+ImageIcon p=pieces.get("blackrook");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isBlackKnight(Icon piece)
+{
+ImageIcon p=pieces.get("blackknight");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isBlackBishop(Icon piece)
+{
+ImageIcon p=pieces.get("blackknight");
+if(piece==p) return true;
+return false;
+}
+public static boolean isWhiteKing(Icon piece)
+{
+ImageIcon p=pieces.get("whiteking");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isWhiteQueen(Icon piece)
+{
+ImageIcon p=pieces.get("whitequeen");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isWhiteRook(Icon piece)
+{
+ImageIcon p=pieces.get("whiterook");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isWhiteKnight(Icon piece)
+{
+ImageIcon p=pieces.get("whiteknight");
+if(piece.equals(p)) return true;
+return false;
+}
+public static boolean isWhiteBishop(Icon piece)
+{
+ImageIcon p=pieces.get("whiteknight");
 if(piece.equals(p)) return true;
 return false;
 }
