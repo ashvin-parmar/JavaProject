@@ -81,7 +81,7 @@ int y=button.getY();
 int sx=selectedButton.getX();
 int sy=selectedButton.getY();
 if(x==sx && y==sy) return;
-System.out.println("x: "+x+" y: "+y+" sx: "+sx+" sy: "+sy);
+//System.out.println("x: "+x+" y: "+y+" sx: "+sx+" sy: "+sy);
 
 Icon buttonPiece=button.getIcon();
 
@@ -94,17 +94,41 @@ selectedPiece=buttonPiece;
 //effect of selection [pending]
 return;
 }
+}
+else
+{
+if(PiecesManagement.isWhite(buttonPiece))
+{
+selectedButton=button;
+selectedPiece=buttonPiece;
+//effect of selection [pending]
+return ;
+}
+}
+
 //Black Pawn move validation
 if(PiecesManagement.isBlackPawn(selectedPiece))
 {
 if(button.getIcon()==null)
 {
-if(!((sx==x && sy==(y-buttonSize)) || (sy==buttonSize && sx==x && sy==(y-2*buttonSize)))) return;
+if(!((sx==x && sy==(y-buttonSize)) || (sy==buttonSize && sx==x && sy==(y-2*buttonSize) && board.get(y/buttonSize-1).get(x/buttonSize).getIcon()==null))) return;
 }
 else
 {
 if(sx!=(x-buttonSize) && sx!=(x+buttonSize)) return ;
 if(sy!=(y-buttonSize)) return ;
+}
+}
+else if(PiecesManagement.isWhitePawn(selectedPiece))
+{
+if(button.getIcon()==null)
+{
+if(!((sx==x && sy==(y+buttonSize)) || (sy==6*buttonSize && sx==x && sy==(y+2*buttonSize) && board.get(y/buttonSize+1).get(x/buttonSize).getIcon()==null))) return;
+}
+else
+{
+if(sx!=(x-buttonSize) && sx!=(x+buttonSize)) return ;
+if(sy!=(y+buttonSize)) return ;
 }
 }
 else if(PiecesManagement.isBlackKing(selectedPiece))
@@ -157,60 +181,6 @@ return ;
 else
 {
 if(isValidCrossPath(selectedButton,button)==false) return ;
-}
-}
-}
-else
-{
-if(PiecesManagement.isWhite(buttonPiece))
-{
-selectedButton=button;
-selectedPiece=buttonPiece;
-//effect of selection [pending]
-return ;
-}
-//White Pawn coding
-if(PiecesManagement.isWhitePawn(selectedPiece))
-{
-if(button.getIcon()==null)
-{
-if(!((sx==x && sy==(y+buttonSize)) || (sy==6*buttonSize && sx==x && sy==(y+2*buttonSize)))) return;
-}
-else
-{
-if(sx!=(x-buttonSize) && sx!=(x+buttonSize)) return ;
-if(sy!=(y+buttonSize)) return ;
-}
-}
-else if(PiecesManagement.isWhiteKing(selectedPiece))
-{
-if(sx==x)
-{
-if(!(sy==y || sy==y-buttonSize || sy==y+buttonSize)) return;
-}
-else if(sx-buttonSize==x || sx+buttonSize==x)
-{
-if(!(sy==y || sy==y-buttonSize || sy==y+buttonSize)) return ;
-}
-else return ;
-//if(!(sx==(x-buttonSize) && sx==(x+buttonSize) && sx==x)) return ;
-//if(!(sy==(y-buttonSize) && sy==(y+buttonSize) && sy==y)) return ;
-}
-else if(PiecesManagement.isWhiteQueen(selectedPiece))
-{
-
-}
-else if(PiecesManagement.isWhiteRook(selectedPiece))
-{
-
-}
-else if(PiecesManagement.isWhiteKnight(selectedPiece))
-{
-
-}
-else if(PiecesManagement.isWhiteBishop(selectedPiece))	//We can use only else
-{
-
 }
 }
 button.setIcon(selectedPiece);
