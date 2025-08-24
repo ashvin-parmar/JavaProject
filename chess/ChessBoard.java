@@ -19,7 +19,7 @@ private static String piecesName[][]={
 {"rook","knight","bishop","king","queen","bishop","knight","rook"},
 {"pawn","pawn","pawn","pawn","pawn","pawn","pawn","pawn"}
 };
-public static int buttonSize=80;
+public static int buttonSize=90;
 public ChessBoard()
 {
 initChessBoard();
@@ -259,7 +259,7 @@ for(int i=0;i<8;i++)
 for(int j=0;j<8;j++)
 {
 button=board.get(i).get(j);
-button.setBounds(lm+(j*80),tm+(i*80),80,80);
+button.setBounds(lm+(j*buttonSize),tm+(i*buttonSize),buttonSize,buttonSize);
 button.repaint();
 container.add(button);
 }
@@ -268,8 +268,8 @@ container.add(button);
 initializeChessPieces();
 
 
-int w=80*8;
-int h=80*8+40;
+int w=buttonSize*8;
+int h=buttonSize*8+40;
 setSize(w,h);
 Dimension d=Toolkit.getDefaultToolkit().getScreenSize();
 setLocation((d.width/2)-(w/2),(d.height/2)-(h/2));
@@ -451,13 +451,25 @@ pieces=new HashMap<>();
 //return piece1.compareToIgnoreCase(piece2);
 //}
 String pieceName;
+Image scaledImage;
+ImageIcon pieceIcon;
 for(int j=0;j<=1;j++)
 {
 for(int i=0;i<8;i++)
 {
 pieceName=ChessBoard.piecesName[j][i];
-pieces.put("black"+pieceName,new ImageIcon("chess-resources/black_"+pieceName+".png"));
-pieces.put("white"+pieceName,new ImageIcon("chess-resources/white_"+pieceName+".png"));
+
+//pieces.put("black"+pieceName,new ImageIcon("chess-resources/theme2/black_"+pieceName+".png"));
+//pieces.put("white"+pieceName,new ImageIcon("chess-resources/theme2/white_"+pieceName+".png"));
+pieceIcon=new ImageIcon("chess-resources/theme2/black_"+pieceName+".png");
+scaledImage=pieceIcon.getImage().getScaledInstance(buttonSize-40,buttonSize-40,Image.SCALE_SMOOTH);
+pieceIcon=new ImageIcon(scaledImage);
+pieces.put("black"+pieceName,pieceIcon);
+
+pieceIcon=new ImageIcon("chess-resources/theme2/white_"+pieceName+".png");
+scaledImage=pieceIcon.getImage().getScaledInstance(buttonSize-40,buttonSize-40,Image.SCALE_SMOOTH);
+pieceIcon=new ImageIcon(scaledImage);
+pieces.put("white"+pieceName,pieceIcon);
 }
 }
 }
