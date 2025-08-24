@@ -170,6 +170,21 @@ return ;
 }
 else if(PiecesManagement.isKnight(selectedPiece))
 {
+if(sx==x+buttonSize || sx==x-buttonSize || sx==x+2*buttonSize || sx==x-2*buttonSize)
+{
+if(sx==x+buttonSize || sx==x-buttonSize)
+{
+if(!(sy==y-2*buttonSize || sy==y+2*buttonSize)) return ; 
+}
+if(sx==x+2*buttonSize || sx==x-2*buttonSize) 
+{
+if(!(sy==y-buttonSize || sy==y+buttonSize)) return ;
+}
+}
+else
+{
+return ;
+}
 }
 else if(PiecesManagement.isBishop(selectedPiece))	//We can use only else
 {
