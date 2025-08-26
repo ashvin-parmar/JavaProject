@@ -3,7 +3,7 @@ public class Response implements java.io.Serializable
 {
 private boolean success;
 private Object result;
-private Object exception;
+private Throwable exception;
 public void setSuccess(boolean success)
 {
 this.success=success;
@@ -20,11 +20,11 @@ public Object getResult()
 {
 return this.result;
 }
-public void setException(Object exception)
+public void setException(Throwable exception)
 {
 this.exception=exception;
 }
-public Object getException()
+public Throwable getException()
 {
 return this.exception;
 }

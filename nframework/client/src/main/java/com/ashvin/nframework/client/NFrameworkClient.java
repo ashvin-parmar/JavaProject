@@ -6,7 +6,7 @@ import java.nio.charset.*;
 import java.io.*;
 public class NFrameworkClient
 {
-public Object execute(String servicePath,Object arguments[])
+public Object execute(String servicePath,Object arguments[]) throws Throwable
 {
 try
 {
@@ -96,17 +96,26 @@ j+=bytesReadCount;
 os.write(ack);
 os.flush();
 socket.close();
-
 String responseJSONString=new String(responseBytes,StandardCharsets.UTF_8);
+//System.out.println(responseJSONString);
 Response response=JSONUtil.fromJSON(responseJSONString,Response.class);
 if(response.getSuccess()==true)
 {
 return response.getResult();
 }
-}catch(Exception exception)
+else
 {
-System.out.println(exception.getMessage());
+throw response.getException();
+//Throwable t=response.getException();
+//System.out.println(t);
+//throw response.getException();
+//Class c=Class.forName(t.getClass().getName());
+//throw (Throwable) (c.getConstructor(String.class).newInstance(t.getMessage()));
 }
+}catch(IOException ioException)
+{
+System.out.println(ioException.getMessage());
 return null;
+}
 }
 }

@@ -8,42 +8,38 @@ public class NFrameworkServer
 {
 private ServerSocket serverSocket;
 private Set<Class> tcpNetworkServiceClasses;
+private Map<String,TCPService> services; 
 public NFrameworkServer()
 {
 tcpNetworkServiceClasses=new HashSet<>();
+services=new HashMap<>();
 }
 public void registerClass(Class c)
 {
 tcpNetworkServiceClasses.add(c);
-}
-public TCPService getTCPService(String path)
-{
 Path pathOnType;
 Path pathOnMethod;
 Method methods[];
 String fullPath;
 TCPService tcpService=null;
-for(Class c:tcpNetworkServiceClasses)
-{
 pathOnType=(Path)c.getAnnotation(Path.class);
-if(pathOnType==null) continue;
+if(pathOnType==null) return;
 methods=c.getMethods();
-for(Method m:methods)
+for(Method method:methods)
 {
-pathOnMethod=(Path)m.getAnnotation(Path.class);
+pathOnMethod=(Path)method.getAnnotation(Path.class);
 if(pathOnMethod==null) continue;
 fullPath=pathOnType.value()+pathOnMethod.value();
-if(path.equals(fullPath))
-{
 tcpService=new TCPService();
+tcpService.method=method;
 tcpService.c=c;
-tcpService.method=m;
-tcpService.path=path;
-return tcpService;
+tcpService.path=fullPath;
+services.put(fullPath,tcpService);
 }
 }
-}
-return null;
+public TCPService getTCPService(String path)
+{
+return services.get(path);
 }
 public void start()
 {

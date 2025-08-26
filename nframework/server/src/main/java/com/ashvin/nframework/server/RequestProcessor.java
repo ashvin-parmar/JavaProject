@@ -116,7 +116,6 @@ Throwable cause=invocationTargetException.getCause();
 response.setSuccess(false);
 response.setResult("");
 response.setException(cause);
-//Something to learn related to invocation throwable exception management with actual exception rising from invoked method.
 }
 }
 
