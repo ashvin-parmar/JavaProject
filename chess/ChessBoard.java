@@ -102,9 +102,17 @@ else
 {
 if(PiecesManagement.isWhite(buttonPiece))
 {
+if(selectedButton.equals(whiteKing) && PiecesManagement.isWhiteRook(buttonPiece))
+{
+//Castling
+System.out.println("Chess applied for castling");
+}
+else
+{
 selectedButton=button;
 selectedPiece=buttonPiece;
 //effect of selection [pending]
+}
 return ;
 }
 }
@@ -209,13 +217,19 @@ blackKing=button;
 }
 if(PiecesManagement.isWhiteKing(buttonPiece))
 {
+JOptionPane.showMessageDialog(ChessBoard.this,"Black Wins","Game ends",JOptionPane.INFORMATION_MESSAGE);
 System.out.println("Black wins");
-System.exit(0);
+initializeChessPieces();
+return ;
+//System.exit(0);
 }
 else if(PiecesManagement.isBlackKing(buttonPiece))
 {
+JOptionPane.showMessageDialog(ChessBoard.this,"White Wins","Game ends",JOptionPane.INFORMATION_MESSAGE);
 System.out.println("White wins");
-System.exit(0);
+initializeChessPieces();
+return ;
+//System.exit(0);
 }
 whiteMove=!whiteMove;
 selectedButton=(whiteMove?whiteKing:blackKing);
@@ -291,6 +305,14 @@ for(int i=0;i<8;i++)
 board.get(1).get(i).setIcon(icon);
 }
 */
+for(int j=2;j<=5;j++)
+{
+for(int i=0;i<8;i++)
+{
+board.get(j).get(i).setIcon(null);
+}
+}
+
 for(int j=1;j>=0;j--)
 {
 for(int i=0;i<8;i++)
