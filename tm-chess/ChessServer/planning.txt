@@ -1,0 +1,40 @@
+1: ChessServer: 
+	Map<String,Member> members;
+	Set<String> loggedInMembers;		//Store usernames
+	Set<String> playingMember;		//Store username
+	Map<String,Message> inboxes;		//Store username, with MESSAGE_TYPE
+	Map<String,Game> games;			//Store Game data with unique id
+
+
+2: Member: 	
+	String username;
+	String password;
+
+3: Message: 
+	String fromUsername;
+	String toUsername;
+	MESSAGE_TYPE;
+
+4: MESSAGE_TYPE: 	-> enum
+	1: CHALLENGE
+	2: CHALLENGE_ACCEPTED
+	3: CHALLENGE_REJECTED
+	4: NOT_ALLOWED
+
+5: Game
+	1: String uniqueId;
+	2: String playerOne;
+	3: String playerTwo;
+	4: byte activePlayer;
+	5: byte[][] board;
+	6: List<Move> moves;
+
+6: Move
+	byte player;
+	byte piece;
+	byte fromX;
+	byte fromY;
+	byte toX;
+	byte toY;
+
+7: DTO and DAO for Memeber class --> Setter/getter -> if private otherwise public without setter/getter and DAO for functionalities like getAll, add, update, delete and more.
