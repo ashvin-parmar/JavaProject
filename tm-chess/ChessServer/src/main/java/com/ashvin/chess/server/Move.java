@@ -8,4 +8,5 @@ public byte fromX;
 public byte fromY;
 public byte toX;
 public byte toY;
+public boolean isLastMove;
 }

@@ -1,9 +1,30 @@
 1: ChessServer: 
+    Fields
 	Map<String,Member> members;
 	Set<String> loggedInMembers;		//Store usernames
 	Set<String> playingMember;		//Store username
-	Map<String,Message> inboxes;		//Store username, with MESSAGE_TYPE
+	Map<String,List<Message>> inboxes;		//Store username, with MESSAGE_TYPE
 	Map<String,Game> games;			//Store Game data with unique id
+
+//Pull Mecahnism Used for accepting data on server side from clients -> BEKAR TARIKA
+//Later, We gonna use Push Mechanism
+   Methods	-> Used by clients for performing an action
+//Login actions
+boolean isUserAuthentic(String username,String password)
+void logout(String username)
+
+//gamification actions
+List<String> getAvailableUser(String username) --> List of all available users to send intitation
+void inviteUser(String fromUsername,String toUsername)	--> Send Invite
+List<Message> getMessages(String username); --> this method do all work of below methods which are commented, that's why we removed them
+REMOVED BELOWED METHOD because of getMessages() method
+//String isInvitationAccepted(String senderUsername,String receiverUsername)	 --> Is Accepted from sender to reciever, if Yes -> then send 	[Pull Mechanism]
+//void rejectInvitation(String byUsername,String invitedByUsername)	//Rejected Invitation
+//void acceptInvitation(String byUsername,String invitedByUsername)	//Accept Invitation
+String getGameId(String username);	==> Get Game ID
+boolean canIPlay(String gameId,String username)	 --> Request to play using Timer
+void submitMove(String byUsername,byte piece,int fromX,int fromY,int toX,int toY)	//Move submit to Server game
+Move getOpponentMove(String username)	//Get last move performed by opponent when canIPlay returns true
 
 
 2: Member: 	
@@ -36,5 +57,6 @@
 	byte fromY;
 	byte toX;
 	byte toY;
+	boolean isLastMove;		//Condition when last move of the game perform before someone win the game, it will to toggled to true from false;
 
 7: DTO and DAO for Memeber class --> Setter/getter -> if private otherwise public without setter/getter and DAO for functionalities like getAll, add, update, delete and more.
