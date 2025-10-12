@@ -27,28 +27,54 @@ member.username=memberDTO.username;
 member.password=memberDTO.password;
 this.members.put(memberDTO.username,member);
 }
+this.loggedInMembers=new HashSet<>();
+this.playingMembers=new HashSet<>();
+this.inboxes=new HashMap<>();
+this.games=new HashMap<>();
 }
-
-
-public boolean isUserAuthentic(String username,String password)
+public boolean isMemberAuthentic(String username,String password)
 {
-return false;
+Member member=this.members.get(username);
+if(member==null || password.equals(member.password)==false) return false;
+this.loggedInMembers.add(username);
+return true;
 } 
 public void logout(String username)
 {
-
+this.loggedInMembers.remove(username);
+//this.playingMembers.remove(username);
 }
-public List<String> getAvailableUser(String username)
+public List<String> getAvailableMember(String username)
 {
-return null;
+List<String> availableMembers=new LinkedList<>();
+for(String u:this.loggedInMembers)
+{
+if(playingMembers.contains(u)==false && u.equals(username)==false) availableMembers.add(username);
 }
-public void inviteUser(String fromUsername,String toUsername)
+return availableMembers;
+}
+public void inviteMember(String fromUsername,String toUsername)
 {
-
+Message message=new Message();
+message.fromUsername=fromUsername;
+message.toUsername=toUsername;
+message.type=MESSAGE_TYPE.CHALLENGE;
+List<Message> messages=this.inboxes.get(toUsername);
+if(messages==null)
+{
+messages=new LinkedList<Message>();
+this.inboxes.put(toUsername,messages);
+}
+messages.add(message);
 }
 public List<Message> getMessages(String username)
 {
-return null;
+List<Message> messages=this.inboxes.get(username);
+if(messages!=null && messages.size()>0)
+{
+inboxes.put(username,new LinkedList<Message>());
+}
+return messages;
 }
 public String getGameId(String username)
 {
