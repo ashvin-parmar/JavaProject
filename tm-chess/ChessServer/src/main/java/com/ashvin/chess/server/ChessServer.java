@@ -2,80 +2,92 @@ package com.ashvin.chess.server;
 
 import java.util.*;
 import com.ashvin.chess.server.dl.*;
+import com.ashvin.nframework.server.*;
+import com.ashvin.nframework.server.annotations.*;
 
+@Path("/ChessServer")
 public class ChessServer
 {
-public Map<String,Member> members;
-public Set<String> loggedInMembers;
-public Set<String> playingMembers;
-public Map<String,List<Message>> inboxes;
-public Map<String,Game> games;
+static private Map<String,Member> members;
+static private  Set<String> loggedInMembers;
+private static Set<String> playingMembers;
+private static Map<String,List<Message>> inboxes;
+private static Map<String,Game> games;
 public ChessServer()
+{
+}
+static
 {
 populateDataStructures();
 }
-private void populateDataStructures()
+private static void populateDataStructures()
 {
 Member member;
-this.members=new HashMap<>();
+members=new HashMap<>();
 MemberDAO memberDAO=new MemberDAO();
-List<MemberDTO> members=memberDAO.getAll();
-for(MemberDTO memberDTO:members)
+List<MemberDTO> dlMembers=memberDAO.getAll();
+for(MemberDTO memberDTO:dlMembers)
 {
 member=new Member();
 member.username=memberDTO.username;
 member.password=memberDTO.password;
-this.members.put(memberDTO.username,member);
+members.put(memberDTO.username,member);
 }
-this.loggedInMembers=new HashSet<>();
-this.playingMembers=new HashSet<>();
-this.inboxes=new HashMap<>();
-this.games=new HashMap<>();
+loggedInMembers=new HashSet<>();
+playingMembers=new HashSet<>();
+inboxes=new HashMap<>();
+games=new HashMap<>();
 }
+@Path("/memberAuthentic")
 public boolean isMemberAuthentic(String username,String password)
 {
-Member member=this.members.get(username);
+Member member=members.get(username);
 if(member==null || password.equals(member.password)==false) return false;
-this.loggedInMembers.add(username);
+loggedInMembers.add(username);
 return true;
-} 
+}
+@Path("/logout")
 public void logout(String username)
 {
-this.loggedInMembers.remove(username);
-//this.playingMembers.remove(username);
+loggedInMembers.remove(username);
+//playingMembers.remove(username);
 }
+@Path("/getMembers")
 public List<String> getAvailableMember(String username)
 {
 List<String> availableMembers=new LinkedList<>();
-for(String u:this.loggedInMembers)
+for(String u:loggedInMembers)
 {
-if(playingMembers.contains(u)==false && u.equals(username)==false) availableMembers.add(username);
+if(playingMembers.contains(u)==false && u.equals(username)==false) availableMembers.add(u);
 }
 return availableMembers;
 }
+@Path("/inviteMember")
 public void inviteMember(String fromUsername,String toUsername)
 {
 Message message=new Message();
 message.fromUsername=fromUsername;
 message.toUsername=toUsername;
 message.type=MESSAGE_TYPE.CHALLENGE;
-List<Message> messages=this.inboxes.get(toUsername);
+List<Message> messages=inboxes.get(toUsername);
 if(messages==null)
 {
 messages=new LinkedList<Message>();
-this.inboxes.put(toUsername,messages);
+inboxes.put(toUsername,messages);
 }
 messages.add(message);
 }
+@Path("/getMessages")
 public List<Message> getMessages(String username)
 {
-List<Message> messages=this.inboxes.get(username);
+List<Message> messages=inboxes.get(username);
 if(messages!=null && messages.size()>0)
 {
 inboxes.put(username,new LinkedList<Message>());
 }
 return messages;
 }
+@Path("/getGameId")
 public String getGameId(String username)
 {
 return "abc";
@@ -88,6 +100,7 @@ public void acceptInvitation(String byUsername,String invitedByUsername)
 {
 }
 */
+@Path("/canIPlay")
 public boolean canIPlay(String gameId,String username)
 {
 return false;
@@ -100,15 +113,5 @@ public Move getOpponentMove(String username)
 {
 return null;
 }
-
-
-
 //Create serviecs to enable client to perform login/logout actions
-
-/*
-public static void main(String gg[])
-{
-new ChessServer();
-}
-*/
 }

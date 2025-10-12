@@ -1,11 +1,11 @@
 1: ChessServer: 
     Fields
-	Map<String,Member> members;
-	Set<String> loggedInMembers;		//Store usernames
-	Set<String> playingMember;		//Store username
-	Map<String,List<Message>> inboxes;		//Store username, with MESSAGE_TYPE
-	Map<String,Game> games;			//Store Game data with unique id
-
+	static Map<String,Member> members;
+	static Set<String> loggedInMembers;		//Store usernames
+	static Set<String> playingMember;		//Store username
+	static Map<String,List<Message>> inboxes;		//Store username, with MESSAGE_TYPE
+	static Map<String,Game> games;			//Store Game data with unique id
+//Those fields are declared as static, because they wanted to create once for complete application cycle.
 //Pull Mecahnism Used for accepting data on server side from clients -> BEKAR TARIKA
 //Later, We gonna use Push Mechanism
    Methods	-> Used by clients for performing an action
