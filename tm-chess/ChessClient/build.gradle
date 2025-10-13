@@ -1,0 +1,8 @@
+plugins
+{
+id 'java'
+}
+dependencies
+{
+implementation files('../../nframework/client/build/libs/nframework-client.jar')
+}

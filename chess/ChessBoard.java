@@ -42,7 +42,8 @@ button.setContentAreaFilled(false);
 if(color)
 {
 //backgroundColor=new Color(100,149,237,100);
-backgroundColor=Color.BLUE;
+//backgroundColor=Color.BLUE;
+backgroundColor=Color.BLACK;
 }
 else
 {

@@ -1,0 +1,1 @@
+java -classpath ../../nframework/common/build/libs/nframework-common.jar:../../nframework/server/build/libs/nframework-server.jar:../../nframework/client/build/libs/nframework-client.jar:/media/ashvin/code/my-libs/java/gson/gson-2.13.1.jar:build/libs/ChessServer.jar:. com.ashvin.chess.server.Main

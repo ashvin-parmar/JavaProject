@@ -1,0 +1,9 @@
+Services provided by Server or API
+
+1: "/ChessServer/memberAuthentic" --> [args]: 1:username,2:password
+2: "/ChessServer/logout"	 --> [args]: 1:username
+3: "/ChessServer/getMembers"	--> [args]: 1:username
+4: "/ChessServer/inviteMember"	 --> [args]: 1:fromUsername,2:toUsername
+5: "/ChessServer/getMessages" 	--> [args]: 1:usernname
+6: "/ChessServer/getGameId"	--> [args]: 1:username
+7: "/ChessServer/canIPlay"	--> [args]: 1:gameId,2:username
