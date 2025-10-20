@@ -41,11 +41,11 @@ public TCPService getTCPService(String path)
 {
 return services.get(path);
 }
-public void start()
+public void start(int port)
 {
 try
 {
-serverSocket=new ServerSocket(5050);
+serverSocket=new ServerSocket(port);
 RequestProcessor requestProcessor;
 Socket socket;
 while(true)

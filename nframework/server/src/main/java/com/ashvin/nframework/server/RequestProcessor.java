@@ -98,7 +98,20 @@ Class c=tcpService.c;
 Method method=tcpService.method;
 try
 {
-Object serviceObject=c.newInstance();
+//Here more to add related to the processing of new object created using getClassObject method
+Object serviceObject=null;
+try
+{
+Method m=c.getMethod("get"+c.getSimpleName());
+serviceObject=m.invoke(c);
+}catch(Throwable t)
+{
+//do nothing
+}
+if(serviceObject==null)
+{
+serviceObject=c.newInstance();
+}
 Object result=method.invoke(serviceObject,request.getArguments());
 response.setSuccess(true);
 response.setResult(result);

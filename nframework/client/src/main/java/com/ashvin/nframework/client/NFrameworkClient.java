@@ -6,11 +6,18 @@ import java.nio.charset.*;
 import java.io.*;
 public class NFrameworkClient
 {
-public Object execute(String servicePath,Object arguments[]) throws Throwable
+private String host;
+private int port;
+public NFrameworkClient(String host,int port)
+{
+this.host=host;
+this.port=port;
+}
+public Object execute(String servicePath,Object ...arguments) throws Throwable
 {
 try
 {
-Socket socket=new Socket("localhost",5050);
+Socket socket=new Socket(host,port);
 InputStream is=socket.getInputStream();
 OutputStream os=socket.getOutputStream();
 byte header[]=new byte[1024];

@@ -12,9 +12,9 @@ return;
 try
 {
 String area=gg[0];
-Object arguments[]={area};
-NFrameworkClient client=new NFrameworkClient();
-String result=(String)client.execute("/banking/getBranch",arguments);
+//Object arguments[]={area};
+NFrameworkClient client=new NFrameworkClient("localhost",8080);
+String result=(String)client.execute("/banking/getBranch",area);
 System.out.println("Branch name : "+result);
 }catch(BankingException be)
 {
