@@ -1,4 +1,4 @@
-package com.ashvin.chess.server;
+package com.ashvin.chess.common;
 
 public class Message implements java.io.Serializable
 {

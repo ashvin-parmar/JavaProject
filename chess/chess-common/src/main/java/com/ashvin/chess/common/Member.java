@@ -1,4 +1,4 @@
-package com.ashvin.chess.server;
+package com.ashvin.chess.common;
 
 public class Member implements java.io.Serializable, Comparable<Member>
 {

@@ -1,2 +1,2 @@
-package com.ashvin.chess.server;
+package com.ashvin.chess.common;
 public enum MESSAGE_TYPE{CHALLENGE,CHALLENGE_ACCEPTED,CHALLENGE_REJECTED,NOT_AVAILABLE}
