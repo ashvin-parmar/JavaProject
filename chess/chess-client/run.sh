@@ -1,0 +1,1 @@
+java -classpath /media/ashvin/code/my-libs/java/gson/gson-2.13.1.jar:/media/ashvin/code/my-libs/java/mysql/mysql.jar:../../nframework/common/build/libs/nframework-common.jar:../../nframework/client/build/libs/nframework-client.jar:../chess-common/build/libs/chess-common.jar:build/libs/chess-client.jar:. com.ashvin.chess.client.Main $1 $2 # username, password
