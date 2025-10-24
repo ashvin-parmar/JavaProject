@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.table.*;
 
 import java.util.*;
 
@@ -12,7 +13,9 @@ import com.ashvin.nframework.client.*;
 
 public class ChessUI extends JFrame
 {
-private JList availableMembersList;
+private JTable availableMembersList;
+private AvailableMembersListModel availableMembersListModel;
+private JScrollPane availableMembersListScrollPane;
 private String username;
 private NFrameworkClient client;
 private javax.swing.Timer timer;
@@ -33,15 +36,18 @@ setDefaultCloseOperation(EXIT_ON_CLOSE);
 }
 private void initComponents()
 {
-container=getContentPane();
-container.setLayout(new BorderLayout());
-
-this.availableMembersList=new JList();
 this.client=new NFrameworkClient("localhost",5050);
 
+container=getContentPane();
+container.setLayout(new BorderLayout());
+availableMembersListModel=new AvailableMembersListModel();
+availableMembersList=new JTable(availableMembersListModel);
+availableMembersListScrollPane=new JScrollPane(availableMembersList,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+
 JPanel p1=new JPanel(new BorderLayout());
-p1.add(new JLabel("Members"),BorderLayout.NORTH);
-p1.add(availableMembersList);
+//p1.add(new JLabel("Members"),BorderLayout.NORTH);
+p1.add(availableMembersListScrollPane,BorderLayout.NORTH);
 container.add(p1,BorderLayout.EAST);
 }
 private void setAppearance()
@@ -54,16 +60,10 @@ timer=new javax.swing.Timer(4000,new ActionListener(){
 public void actionPerformed(ActionEvent ae)
 {
 //setting list of available members to JList
-
 try
 {
 java.util.List<String> members=(java.util.List<String>)client.execute("/ChessServer/getMembers",username);
-Vector v=new Vector();
-for(String member:members)
-{
-v.add(member);
-}
-availableMembersList.setListData(v);
+availableMembersListModel.setMembers(members);
 }catch(Throwable t)
 {
 System.out.println(t.toString());
@@ -79,4 +79,74 @@ public void showUI()
 {
 setVisible(true);
 }
+
+//inner classes
+class AvailableMembersListModel extends AbstractTableModel
+{
+private String[] title={"Members"," "};
+private java.util.List<String> members;
+private java.util.List<JButton> inviteButtons;
+public AvailableMembersListModel()
+{
+members=new LinkedList<>();
+inviteButtons=new LinkedList<>();
+}
+public int getColumnCount()
+{
+return this.title.length;
+}
+public int getRowCount()
+{
+return this.members.size();
+}
+public String getColumnName(int column)
+{
+return this.title[column];
+}
+public Object getValueAt(int row,int column)
+{
+if(column==0) return members.get(row);
+return this.inviteButtons.get(row);
+}
+public void setValueAt(Object value,int row,int column)
+{
+String text=(String)value;
+/*
+if(text.equalsIgnoreCase("Invited"))
+{
+for(int i=0;i<inviteButtons.size();i++)
+{
+inviteButtons.get(i).setEnabled(false);
+fireTableDataChanged();
+}
+}
+if(text.equalsIgnoreCase("Invite"))
+{
+
+}*/
+
+}
+public void setMembers(java.util.List<String> members)
+{
+this.members=members;
+fireTableDataChanged();
+this.inviteButtons.clear();
+for(int i=0;i<members.size();i++)
+{
+this.inviteButtons.add(new JButton("Invite"));
+fireTableDataChanged();
+}
+}
+}
+class InvitationMemberButtonCellRenderer implements TableCellRenderer
+{
+public Component getTableCellRendererComponent(JTable table,Object value,boolean a,boolean b,int row,int column)
+{
+return (JButton)value;
+}
+}
+//class InvitationMemberButtonCellEditor extends DefaultCellEditor
+//{
+//
+//}
 }
