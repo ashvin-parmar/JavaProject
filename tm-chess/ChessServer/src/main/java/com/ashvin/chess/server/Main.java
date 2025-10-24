@@ -8,6 +8,6 @@ public static void main(String args[])
 {
 NFrameworkServer nfs=new NFrameworkServer();
 nfs.registerClass(ChessServer.class);
-nfs.start();
+nfs.start(5050);
 }
 }

@@ -103,9 +103,9 @@ j+=bytesReadCount;
 os.write(ack);
 os.flush();
 socket.close();
+
 String responseJSONString=new String(responseBytes,StandardCharsets.UTF_8);
-//System.out.println(responseJSONString);
-Response response=JSONUtil.fromJSON(responseJSONString,Response.class);
+Response response=(Response)JSONUtil.fromJSON(responseJSONString,Response.class);
 if(response.getSuccess()==true)
 {
 return response.getResult();
