@@ -29,13 +29,11 @@ private void populateDataStructures()
 members=new HashMap<>();
 Member member=null;
 java.util.List<MemberDTO> dlMembers=(MemberDAO.getMemberDAO().getAll());
-System.out.println("Size: "+dlMembers.size());
 for(MemberDTO memberDTO:dlMembers)
 {
 member=new Member();
 member.setUsername(memberDTO.getUsername());
 member.setPassword(memberDTO.getPassword());
-System.out.println(member.getUsername()+", "+member.getPassword());
 this.members.put(member.getUsername(),member);
 }
 loggedInMembers=new HashSet<>();
@@ -69,6 +67,7 @@ loggedInMembers.add(username);
 }
 return authenticUser;
 }
+@Path("/logout")
 public void logout(String username)
 {
 loggedInMembers.remove(username);
