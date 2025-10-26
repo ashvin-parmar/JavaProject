@@ -4,17 +4,17 @@ import java.sql.*;
 
 public class DAOConnection
 {
-private static Connection connection;
 private DAOConnection()
 {
 
 }
 public static Connection getDAOConnection() throws SQLException
 {
+Connection connection=null;
 try
 {
 Class.forName("com.mysql.cj.jdbc.Driver");
-Connection connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/chessdb","chessuser01","ChessUser#01");
+connection=DriverManager.getConnection("jdbc:mysql://localhost:3306/chessdb","chessuser01","ChessUser#01");
 return connection;
 }catch(SQLException sqlException)
 {
