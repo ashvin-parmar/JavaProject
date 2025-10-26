@@ -73,7 +73,6 @@ public void logout(String username)
 loggedInMembers.remove(username);
 //playingMembers.remove(username);
 }
-
 @Path("/getMembers")
 public java.util.List<String> getMembers(String username)
 {
@@ -99,14 +98,46 @@ inboxes.put(toUsername,messages);
 }
 messages.add(message);
 }
-@Path("/getMessages")
-public List<Message> getMessages(String username)
+@Path("/acceptInvitation")
+public void acceptMember(String toUsername,String fromUsername)
 {
-List<Message> messages=inboxes.get(username);
-if(messages!=null && messages.size()>0)
+List<Message> messages=inboxes.get(toUsername);
+if(messages==null)
 {
-inboxes.put(username,new LinkedList<Message>());
+messages=new LinkedList<Message>();
 }
-return messages;
+else
+{
+
+}
+messages.clear();
+
+System.out.println("Member accepted");
+}
+@Path("/rejectInvitation")
+public void rejectMember(Message message)
+{
+List<Message> messages=inboxes.get(message.getToUsername());
+if(messages==null)
+{
+messages=new LinkedList<Message>();
+}
+messages.remove(message);
+}
+@Path("/getMessagesToUsernames")
+public List<String> getMessagesToUsernames(String toUsername)
+{
+List<Message> messages=inboxes.get(toUsername);
+if(messages==null)
+{
+messages=new LinkedList<>();
+inboxes.put(toUsername,messages);
+}
+List<String> fromUsernames=new LinkedList<>();
+for(Message message:messages)
+{
+fromUsernames.add(message.getFromUsername());
+}
+return fromUsernames;
 }
 }

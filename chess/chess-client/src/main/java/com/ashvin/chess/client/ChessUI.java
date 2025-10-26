@@ -16,9 +16,13 @@ public class ChessUI extends JFrame
 private JTable availableMembersList;
 private AvailableMembersListModel availableMembersListModel;
 private JScrollPane availableMembersListScrollPane;
+private JTable invitationByMembersList;
+private InvitationByMembersListModel invitationByMembersListModel;
+private JScrollPane invitationByMembersListScrollPane;
 private String username;
 private NFrameworkClient client;
-private javax.swing.Timer timer;
+private javax.swing.Timer timerForSelf;
+private javax.swing.Timer timerForOther;
 private Container container;
 public ChessUI(String username)
 {
@@ -37,20 +41,34 @@ setLocation(d.width/2-w/2,d.height/2-h/2);
 private void initComponents()
 {
 this.client=new NFrameworkClient("localhost",5050);
-
-container=getContentPane();
-container.setLayout(new BorderLayout());
 availableMembersListModel=new AvailableMembersListModel();
 availableMembersList=new JTable(availableMembersListModel);
 availableMembersListScrollPane=new JScrollPane(availableMembersList,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-availableMembersList.getColumn(" ").setCellRenderer(new AvailableMembersListCellRenderer());
+availableMembersList.getColumn("Invite").setCellRenderer(new AvailableMembersListCellRenderer());
+availableMembersList.getColumn("Invite").setCellEditor(new AvailableMembersListCellEditor());
 
-availableMembersList.getColumn(" ").setCellEditor(new AvailableMembersListCellEditor());
+invitationByMembersListModel=new InvitationByMembersListModel();
+invitationByMembersList=new JTable(invitationByMembersListModel);
+invitationByMembersListScrollPane=new JScrollPane(invitationByMembersList,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+//invitationByMembersList.getColumn(1).setCellRenderer(new InvitationByMembersListCellRenderer());
+//invitationByMembersList.getColumn(2).setCellRenderer(new InvitationByMembersListCellRenderer());
+//invitationByMembersList.getColumn(1).setCellEditor(new InvitationByMembersListCellEditor());
+//invitationByMembersList.getColumn(2).setCellEditor(new InvitationByMembersListCellEditor());
 
 JPanel p1=new JPanel(new BorderLayout());
-//p1.add(new JLabel("Members"),BorderLayout.NORTH);
-p1.add(availableMembersListScrollPane,BorderLayout.NORTH);
-container.add(p1,BorderLayout.EAST);
+p1.add(new JLabel("Members"),BorderLayout.NORTH);
+p1.add(availableMembersListScrollPane,BorderLayout.CENTER);
+
+JPanel p2=new JPanel(new BorderLayout());
+p2.add(new JLabel("Invitation"),BorderLayout.NORTH);
+p2.add(invitationByMembersListScrollPane,BorderLayout.CENTER);
+
+
+container=getContentPane();
+container.setLayout(new GridLayout(1,2));
+container.add(p2);
+container.add(p1);
 }
 private void setAppearance()
 {
@@ -58,11 +76,11 @@ private void setAppearance()
 }
 private void addEventListeners()
 {
-timer=new javax.swing.Timer(4000,new ActionListener(){
+timerForSelf=new javax.swing.Timer(4000,new ActionListener(){
 public void actionPerformed(ActionEvent ae)
 {
 //setting list of available members to JList
-timer.stop();
+timerForSelf.stop();
 try
 {
 java.util.List<String> members=(java.util.List<String>)client.execute("/ChessServer/getMembers",username);
@@ -71,9 +89,26 @@ availableMembersListModel.setMembers(members);
 {
 JOptionPane.showMessageDialog(ChessUI.this,t.toString());
 }
-timer.start();
+timerForSelf.start();
 }
 });
+timerForOther=new javax.swing.Timer(4000,new ActionListener(){
+public void actionPerformed(ActionEvent ae)
+{
+timerForOther.stop();
+try
+{
+java.util.List<String> fromUsernames=(java.util.List<String>)client.execute("/ChessServer/getMessagesToUsernames",username);
+invitationByMembersListModel.setMembers(fromUsernames);
+}catch(Throwable t)
+{
+JOptionPane.showMessageDialog(ChessUI.this,t.toString());
+//System.out.println(t.toString());
+}
+timerForOther.start();
+}
+});
+
 addWindowListener(new WindowAdapter(){
 public void windowClosing(WindowEvent we)
 {
@@ -87,8 +122,10 @@ JOptionPane.showMessageDialog(ChessUI.this,t.toString());
 System.exit(0);
 }
 });
+
 //after performing all operations, start the timer
-timer.start();
+timerForSelf.start();
+timerForOther.start();
 }
 public void showUI()
 {
@@ -107,11 +144,10 @@ JOptionPane.showMessageDialog(ChessUI.this,t.toString());
 }
 
 
-
 //inner classes
 class AvailableMembersListModel extends AbstractTableModel
 {
-private String[] title={"Members"," "};
+private String[] title={"Members","Invite"};
 private java.util.List<String> members;
 private java.util.List<JButton> inviteButtons;
 private boolean awaitingInvitationReply=false;
@@ -241,6 +277,67 @@ public void fireEditingStopped()
 {
 //do whatever required before editing stopped
 super.fireEditingStopped();
+}
+}
+
+class InvitationByMembersListModel extends AbstractTableModel
+{
+private String titles[]={"Members","Accept","Reject"};
+private java.util.List<String> members;
+private java.util.List<java.util.List<JButton>> invitationButtons;
+public InvitationByMembersListModel()
+{
+members=new LinkedList<>();
+invitationButtons=new LinkedList<>();
+invitationButtons.add(new LinkedList<>());
+invitationButtons.add(new LinkedList<>());
+}
+public int getColumnCount()
+{
+return titles.length;
+}
+public int getRowCount()
+{
+return invitationButtons.get(0).size();
+}
+public Class getColumnClass(int column)
+{
+if(column==0) return String.class;
+return JButton.class;
+}
+public String getColumnName(int column)
+{
+return titles[column];
+}
+public boolean isCellEditatble(int row,int column)
+{
+if(column==0) return false;
+return true;
+}
+public Object getValueAt(int row,int column)
+{
+if(column==0)
+{
+return members.get(row);
+}
+else
+{
+return invitationButtons.get(column-1).get(row);
+}
+}
+public void setMembers(java.util.List<String> fromUsernames)
+{
+this.members=fromUsernames;
+java.util.List<JButton> buttons1=this.invitationButtons.get(0);
+java.util.List<JButton> buttons2=this.invitationButtons.get(1);
+buttons1.clear();
+buttons2.clear();
+for(int i=0;i<fromUsernames.size();i++)
+{
+buttons1.add(new JButton("Accept"));
+buttons2.add(new JButton("Reject"));
+}
+fireTableDataChanged();
 }
 }
 }
