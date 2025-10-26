@@ -1,0 +1,8 @@
+plugins
+{
+id 'java'
+}
+dependencies
+{
+implementation fileTree(include:'*.jar',dir:'/media/ashvin/code/my-libs/java/mysql')
+}
