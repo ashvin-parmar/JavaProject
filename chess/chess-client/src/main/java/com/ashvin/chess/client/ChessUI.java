@@ -51,10 +51,10 @@ invitationByMembersListModel=new InvitationByMembersListModel();
 invitationByMembersList=new JTable(invitationByMembersListModel);
 invitationByMembersListScrollPane=new JScrollPane(invitationByMembersList,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-//invitationByMembersList.getColumn(1).setCellRenderer(new InvitationByMembersListCellRenderer());
-//invitationByMembersList.getColumn(2).setCellRenderer(new InvitationByMembersListCellRenderer());
-//invitationByMembersList.getColumn(1).setCellEditor(new InvitationByMembersListCellEditor());
-//invitationByMembersList.getColumn(2).setCellEditor(new InvitationByMembersListCellEditor());
+invitationByMembersList.getColumn("Accept").setCellRenderer(new InvitationByMembersListCellRenderer());
+invitationByMembersList.getColumn("Reject").setCellRenderer(new InvitationByMembersListCellRenderer());
+//invitationByMembersList.getColumn("Accept").setCellEditor(new InvitationByMembersListCellEditor());
+//invitationByMembersList.getColumn("Reject").setCellEditor(new InvitationByMembersListCellEditor());
 
 JPanel p1=new JPanel(new BorderLayout());
 p1.add(new JLabel("Members"),BorderLayout.NORTH);
@@ -338,6 +338,13 @@ buttons1.add(new JButton("Accept"));
 buttons2.add(new JButton("Reject"));
 }
 fireTableDataChanged();
+}
+}
+private class InvitationByMembersListCellRenderer implements TableCellRenderer
+{
+public Component getTableCellRendererComponent(JTable table,Object value,boolean a,boolean b,int row,int column)
+{
+return (JButton)value;
 }
 }
 }
