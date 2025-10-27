@@ -3,6 +3,8 @@ import com.ashvin.accounting.dbdl.dao.*;
 import com.ashvin.accounting.dbdl.dto.*;
 
 import java.util.*;
+import java.time.*;
+
 public class DummyCreation
 {
 private String alphabetsStr="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -13,7 +15,7 @@ public DummyCreation()
 {
 random=new Random();
 }
-public void createDummyCustomer100()
+public void createDummyCustomers100()
 {
 int countRecords=0;
 StringBuilder sb=null;
@@ -44,9 +46,8 @@ countRecords++;
 System.out.println(daoException.getMessage());
 }
 }
-
 }
-public void createDummyItem400()
+public void createDummyItems400()
 {
 int countRecords=0;
 StringBuilder sb=null;
@@ -55,7 +56,6 @@ int range=alphabetsStr.length();
 int randomInteger;
 ItemDAO itemDAO=new ItemDAO();
 Item item=null;
-
 while(countRecords<400)
 {
 sb=new StringBuilder();
@@ -77,9 +77,8 @@ countRecords++;
 System.out.println(daoException.getMessage());
 }
 }
-
 }
-public void createDummySupplier100()
+public void createDummySuppliers100()
 {
 int countRecords=0;
 StringBuilder sb=null;
@@ -110,7 +109,41 @@ countRecords++;
 System.out.println(daoException.getMessage());
 }
 }
-
 }
-
+public void createDummySales3000(java.util.Date startDate)
+{
+Date tmpDate=null;
+Duration duration=Duration.ofMillis(0);
+System.out.println(startDate.getTime());
+duration=duration.plusMillis(startDate.getTime());
+long durationRange=Duration.ofMinutes(20).toMillis();
+long randomInteger;
+SaleDAO saleDAO=new SaleDAO();
+Sale sale=null;
+int countRecords=0;
+duration=duration.minusDays(1);
+for(int i=0;i<30;i++)
+{
+duration=duration.plusDays(1);
+System.out.println(duration.toMillis());
+//tmpDate=new Date(startDate.getTime()+(duration.toMillis()));
+System.out.println("---------------");
+countRecords=0;
+while(countRecords<100)
+{
+randomInteger=random.nextLong(durationRange)+Duration.ofMinutes(2).toMillis();
+duration=duration.plusMillis(randomInteger);
+tmpDate=new Date(duration.toMillis());
+System.out.println("RandomNumber: "+randomInteger+", Millies: "+duration.toMillis()+", Date: "+tmpDate);
+try
+{
+countRecords++;
+if(countRecords==-1) throw new DAOException("Nothing");
+}catch(DAOException daoException)
+{
+System.out.println(daoException.getMessage());
+}
+}
+}
+}
 }
