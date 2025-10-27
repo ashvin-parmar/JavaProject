@@ -1,1 +1,1 @@
-javac -cp ../build/libs/dbdl.jar:. *.java
+javac -cp ../build/libs/dbdl.jar:. $1
