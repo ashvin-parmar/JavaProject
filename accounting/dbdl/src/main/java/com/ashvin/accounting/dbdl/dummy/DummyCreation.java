@@ -137,8 +137,14 @@ tmpDate=new Date(duration.toMillis());
 System.out.println("RandomNumber: "+randomInteger+", Millies: "+duration.toMillis()+", Date: "+tmpDate);
 try
 {
+sale=new Sale();
+sale.setBillDate(tmpDate);
+sale.setCustomerCode(random.nextInt(100)+1);
+sale.setItemCode(random.nextInt(400)+1);
+sale.setQuantity(random.nextInt(10)+1);
+sale.setRate(random.nextInt(10)+10);
+saleDAO.addSale(sale);
 countRecords++;
-if(countRecords==-1) throw new DAOException("Nothing");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());
