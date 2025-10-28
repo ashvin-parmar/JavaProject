@@ -183,4 +183,62 @@ System.out.println(daoException.getMessage());
 }
 }
 }
+public void createDummyReceipts100(java.util.Date startDate)
+{
+Date tmpDate=null;
+Duration duration=Duration.ofMillis(0);
+duration=duration.plusMillis(startDate.getTime());
+long durationRange=Duration.ofHours(10).toMillis();
+long randomInteger;
+ReceiptDAO receiptDAO=new ReceiptDAO();
+Receipt receipt=null;
+int countRecords=0;
+while(countRecords<100)
+{
+randomInteger=random.nextLong(durationRange);
+duration=duration.plusMillis(randomInteger);
+tmpDate=new Date(duration.toMillis());
+try
+{
+receipt=new Receipt();
+receipt.setReceiptDate(tmpDate);
+receipt.setCustomerCode(random.nextInt(100)+1);
+receipt.setAmount(random.nextInt(50)+100);
+receiptDAO.addReceipt(receipt);
+countRecords++;
+}catch(DAOException daoException)
+{
+System.out.println(daoException.getMessage());
+}
+}
+}
+public void createDummyPayments100(java.util.Date startDate)
+{
+Date tmpDate=null;
+Duration duration=Duration.ofMillis(0);
+duration=duration.plusMillis(startDate.getTime());
+long durationRange=Duration.ofHours(10).toMillis();
+long randomInteger;
+PaymentDAO paymentDAO=new PaymentDAO();
+Payment payment=null;
+int countRecords=0;
+while(countRecords<100)
+{
+randomInteger=random.nextLong(durationRange);
+duration=duration.plusMillis(randomInteger);
+tmpDate=new Date(duration.toMillis());
+try
+{
+payment=new Payment();
+payment.setPaymentDate(tmpDate);
+payment.setSupplierCode(random.nextInt(100)+1);
+payment.setAmount(random.nextInt(50)+100);
+paymentDAO.addPayment(payment);
+countRecords++;
+}catch(DAOException daoException)
+{
+System.out.println(daoException.getMessage());
+}
+}
+}
 }
