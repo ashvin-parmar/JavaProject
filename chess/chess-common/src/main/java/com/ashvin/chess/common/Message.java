@@ -17,6 +17,10 @@ public void setMessageType(MESSAGE_TYPE messageType)
 {
 this.messageType=messageType;
 }
+public void setMessageType(String messageType)
+{
+this.messageType=MESSAGE_TYPE.valueOf(messageType);
+}
 public String getFromUsername()
 {
 return this.fromUsername;

@@ -20,6 +20,7 @@ private JTable invitationByMembersList;
 private InvitationByMembersListModel invitationByMembersListModel;
 private JScrollPane invitationByMembersListScrollPane;
 private String username;
+private String invitationToUsername="";
 private NFrameworkClient client;
 private javax.swing.Timer timerForSelf;
 private javax.swing.Timer timerForOther;
@@ -76,11 +77,27 @@ private void setAppearance()
 }
 private void addEventListeners()
 {
+addWindowListener(new WindowAdapter(){
+public void windowClosing(WindowEvent we)
+{
+try
+{
+client.execute("/ChessServer/logout",username);
+}catch(Throwable t)
+{
+JOptionPane.showMessageDialog(ChessUI.this,t.toString());
+}
+System.exit(0);
+}
+});
+
 timerForSelf=new javax.swing.Timer(4000,new ActionListener(){
 public void actionPerformed(ActionEvent ae)
 {
 //setting list of available members to JList
 timerForSelf.stop();
+if(availableMembersListModel.awaitingInvitationReply==false)
+{
 try
 {
 java.util.List<String> members=(java.util.List<String>)client.execute("/ChessServer/getMembers",username);
@@ -88,6 +105,43 @@ availableMembersListModel.setMembers(members);
 }catch(Throwable t)
 {
 JOptionPane.showMessageDialog(ChessUI.this,t.toString());
+}
+}
+else
+{
+try
+{
+MESSAGE_TYPE messageType=MESSAGE_TYPE.NOT_AVAILABLE;
+Object obj=client.execute("/ChessServer/getInvitationStatus",username,invitationToUsername);
+if(obj instanceof MESSAGE_TYPE) messageType=(MESSAGE_TYPE)obj;
+else messageType=MESSAGE_TYPE.valueOf(obj.toString());
+if(messageType==MESSAGE_TYPE.CHALLENGE)
+{
+}
+else
+{
+if(messageType==MESSAGE_TYPE.CHALLENGE_ACCEPTED)
+{
+System.out.println("Challenge accepted\n");
+timerForSelf.stop();
+}
+else if(messageType==MESSAGE_TYPE.CHALLENGE_REJECTED)
+{
+System.out.println("Challenge accepted\n");
+invitationToUsername="";
+}
+else if(messageType==MESSAGE_TYPE.NOT_AVAILABLE)
+{
+System.out.println("Challenge rejected\n");
+invitationToUsername="";
+}
+availableMembersListModel.awaitingInvitationReply=false;
+}
+}catch(Throwable t)
+{
+JOptionPane.showMessageDialog(ChessUI.this,t.toString());
+System.out.println(t.toString());
+}
 }
 timerForSelf.start();
 }
@@ -109,20 +163,6 @@ timerForOther.start();
 }
 });
 
-addWindowListener(new WindowAdapter(){
-public void windowClosing(WindowEvent we)
-{
-try
-{
-client.execute("/ChessServer/logout",username);
-}catch(Throwable t)
-{
-JOptionPane.showMessageDialog(ChessUI.this,t.toString());
-}
-System.exit(0);
-}
-});
-
 //after performing all operations, start the timer
 timerForSelf.start();
 timerForOther.start();
@@ -136,7 +176,12 @@ public void sendInvitation(String toUsername)
 {
 try
 {
-client.execute("/ChessServer/inviteMember",username,toUsername);
+Message message=new Message();
+message.setToUsername(toUsername);
+message.setFromUsername(username);
+message.setMessageType(MESSAGE_TYPE.CHALLENGE);
+client.execute("/ChessServer/inviteMember",message);
+this.invitationToUsername=toUsername;
 }catch(Throwable t)
 {
 JOptionPane.showMessageDialog(ChessUI.this,t.toString());
@@ -150,7 +195,7 @@ class AvailableMembersListModel extends AbstractTableModel
 private String[] title={"Members","Invite"};
 private java.util.List<String> members;
 private java.util.List<JButton> inviteButtons;
-private boolean awaitingInvitationReply=false;
+public boolean awaitingInvitationReply=false;
 public AvailableMembersListModel()
 {
 members=new LinkedList<>();
@@ -183,12 +228,11 @@ public void setValueAt(Object value,int row,int column)
 try
 {
 String text=(String)value;
-JButton button=inviteButtons.get(row);
-button.setText(text);
-fireTableDataChanged();
 if(text.equalsIgnoreCase("Invited"))
 {
 awaitingInvitationReply=true;
+JButton button=inviteButtons.get(row);
+button.setText(text);
 for(int i=0;i<inviteButtons.size();i++)
 {
 inviteButtons.get(i).setEnabled(false);
@@ -199,15 +243,17 @@ ChessUI.this.sendInvitation(members.get(row));
 if(text.equalsIgnoreCase("Invite"))
 {
 awaitingInvitationReply=false;
-for(int i=0;i<inviteButtons.size();i++)
+/*
+for(int i=0;i<inviteButtons.size();i++)		//what if they are cleared or assigned as null -> because setMembers called from thread
 {
 inviteButtons.get(i).setEnabled(true);
 }
 fireTableDataChanged();
+*/
 }
-}catch(Exception e)
+}catch(Exception exception)
 {
-
+JOptionPane.showMessageDialog(ChessUI.this,exception.getMessage());
 }
 }
 public void setMembers(java.util.List<String> members)

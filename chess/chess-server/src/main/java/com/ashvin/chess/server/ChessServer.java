@@ -71,47 +71,92 @@ return authenticUser;
 public void logout(String username)
 {
 loggedInMembers.remove(username);
+java.util.List<Message> currentInbox=inboxes.get(username);
+if(currentInbox!=null) currentInbox.clear();
+/*
+String toUsernames[]=inboxes.getKeys();
+for(int i=0;i<toUsernames.size();i++)
+{
+inbox=inboxes.get(toUsernames.get(i));
+for(Message message:inbox)
+{
+if(message.getFromUsername().equals(username))
+{
+//inbox.remove(message);
+message.setMessageType(MESSAGE_TYPE.NOT_AVAILABLE);
+}
+}
+}
+*/
+inboxes.forEach((toUsername,inbox) ->{
+for(Message message:inbox)
+{
+if(message.getFromUsername().equals(username))
+{
+//inbox.remove(message);
+message.setMessageType(MESSAGE_TYPE.NOT_AVAILABLE);
+}
+}
+});
 //playingMembers.remove(username);
 }
+/*
+private void removeMessage(java.util.List<Message> inbox,String username)
+{
+}
+*/
 @Path("/getMembers")
 public java.util.List<String> getMembers(String username)
 {
 java.util.List<String> availableMembers=new LinkedList<>();
 for(String user:loggedInMembers)
 {
-if(playingMembers.contains(user)==false && user.equals(username)==false) availableMembers.add(user);
+if(/*playingMembers.contains(user)==false &&*/ user.equals(username)==false) availableMembers.add(user);
 }
 return availableMembers;
 }
 @Path("/inviteMember")
-public void inviteMember(String fromUsername,String toUsername)
+public void inviteMember(Message message)
 {
-Message message=new Message();
-message.setFromUsername(fromUsername);
-message.setToUsername(toUsername);
-message.setMessageType(MESSAGE_TYPE.CHALLENGE);
+if(message==null) return;
+List<Message> messages=inboxes.get(message.getToUsername());
+if(messages==null)
+{
+messages=new LinkedList<Message>();
+inboxes.put(message.getToUsername(),messages);
+}
+messages.add(message);
+}
+@Path("/getInvitationStatus")
+public MESSAGE_TYPE getInvitationStatus(String fromUsername,String toUsername)
+{
+MESSAGE_TYPE messageType=MESSAGE_TYPE.NOT_AVAILABLE;
 List<Message> messages=inboxes.get(toUsername);
 if(messages==null)
 {
 messages=new LinkedList<Message>();
 inboxes.put(toUsername,messages);
 }
-messages.add(message);
+for(Message message:messages)
+{
+if(message.getFromUsername().equals(fromUsername))
+{
+messageType=message.getMessageType();
+break;
+}
+}
+return messageType;
 }
 @Path("/acceptInvitation")
-public void acceptMember(String toUsername,String fromUsername)
+public void acceptMember(Message message)
 {
-List<Message> messages=inboxes.get(toUsername);
+List<Message> messages=inboxes.get(message.getToUsername());
 if(messages==null)
 {
-messages=new LinkedList<Message>();
-}
-else
-{
-
+return ;
 }
 messages.clear();
-
+messages.add(message);
 System.out.println("Member accepted");
 }
 @Path("/rejectInvitation")
@@ -122,7 +167,15 @@ if(messages==null)
 {
 messages=new LinkedList<Message>();
 }
-messages.remove(message);
+//messages.remove(message);
+String fromUsername=message.getFromUsername();
+messages.forEach((m)->{
+if(m.getFromUsername().equals(fromUsername))
+{
+m.setMessageType(MESSAGE_TYPE.CHALLENGE_REJECTED);
+return;
+}
+});
 }
 @Path("/getMessagesToUsernames")
 public List<String> getMessagesToUsernames(String toUsername)
@@ -136,7 +189,8 @@ inboxes.put(toUsername,messages);
 List<String> fromUsernames=new LinkedList<>();
 for(Message message:messages)
 {
-fromUsernames.add(message.getFromUsername());
+//if(message.getMessageType()!=MESSAGE_TYPE.CHALLENGE)
+ fromUsernames.add(message.getFromUsername());
 }
 return fromUsernames;
 }

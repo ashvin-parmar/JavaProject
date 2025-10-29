@@ -1,2 +1,9 @@
 package com.ashvin.chess.common;
-public enum MESSAGE_TYPE{CHALLENGE,CHALLENGE_ACCEPTED,CHALLENGE_REJECTED,NOT_AVAILABLE}
+import com.google.gson.annotations.*;
+public enum MESSAGE_TYPE
+{
+@SerializedName("CHALLENGE") CHALLENGE,
+@SerializedName("CHALLENGE_ACCEPTED") CHALLENGE_ACCEPTED,
+@SerializedName("CHALLENGE_REJECTED") CHALLENGE_REJECTED,
+@SerializedName("NOT_AVAILABLE") NOT_AVAILABLE
+}
