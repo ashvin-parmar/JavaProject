@@ -18,8 +18,12 @@ NFrameworkClient client=new NFrameworkClient("localhost",8080);
 String result=(String)client.execute("/banking/getBranch",area);
 System.out.println("Branch name : "+result);
 
-List<State> states=(List<State>)client.execute("/banking/getENUMSTesting",new State(COUNTRY.INDIA,"UP"));
-System.out.println(states.toString());
+//List<State> states=(List<State>)client.execute("/banking/getENUMSTesting",new State(COUNTRY.INDIA,"UP"));
+//List<State> states=(List<State>)client.execute("/banking/getENUMSTesting",COUNTRY.INDIA);
+List<State> states=(List<State>)client.execute("/banking/getENUMSTesting","Something");
+states.forEach((state)->{
+System.out.println("country: "+state.getCountry()+", state: "+state.getState());
+});
 
 }catch(BankingException be)
 {

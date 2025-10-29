@@ -112,7 +112,17 @@ if(serviceObject==null)
 {
 serviceObject=c.newInstance();
 }
-Object result=method.invoke(serviceObject,request.getArguments());
+Type[] parameterTypes = method.getGenericParameterTypes();
+Object[] argsArray=request.getArguments();
+
+Object[] args = new Object[argsArray.length];
+for (int ii = 0; ii < argsArray.length; ii++) {
+Object arg=argsArray[ii];
+Type type=parameterTypes[ii];
+args[ii]=arg;
+}
+
+Object result=method.invoke(serviceObject,args);
 response.setSuccess(true);
 response.setResult(result);
 response.setException(null);

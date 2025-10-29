@@ -7,7 +7,10 @@ public static String toJSON(java.io.Serializable serializableClass)
 {
 try
 {
-Gson gson=new GsonBuilder().registerTypeHierarchyAdapter(Throwable.class,new ThrowableAdapter()).create();
+Gson gson=new GsonBuilder()
+.registerTypeHierarchyAdapter(Throwable.class,new ThrowableAdapter())
+.registerTypeAdapterFactory(new EnumTypeAdapterFactory())
+.create();
 return gson.toJson(serializableClass);
 }catch(Exception exception)
 {
@@ -18,7 +21,10 @@ public static <T> T fromJSON(String jsonString,Class<T> c)
 {
 try
 {
-Gson gson=new GsonBuilder().registerTypeHierarchyAdapter(Throwable.class,new ThrowableAdapter()).create();
+Gson gson=new GsonBuilder()
+.registerTypeHierarchyAdapter(Throwable.class,new ThrowableAdapter())
+.registerTypeAdapterFactory(new EnumTypeAdapterFactory())
+.create();
 return gson.fromJson(jsonString,c);
 }catch(Exception exception)
 {

@@ -33,14 +33,17 @@ return "Shivoham Shiva Temple";
 throw new BankingException("No branch available");
 }
 @Path("/getENUMSTesting")
-public List<State> getENUMSTesting(State state) throws BankingException
+public List<State> getENUMSTesting(String country) throws BankingException
 {
+State state=new State(COUNTRY.INDIA,"MP");
+System.out.println(country);
 if(state.getCountry()==COUNTRY.INDIA.toString()) System.out.println("It's india");
 if(state.getCountry()==COUNTRY.USA.toString()) System.out.println("It's USA");
 List<State> states=new LinkedList<State>();
 states.add(new State(COUNTRY.INDIA,"M.P."));
 states.add(new State(COUNTRY.USA,"SOMETHING"));
 return states;
+//return "Something";
 }
 public static void main(String gg[])
 {
