@@ -1,5 +1,4 @@
 import com.ashvin.nframework.client.*;
-import java.util.*;
 
 public class BankUI
 {
@@ -17,10 +16,6 @@ String area=gg[0];
 NFrameworkClient client=new NFrameworkClient("localhost",8080);
 String result=(String)client.execute("/banking/getBranch",area);
 System.out.println("Branch name : "+result);
-
-List<State> states=(List<State>)client.execute("/banking/getENUMSTesting",new State(COUNTRY.INDIA,"UP"));
-System.out.println(states.toString());
-
 }catch(BankingException be)
 {
 //System.out.println("Banking exception 1");

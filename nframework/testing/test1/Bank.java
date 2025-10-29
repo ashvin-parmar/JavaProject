@@ -1,6 +1,5 @@
 import com.ashvin.nframework.server.annotations.*;
 import com.ashvin.nframework.server.*;
-import java.util.*;
 
 @Path("/banking")
 public class Bank
@@ -31,16 +30,6 @@ else if(area.equals("Bengaluru"))
 return "Shivoham Shiva Temple";
 }
 throw new BankingException("No branch available");
-}
-@Path("/getENUMSTesting")
-public List<State> getENUMSTesting(State state) throws BankingException
-{
-if(state.getCountry()==COUNTRY.INDIA.toString()) System.out.println("It's india");
-if(state.getCountry()==COUNTRY.USA.toString()) System.out.println("It's USA");
-List<State> states=new LinkedList<State>();
-states.add(new State(COUNTRY.INDIA,"M.P."));
-states.add(new State(COUNTRY.USA,"SOMETHING"));
-return states;
 }
 public static void main(String gg[])
 {
