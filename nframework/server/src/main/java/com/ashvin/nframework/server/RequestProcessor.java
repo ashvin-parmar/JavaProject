@@ -2,6 +2,7 @@ package com.ashvin.nframework.server;
 import com.ashvin.nframework.common.*;
 import com.ashvin.nframework.server.*;
 import java.io.*;
+import java.lang.Enum;
 import java.util.*;
 import java.net.*;
 import java.nio.charset.*;
@@ -113,15 +114,27 @@ if(serviceObject==null)
 serviceObject=c.newInstance();
 }
 Type[] parameterTypes = method.getGenericParameterTypes();
-Object[] argsArray=request.getArguments();
+Object[] argsArray = request.getArguments();
 
 Object[] args = new Object[argsArray.length];
-for (int ii = 0; ii < argsArray.length; ii++) {
-Object arg=argsArray[ii];
-Type type=parameterTypes[ii];
-args[ii]=arg;
-}
 
+for (int ii = 0; ii < argsArray.length; ii++) {
+    Object arg = argsArray[ii];
+    Type type = parameterTypes[ii];
+
+    if (type instanceof Class<?> && ((Class<?>) type).isEnum()) {
+	//Worked for ENUM only arguments but what if serialized object has enums
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        Class<? extends Enum> enumType = (Class<? extends Enum>) type;
+
+        // Convert string to enum constant
+        Enum<?> value = Enum.valueOf(enumType, arg.toString());
+        args[ii] = value;
+        System.out.println("Converted to Enum: " + value);
+    } else {
+        args[ii] = arg;
+    }
+}
 Object result=method.invoke(serviceObject,args);
 response.setSuccess(true);
 response.setResult(result);

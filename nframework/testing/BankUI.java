@@ -20,10 +20,24 @@ System.out.println("Branch name : "+result);
 
 //List<State> states=(List<State>)client.execute("/banking/getENUMSTesting",new State(COUNTRY.INDIA,"UP"));
 //List<State> states=(List<State>)client.execute("/banking/getENUMSTesting",COUNTRY.INDIA);
-List<State> states=(List<State>)client.execute("/banking/getENUMSTesting","Something");
-states.forEach((state)->{
+//List<State> states=(List<State>)client.execute("/banking/getENUMSTesting","Something");
+//Object stateObjs=client.execute("/banking/getENUMSTesting",COUNTRY.INDIA);
+Object stateObjs=client.execute("/banking/getENUMSTesting",new State(COUNTRY.INDIA,"UP"));
+
+System.out.println(stateObjs);
+/*
+statesObjs.forEach((stateObj)->{
+if(stateObj instanceof State)
+{
+State state=(State)stateObj;
 System.out.println("country: "+state.getCountry()+", state: "+state.getState());
+}
+else
+{
+System.out.println(stateObj);
+}
 });
+*/
 
 }catch(BankingException be)
 {
