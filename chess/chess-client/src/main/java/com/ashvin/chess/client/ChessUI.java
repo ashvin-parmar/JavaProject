@@ -20,7 +20,6 @@ private JTable invitationByMembersList;
 private InvitationByMembersListModel invitationByMembersListModel;
 private JScrollPane invitationByMembersListScrollPane;
 private String username;
-private String invitationToUsername="";
 private NFrameworkClient client;
 private javax.swing.Timer timerForSelf;
 private javax.swing.Timer timerForOther;
@@ -54,8 +53,8 @@ invitationByMembersListScrollPane=new JScrollPane(invitationByMembersList,Scroll
 
 invitationByMembersList.getColumn("Accept").setCellRenderer(new InvitationByMembersListCellRenderer());
 invitationByMembersList.getColumn("Reject").setCellRenderer(new InvitationByMembersListCellRenderer());
-//invitationByMembersList.getColumn("Accept").setCellEditor(new InvitationByMembersListCellEditor());
-//invitationByMembersList.getColumn("Reject").setCellEditor(new InvitationByMembersListCellEditor());
+invitationByMembersList.getColumn("Accept").setCellEditor(new InvitationByMembersListCellEditor());
+invitationByMembersList.getColumn("Reject").setCellEditor(new InvitationByMembersListCellEditor());
 
 JPanel p1=new JPanel(new BorderLayout());
 p1.add(new JLabel("Members"),BorderLayout.NORTH);
@@ -112,9 +111,10 @@ else
 try
 {
 MESSAGE_TYPE messageType=MESSAGE_TYPE.NOT_AVAILABLE;
-Object obj=client.execute("/ChessServer/getInvitationStatus",username,invitationToUsername);
-System.out.println(obj.toString());
+Object obj=client.execute("/ChessServer/getInvitationStatus",username,availableMembersListModel.invitationToUsername);
+//System.out.println(obj.toString());
 messageType=MESSAGE_TYPE.valueOf(obj.toString());
+System.out.println(messageType);
 if(messageType==MESSAGE_TYPE.CHALLENGE)
 {
 }
@@ -123,17 +123,17 @@ else
 if(messageType==MESSAGE_TYPE.CHALLENGE_ACCEPTED)
 {
 System.out.println("Challenge accepted\n");
-timerForSelf.stop();
+//timerForSelf.stop();
 }
 else if(messageType==MESSAGE_TYPE.CHALLENGE_REJECTED)
 {
 System.out.println("Challenge accepted\n");
-invitationToUsername="";
+availableMembersListModel.invitationToUsername="";
 }
 else if(messageType==MESSAGE_TYPE.NOT_AVAILABLE)
 {
 System.out.println("Challenge rejected\n");
-invitationToUsername="";
+availableMembersListModel.invitationToUsername="";
 }
 availableMembersListModel.awaitingInvitationReply=false;
 }
@@ -152,8 +152,11 @@ public void actionPerformed(ActionEvent ae)
 timerForOther.stop();
 try
 {
+if(invitationByMembersListModel.acceptingInvitationReply==false)
+{
 java.util.List<String> fromUsernames=(java.util.List<String>)client.execute("/ChessServer/getMessagesToUsernames",username);
 invitationByMembersListModel.setMembers(fromUsernames);
+}
 }catch(Throwable t)
 {
 JOptionPane.showMessageDialog(ChessUI.this,t.toString());
@@ -181,7 +184,35 @@ message.setToUsername(toUsername);
 message.setFromUsername(username);
 message.setMessageType(MESSAGE_TYPE.CHALLENGE);
 client.execute("/ChessServer/inviteMember",message);
-this.invitationToUsername=toUsername;
+availableMembersListModel.invitationToUsername=toUsername;
+}catch(Throwable t)
+{
+JOptionPane.showMessageDialog(ChessUI.this,t.toString());
+}
+}
+public void acceptInvitation(String fromUsername)
+{
+try
+{
+Message message=new Message();
+message.setToUsername(username);
+message.setFromUsername(fromUsername);
+message.setMessageType(MESSAGE_TYPE.CHALLENGE_ACCEPTED);
+client.execute("/ChessServer/acceptInvitation",message);
+}catch(Throwable t)
+{
+JOptionPane.showMessageDialog(ChessUI.this,t.toString());
+}
+}
+public void rejectInvitation(String fromUsername)
+{
+try
+{
+Message message=new Message();
+message.setToUsername(username);
+message.setFromUsername(fromUsername);
+message.setMessageType(MESSAGE_TYPE.CHALLENGE_REJECTED);
+client.execute("/ChessServer/rejectInvitation",message);
 }catch(Throwable t)
 {
 JOptionPane.showMessageDialog(ChessUI.this,t.toString());
@@ -196,6 +227,7 @@ private String[] title={"Members","Invite"};
 private java.util.List<String> members;
 private java.util.List<JButton> inviteButtons;
 public boolean awaitingInvitationReply=false;
+public String invitationToUsername="";
 public AvailableMembersListModel()
 {
 members=new LinkedList<>();
@@ -331,6 +363,7 @@ class InvitationByMembersListModel extends AbstractTableModel
 private String titles[]={"Members","Accept","Reject"};
 private java.util.List<String> members;
 private java.util.List<java.util.List<JButton>> invitationButtons;
+private boolean acceptingInvitationReply=false;
 public InvitationByMembersListModel()
 {
 members=new LinkedList<>();
@@ -355,7 +388,7 @@ public String getColumnName(int column)
 {
 return titles[column];
 }
-public boolean isCellEditatble(int row,int column)
+public boolean isCellEditable(int row,int column)
 {
 if(column==0) return false;
 return true;
@@ -369,6 +402,44 @@ return members.get(row);
 else
 {
 return invitationButtons.get(column-1).get(row);
+}
+}
+public void setValueAt(Object value,int row,int column)
+{
+String text=(String)value;
+System.out.println("Value: "+text);
+if(text.startsWith("Accept"))
+{
+if(text.equalsIgnoreCase("Accepted"))
+{
+acceptingInvitationReply=true;
+java.util.List<JButton> buttons=this.invitationButtons.get(0);
+buttons.get(row).setText(text);
+for(int i=0;i<buttons.size();i++)
+{
+buttons.get(i).setEnabled(false);
+}
+fireTableDataChanged();
+ChessUI.this.acceptInvitation(members.get(row));
+}
+if(text.equalsIgnoreCase("Accept"))
+{
+
+}
+}
+if(text.startsWith("Reject"))
+{
+if(text.equalsIgnoreCase("Rejected"))
+{
+JButton button=this.invitationButtons.get(1).get(row);
+button.setText(text);
+fireTableDataChanged();
+ChessUI.this.rejectInvitation(members.get(row));
+}
+if(text.equalsIgnoreCase("Reject"))
+{
+
+}
 }
 }
 public void setMembers(java.util.List<String> fromUsernames)
@@ -391,6 +462,53 @@ private class InvitationByMembersListCellRenderer implements TableCellRenderer
 public Component getTableCellRendererComponent(JTable table,Object value,boolean a,boolean b,int row,int column)
 {
 return (JButton)value;
+}
+}
+private class InvitationByMembersListCellEditor extends DefaultCellEditor
+{
+private JButton button;
+private boolean isClicked;
+private int row,column;
+private ActionListener actionListener;
+public InvitationByMembersListCellEditor()
+{
+super(new JCheckBox());
+actionListener=new ActionListener(){
+public void actionPerformed(ActionEvent ae)
+{
+fireEditingStopped();
+}
+};
+}
+public Component getTableCellEditorComponent(JTable table,Object value,boolean a,int row,int column)
+{
+this.row=row;
+this.column=column;
+this.button=(JButton)invitationByMembersListModel.getValueAt(row,column);
+this.button.removeActionListener(actionListener);
+this.button.addActionListener(actionListener);
+this.button.setForeground(Color.black);
+this.button.setBackground(UIManager.getColor("Button.background"));
+this.button.setOpaque(true);
+this.isClicked=true;
+return this.button;
+}
+public Object getCellEditorValue()
+{
+System.out.println("Row: "+row+", Column: "+column);
+if(this.column==1) return "Accepted";
+if(this.column==2) return "Rejected";
+return "NOT_AVAILABLE";
+}
+public boolean stopCellEditing()
+{
+this.isClicked=false;
+return super.stopCellEditing();
+}
+public void fireEditingStopped()
+{
+//do whatever you wanna do related to who setCellEditor to this class
+super.fireEditingStopped();
 }
 }
 }
