@@ -113,8 +113,8 @@ try
 {
 MESSAGE_TYPE messageType=MESSAGE_TYPE.NOT_AVAILABLE;
 Object obj=client.execute("/ChessServer/getInvitationStatus",username,invitationToUsername);
-if(obj instanceof MESSAGE_TYPE) messageType=(MESSAGE_TYPE)obj;
-else messageType=MESSAGE_TYPE.valueOf(obj.toString());
+System.out.println(obj.toString());
+messageType=MESSAGE_TYPE.valueOf(obj.toString());
 if(messageType==MESSAGE_TYPE.CHALLENGE)
 {
 }

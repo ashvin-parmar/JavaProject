@@ -4,7 +4,7 @@ import com.ashvin.nframework.common.*;
 import java.net.*;
 import java.nio.charset.*;
 import java.io.*;
-import com.google.gson.*;
+//import com.google.gson.*;
 
 public class NFrameworkClient
 {
@@ -110,11 +110,13 @@ String responseJSONString=new String(responseBytes,StandardCharsets.UTF_8);
 Response response=(Response)JSONUtil.fromJSON(responseJSONString,Response.class);
 if(response.getSuccess()==true)
 {
+/*			Previous one is fine because this gson.toJson will fail if result is null and more problem
 Gson gson=new Gson();
 Object result=response.getResult();
 Object resultObj=gson.fromJson(gson.toJson(result),result.getClass());
 return resultObj;
-//return response.getResult();		//Over here we have to convert it to fromJson -> return type [but, we don't know the return type so make functionality for them later on]
+*/
+return response.getResult();		//Over here we have to convert it to fromJson -> return type [but, we don't know the return type so make functionality for them later on]
 }
 else
 {
