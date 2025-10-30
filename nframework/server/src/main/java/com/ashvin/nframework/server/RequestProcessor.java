@@ -7,6 +7,7 @@ import java.util.*;
 import java.net.*;
 import java.nio.charset.*;
 import java.lang.reflect.*;
+import com.google.gson.*;
 class RequestProcessor extends Thread //accessed only inside package
 {
 private NFrameworkServer server;
@@ -115,25 +116,14 @@ serviceObject=c.newInstance();
 }
 Type[] parameterTypes = method.getGenericParameterTypes();
 Object[] argsArray = request.getArguments();
-
 Object[] args = new Object[argsArray.length];
-
-for (int ii = 0; ii < argsArray.length; ii++) {
-    Object arg = argsArray[ii];
-    Type type = parameterTypes[ii];
-
-    if (type instanceof Class<?> && ((Class<?>) type).isEnum()) {
-	//Worked for ENUM only arguments but what if serialized object has enums
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        Class<? extends Enum> enumType = (Class<? extends Enum>) type;
-
-        // Convert string to enum constant
-        Enum<?> value = Enum.valueOf(enumType, arg.toString());
-        args[ii] = value;
-        System.out.println("Converted to Enum: " + value);
-    } else {
-        args[ii] = arg;
-    }
+Gson gson=new Gson();
+for (int ii = 0; ii < argsArray.length; ii++) 
+{
+Object arg = argsArray[ii];
+Type type = parameterTypes[ii];
+//System.out.println(arg.toString());
+args[ii]=gson.fromJson(gson.toJson(arg),type);
 }
 Object result=method.invoke(serviceObject,args);
 response.setSuccess(true);
