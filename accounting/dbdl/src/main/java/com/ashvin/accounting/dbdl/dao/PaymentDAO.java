@@ -3,6 +3,7 @@ package com.ashvin.accounting.dbdl.dao;
 import com.ashvin.accounting.dbdl.dto.*;
 import java.sql.*;
 import java.util.*;
+import java.math.*;
 
 public class PaymentDAO
 {
@@ -33,6 +34,11 @@ resultSet.next();
 int paymentNumber=resultSet.getInt(1);
 payment.setPaymentNumber(paymentNumber);
 resultSet.close();
+preparedStatement.close();
+preparedStatement=connection.prepareStatement("update supplier set total_payment=total_payment+? where code=?");
+preparedStatement.setBigDecimal(1,new BigDecimal(amount));
+preparedStatement.setInt(2,supplierCode);
+preparedStatement.executeUpdate();
 preparedStatement.close();
 connection.close();
 }catch(Exception exception)

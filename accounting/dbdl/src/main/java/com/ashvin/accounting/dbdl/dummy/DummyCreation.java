@@ -41,6 +41,7 @@ try
 {
 customerDAO.addCustomer(customer);
 countRecords++;
+System.out.println("Customer "+countRecords+" added");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());
@@ -72,6 +73,7 @@ try
 {
 itemDAO.addItem(item);
 countRecords++;
+System.out.println("Item: "+countRecords+" added");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());
@@ -104,6 +106,7 @@ try
 {
 supplierDAO.addSupplier(supplier);
 countRecords++;
+System.out.println("Supplier: "+countRecords+" added");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());
@@ -121,6 +124,7 @@ SaleDAO saleDAO=new SaleDAO();
 Sale sale=null;
 int countRecords=0;
 duration=duration.minusDays(1);
+int records=0;
 for(int i=0;i<30;i++)
 {
 duration=duration.plusDays(1);
@@ -142,6 +146,8 @@ sale.setQuantity(random.nextInt(10)+1);
 sale.setRate(random.nextInt(10)+10);
 saleDAO.addSale(sale);
 countRecords++;
+records++;
+System.out.println("Sale: "+records+" added");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());
@@ -153,33 +159,38 @@ public void createDummyPurchases4000()
 {
 long randomInteger;
 PurchaseDAO purchaseDAO=new PurchaseDAO();
-StringBuilder sb=null;
 String billNumber="";
-String fromStr=alphabetsStr+numericStr;
-int range=fromStr.length();
 Purchase purchase=null;
 int countRecords=0;
-while(countRecords<4000)
+Calendar calendar=Calendar.getInstance();
+calendar.setTime(new java.util.Date());
+int records=0;
+for(int j=1;j<=30;j++)
 {
+calendar.add(Calendar.DATE,random.nextInt(3)+1);
+countRecords=0;
+while(countRecords<70)
+{
+calendar.add(Calendar.MINUTE,random.nextInt(20)+1);
 try
 {
-sb=new StringBuilder();
-for(int i=0;i<15;i++)
-{
-sb.append(fromStr.charAt(random.nextInt(range)));
-}
-billNumber=sb.toString();
+billNumber=UUID.randomUUID().toString();
+if(billNumber.length()>25) billNumber=billNumber.substring(0,25);
 purchase=new Purchase();
 purchase.setBillNumber(billNumber);
+purchase.setBillDate(new java.sql.Date(calendar.get(Calendar.YEAR)-1900,calendar.get(Calendar.MONTH),calendar.get(Calendar.DATE)));
 purchase.setSupplierCode(random.nextInt(100)+1);
 purchase.setItemCode(random.nextInt(400)+1);
 purchase.setQuantity(random.nextInt(10)+1);
 purchase.setRate(random.nextInt(10)+10);
 purchaseDAO.addPurchase(purchase);
 countRecords++;
+records++;
+System.out.println("Purchase: "+records+" added");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());
+}
 }
 }
 }
@@ -206,6 +217,7 @@ receipt.setCustomerCode(random.nextInt(100)+1);
 receipt.setAmount(random.nextInt(50)+100);
 receiptDAO.addReceipt(receipt);
 countRecords++;
+System.out.println("Receipts: "+countRecords+" added");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());
@@ -235,6 +247,7 @@ payment.setSupplierCode(random.nextInt(100)+1);
 payment.setAmount(random.nextInt(50)+100);
 paymentDAO.addPayment(payment);
 countRecords++;
+System.out.println("Payment: "+countRecords+" added");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());

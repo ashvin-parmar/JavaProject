@@ -15,7 +15,7 @@ if(name.length()==0) throw new DAOException("Supplier name required");
 try
 {
 Connection connection=DAOConnection.getConnection();
-PreparedStatement preparedStatement=connection.prepareStatement("insert into supplier (name) values(?)",Statement.RETURN_GENERATED_KEYS);
+PreparedStatement preparedStatement=connection.prepareStatement("insert into supplier (name,total_purchase,total_payment) values(?,0.0,0.0)",Statement.RETURN_GENERATED_KEYS);
 preparedStatement.setString(1,name);
 preparedStatement.executeUpdate();
 ResultSet resultSet=preparedStatement.getGeneratedKeys();

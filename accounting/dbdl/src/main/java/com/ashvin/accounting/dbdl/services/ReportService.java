@@ -5,6 +5,9 @@ import com.ashvin.accounting.dbdl.dao.DAOException;
 
 import java.io.*;
 import java.sql.*;
+import java.math.*;
+import java.time.*;
+
 
 public class ReportService
 {
@@ -95,6 +98,65 @@ catch(Exception exception)
 {
 //System.out.println("Some problem: "+exception.getMessage());
 throw new DAOException("Some problem");
+}
+}
+public void printCustomerReportsDirectly()
+{
+int customerCode;
+String customerName;
+BigDecimal toReceive;
+BigDecimal advancePaid;
+String toWrite;
+try
+{
+Connection connection=DAOConnection.getConnection();
+String sqlStatement="select * from customer order by code";
+Statement statement=connection.createStatement();
+ResultSet resultSet=statement.executeQuery(sqlStatement);
+while(resultSet.next())
+{
+customerCode=resultSet.getInt("code");
+customerName=resultSet.getString("name").trim();
+toReceive=resultSet.getBigDecimal("total_sale");
+advancePaid=resultSet.getBigDecimal("total_receipt");
+System.out.printf("%4d) %15s %10s %10s,%8s\n",customerCode,customerName,toReceive.toPlainString(),advancePaid.toPlainString(),toReceive.subtract(advancePaid).toPlainString());
+}
+resultSet.close();
+statement.close();
+connection.close();
+}catch(Exception exception)
+{
+System.out.println(exception.getMessage());
+}
+}
+public void printSupplierReportsDirectly()
+{
+int supplierCode;
+String supplierName;
+BigDecimal toPay;
+BigDecimal advancePaid;
+try
+{
+Connection connection=DAOConnection.getConnection();
+String sqlStatement="select * from supplier order by code";
+Statement statement=connection.createStatement();
+ResultSet resultSet=statement.executeQuery(sqlStatement);
+while(resultSet.next())
+{
+supplierCode=resultSet.getInt("code");
+supplierName=resultSet.getString("name").trim();
+toPay=resultSet.getBigDecimal("total_purchase");
+advancePaid=resultSet.getBigDecimal("total_payment");
+System.out.printf("%3d) %15s %10s %10s %10s\n",supplierCode,supplierName,toPay.toPlainString(),advancePaid.toPlainString(),toPay.subtract(advancePaid).toPlainString());
+}
+resultSet.close();
+statement.close();
+connection.close();
+}
+catch(Exception exception)
+{
+//System.out.println("Some problem: "+exception.getMessage());
+//throw new DAOException("Some problem");
 }
 }
 }

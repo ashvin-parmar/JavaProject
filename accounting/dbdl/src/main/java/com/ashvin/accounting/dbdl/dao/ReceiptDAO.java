@@ -3,6 +3,7 @@ package com.ashvin.accounting.dbdl.dao;
 import com.ashvin.accounting.dbdl.dto.*;
 import java.sql.*;
 import java.util.*;
+import java.math.*;
 
 public class ReceiptDAO
 {
@@ -33,6 +34,11 @@ resultSet.next();
 int receiptNumber=resultSet.getInt(1);
 receipt.setReceiptNumber(receiptNumber);
 resultSet.close();
+preparedStatement.close();
+preparedStatement=connection.prepareStatement("update customer set total_receipt=total_receipt+? where code=?");
+preparedStatement.setBigDecimal(1,new BigDecimal(amount));
+preparedStatement.setInt(2,customerCode);
+preparedStatement.executeUpdate();
 preparedStatement.close();
 connection.close();
 }catch(Exception exception)

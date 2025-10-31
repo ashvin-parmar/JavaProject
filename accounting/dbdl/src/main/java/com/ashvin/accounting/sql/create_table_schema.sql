@@ -1,12 +1,14 @@
 create table customer
 (
 code int primary key auto_increment,
-name char(50) not null
+name char(50) not null unique,
+total_sale decimal(14,2) not null,
+total_receipt decimal(14,2) not null
 );
 create table item
 (
 code int primary key auto_increment,
-name char(50) not null
+name char(50) not null unique
 );
 create table sale
 (
@@ -22,12 +24,15 @@ foreign key (item_code) references item(code)
 create table supplier
 (
 code int primary key auto_increment,
-name char(50) not null
+name char(50) not null unique,
+total_purchase decimal(14,2) not null,
+total_payment decimal(14,2) not null
 );
 create table purchase
 (
 reference_number int primary key auto_increment,
-bill_number char(15) unique,
+bill_number char(25) unique not null,
+purchase_date date not null,
 supplier_code int not null,
 item_code int not null,
 quantity int not null,
@@ -38,7 +43,7 @@ foreign key (item_code) references item(code)
 create table receipt
 (
 receipt_number int primary key auto_increment,
-receipt_data date not null,
+receipt_date date not null,
 customer_code int not null,
 amount int not null,
 foreign key (customer_code) references customer(code)

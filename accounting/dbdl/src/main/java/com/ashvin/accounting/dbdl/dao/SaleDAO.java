@@ -3,6 +3,7 @@ package com.ashvin.accounting.dbdl.dao;
 import com.ashvin.accounting.dbdl.dto.*;
 import java.sql.*;
 import java.util.*;
+import java.math.*;
 
 public class SaleDAO
 {
@@ -40,6 +41,11 @@ resultSet.next();
 int billNumber=resultSet.getInt(1);
 sale.setBillNumber(billNumber);
 resultSet.close();
+preparedStatement.close();
+preparedStatement=connection.prepareStatement("update customer set total_sale=total_sale+? where code=?");
+preparedStatement.setBigDecimal(1,new BigDecimal(quantity*rate));
+preparedStatement.setInt(2,customerCode);
+preparedStatement.executeUpdate();
 preparedStatement.close();
 connection.close();
 }catch(Exception exception)

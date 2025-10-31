@@ -7,5 +7,6 @@ public static void main(String gg[])
 {
 DummyCreation dummy=new DummyCreation();
 dummy.createDummySales3000(new Date());
+dummy.createDummyReceipts100(new Date());
 }
 }

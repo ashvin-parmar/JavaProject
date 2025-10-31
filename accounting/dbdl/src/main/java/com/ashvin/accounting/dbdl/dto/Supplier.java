@@ -1,8 +1,11 @@
 package com.ashvin.accounting.dbdl.dto;
+import java.math.*;
 public class Supplier implements java.io.Serializable, Comparable<Supplier>
 {
 private Integer code;
 private String name;
+private BigDecimal totalPurchases;
+private BigDecimal totalPayments;
 public void setCode(int code)
 {
 this.code=code;
@@ -18,6 +21,22 @@ this.name=name;
 public String getName()
 {
 return this.name;
+}
+public void setTotalPurchases(BigDecimal totalPurchases)
+{
+this.totalPurchases=totalPurchases;
+}
+public BigDecimal getTotalPurchases()
+{
+return this.totalPurchases;
+}
+public void setTotalPayments(BigDecimal totalPayments)
+{
+this.totalPayments=totalPayments;
+}
+public BigDecimal getTotalPayments()
+{
+return this.totalPayments;
 }
 public boolean equals(Object obj)
 {

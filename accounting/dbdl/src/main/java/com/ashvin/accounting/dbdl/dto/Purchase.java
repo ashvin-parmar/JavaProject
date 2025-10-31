@@ -6,6 +6,7 @@ public class Purchase implements java.io.Serializable, Comparable<Purchase>
 {
 private Integer referenceNumber;
 private String billNumber;
+private Date billDate;
 private int supplierCode;
 private int itemCode;
 private int quantity;
@@ -14,6 +15,7 @@ public Purchase()
 {
 this.referenceNumber=0;
 this.billNumber="";
+this.billDate=null;
 this.supplierCode=0;
 this.itemCode=0;
 this.quantity=0;
@@ -34,6 +36,14 @@ this.billNumber=billNumber;
 public java.lang.String getBillNumber()
 {
 return this.billNumber;
+}
+public void setBillDate(Date billDate)
+{
+this.billDate=billDate;
+}
+public Date getBillDate()
+{
+return this.billDate;
 }
 public void setSupplierCode(int supplierCode)
 {
