@@ -2,10 +2,12 @@ package com.ashvin.nframework.server;
 import com.ashvin.nframework.common.*;
 import com.ashvin.nframework.server.*;
 import java.io.*;
+import java.lang.Enum;
 import java.util.*;
 import java.net.*;
 import java.nio.charset.*;
 import java.lang.reflect.*;
+import com.google.gson.*;
 class RequestProcessor extends Thread //accessed only inside package
 {
 private NFrameworkServer server;
@@ -98,8 +100,32 @@ Class c=tcpService.c;
 Method method=tcpService.method;
 try
 {
-Object serviceObject=c.newInstance();
-Object result=method.invoke(serviceObject,request.getArguments());
+//Here more to add related to the processing of new object created using getClassObject method
+Object serviceObject=null;
+try
+{
+Method m=c.getMethod("get"+c.getSimpleName());
+serviceObject=m.invoke(c);
+}catch(Throwable t)
+{
+//do nothing
+}
+if(serviceObject==null)
+{
+serviceObject=c.newInstance();
+}
+Type[] parameterTypes = method.getGenericParameterTypes();
+Object[] argsArray = request.getArguments();
+Object[] args = new Object[argsArray.length];
+Gson gson=new Gson();
+for (int ii = 0; ii < argsArray.length; ii++) 
+{
+Object arg = argsArray[ii];
+Type type = parameterTypes[ii];
+//System.out.println(arg.toString());
+args[ii]=gson.fromJson(gson.toJson(arg),type);
+}
+Object result=method.invoke(serviceObject,args);
 response.setSuccess(true);
 response.setResult(result);
 response.setException(null);

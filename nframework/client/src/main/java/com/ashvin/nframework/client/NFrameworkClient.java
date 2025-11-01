@@ -4,13 +4,22 @@ import com.ashvin.nframework.common.*;
 import java.net.*;
 import java.nio.charset.*;
 import java.io.*;
+//import com.google.gson.*;
+
 public class NFrameworkClient
 {
-public Object execute(String servicePath,Object arguments[]) throws Throwable
+private String host;
+private int port;
+public NFrameworkClient(String host,int port)
+{
+this.host=host;
+this.port=port;
+}
+public Object execute(String servicePath,Object ...arguments) throws Throwable
 {
 try
 {
-Socket socket=new Socket("localhost",5050);
+Socket socket=new Socket(host,port);
 InputStream is=socket.getInputStream();
 OutputStream os=socket.getOutputStream();
 byte header[]=new byte[1024];
@@ -96,12 +105,18 @@ j+=bytesReadCount;
 os.write(ack);
 os.flush();
 socket.close();
+
 String responseJSONString=new String(responseBytes,StandardCharsets.UTF_8);
-//System.out.println(responseJSONString);
-Response response=JSONUtil.fromJSON(responseJSONString,Response.class);
+Response response=(Response)JSONUtil.fromJSON(responseJSONString,Response.class);
 if(response.getSuccess()==true)
 {
-return response.getResult();
+/*			Previous one is fine because this gson.toJson will fail if result is null and more problem
+Gson gson=new Gson();
+Object result=response.getResult();
+Object resultObj=gson.fromJson(gson.toJson(result),result.getClass());
+return resultObj;
+*/
+return response.getResult();		//Over here we have to convert it to fromJson -> return type [but, we don't know the return type so make functionality for them later on]
 }
 else
 {

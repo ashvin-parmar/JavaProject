@@ -19,4 +19,13 @@ public Object[] getArguments()
 {
 return this.arguments;
 }
+/*
+public Type[] getArgumentsTypes()
+{
+Type[] argumentsType=new Type[this.arguments.size()];
+for(int i=0;i<arguments.size();i++)
+{
+argumentsType[i]=arguments.get(i).getClass();
+}
+}*/
 }

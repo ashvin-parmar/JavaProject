@@ -1,0 +1,8 @@
+plugins
+{
+id 'java'
+}
+dependencies
+{
+implementation files('/media/ashvin/code/my-libs/java/mysql/mysql.jar','../../nframework/server/build/libs/nframework-server.jar','../chess-common/build/libs/chess-common.jar')
+}

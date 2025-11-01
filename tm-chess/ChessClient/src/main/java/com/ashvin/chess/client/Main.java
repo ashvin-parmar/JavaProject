@@ -12,16 +12,17 @@ return;
 }
 try
 {
-NFrameworkClient client=new NFrameworkClient();
+NFrameworkClient client=new NFrameworkClient("localhost",5050);
 String username=args[0];
 String password=args[1];
 Object[] arguments={username,password};
-boolean authentic=(boolean)client.execute("/ChessServer/memberAuthentic",arguments);
+boolean authentic=(boolean)client.execute("/ChessServer/memberAuthentic",username,password);
 if(!authentic)
 {
 System.out.println("Invalid username/password");
 return ;
 }
+System.out.println("Valid username");
 ChessUI chessUI=new ChessUI(username);
 chessUI.showUI();
 }catch(Throwable t)

@@ -3,7 +3,7 @@ id 'java'
 }
 dependencies
 {
-implementation files('../common/build/libs/nframework-common.jar')
+implementation files('../common/build/libs/nframework-common.jar','../../../my-libs/java/gson/gson-2.13.1.jar')
 }
 jar
 {

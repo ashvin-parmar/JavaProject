@@ -1,0 +1,1 @@
+public enum COUNTRY{INDIA,JAPAN,CHAINA,USA}
