@@ -155,7 +155,7 @@ System.out.println(daoException.getMessage());
 }
 }
 }
-public void createDummyPurchases4000()
+public void createDummyPurchases2100(java.util.Date startDate)
 {
 long randomInteger;
 PurchaseDAO purchaseDAO=new PurchaseDAO();
@@ -163,7 +163,9 @@ String billNumber="";
 Purchase purchase=null;
 int countRecords=0;
 Calendar calendar=Calendar.getInstance();
-calendar.setTime(new java.util.Date());
+calendar.set(Calendar.DATE,startDate.getDate());
+calendar.set(Calendar.YEAR,startDate.getYear()+1900);
+calendar.set(Calendar.MONTH,startDate.getMonth());
 int records=0;
 for(int j=1;j<=30;j++)
 {

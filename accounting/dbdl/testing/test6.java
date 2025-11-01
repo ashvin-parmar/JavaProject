@@ -6,7 +6,7 @@ class psp
 public static void main(String gg[])
 {
 DummyCreation dummy=new DummyCreation();
-dummy.createDummyPurchases4000();
+dummy.createDummyPurchases2100(new Date());
 dummy.createDummyPayments100(new Date());
 }
 }

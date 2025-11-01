@@ -159,4 +159,105 @@ catch(Exception exception)
 //throw new DAOException("Some problem");
 }
 }
+public void printCustomerReports()	//Long ways
+{
+Instant startTime=Instant.now();
+int customerCode;
+String customerName;
+BigDecimal toReceive;
+BigDecimal advancePaid;
+String toWrite;
+try
+{
+ResultSet resultSet2;
+PreparedStatement preparedStatement;
+Connection connection=DAOConnection.getConnection();
+String sqlStatement="select * from customer order by code";
+Statement statement=connection.createStatement();
+ResultSet resultSet=statement.executeQuery(sqlStatement);
+while(resultSet.next())
+{
+customerCode=resultSet.getInt("code");
+customerName=resultSet.getString("name").trim();
+//toReceive=resultSet.getBigDecimal("total_sale");
+//advancePaid=resultSet.getBigDecimal("total_receipt");
+preparedStatement=connection.prepareStatement("select sum(quantity*rate) as sm from sale where customer_code=?");
+preparedStatement.setInt(1,customerCode);
+resultSet2=preparedStatement.executeQuery();
+resultSet2.next();
+toReceive=new BigDecimal(String.valueOf(resultSet2.getInt("sm")));
+preparedStatement.close();
+resultSet2.close();
+preparedStatement=connection.prepareStatement("select sum(amount) as sm from receipt where customer_code=?");
+preparedStatement.setInt(1,customerCode);
+resultSet2=preparedStatement.executeQuery();
+resultSet2.next();
+advancePaid=new BigDecimal(String.valueOf(resultSet2.getInt("sm")));
+preparedStatement.close();
+resultSet2.close();
+System.out.printf("%4d) %15s %10s %10s,%8s\n",customerCode,customerName,toReceive.toPlainString(),advancePaid.toPlainString(),toReceive.subtract(advancePaid).toPlainString());
+}
+resultSet.close();
+statement.close();
+connection.close();
+Instant endTime=Instant.now();
+Duration difference=Duration.between(startTime,endTime);
+System.out.println("Duration: "+difference.toSeconds()+" seconds");
+System.out.println("Duration: "+difference.toMillis()+" milli seconds");
+}catch(Exception exception)
+{
+System.out.println(exception.getMessage());
+}
+}
+public void printSupplierReports()
+{
+Instant startTime=Instant.now();
+int supplierCode;
+String supplierName;
+BigDecimal toPay;
+BigDecimal advancePaid;
+try
+{
+Connection connection=DAOConnection.getConnection();
+String sqlStatement="select * from supplier order by code";
+Statement statement=connection.createStatement();
+PreparedStatement preparedStatement;
+ResultSet resultSet2;
+ResultSet resultSet=statement.executeQuery(sqlStatement);
+while(resultSet.next())
+{
+supplierCode=resultSet.getInt("code");
+supplierName=resultSet.getString("name").trim();
+//toPay=resultSet.getBigDecimal("total_purchase");
+//advancePaid=resultSet.getBigDecimal("total_payment");
+preparedStatement=connection.prepareStatement("select sum(quantity*rate) as sm from purchase where supplier_code=?");
+preparedStatement.setInt(1,supplierCode);
+resultSet2=preparedStatement.executeQuery();
+resultSet2.next();
+toPay=new BigDecimal(String.valueOf(resultSet2.getInt("sm")));
+resultSet2.close();
+preparedStatement.close();
+preparedStatement=connection.prepareStatement("select sum(amount) as sm from payment where supplier_code=?");
+preparedStatement.setInt(1,supplierCode);
+resultSet2=preparedStatement.executeQuery();
+resultSet2.next();
+advancePaid=new BigDecimal(String.valueOf(resultSet2.getInt("sm")));
+resultSet2.close();
+preparedStatement.close();
+System.out.printf("%3d) %15s %10s %10s %10s\n",supplierCode,supplierName,toPay.toPlainString(),advancePaid.toPlainString(),toPay.subtract(advancePaid).toPlainString());
+}
+resultSet.close();
+statement.close();
+connection.close();
+Instant endTime=Instant.now();
+Duration diff=Duration.between(startTime,endTime);
+System.out.println("Duration: "+diff.toSeconds()+" seconds");
+System.out.println("Duration: "+diff.toMillis()+" milli seconds");
+}
+catch(Exception exception)
+{
+System.out.println("Some problem: "+exception.getMessage());
+//throw new DAOException("Some problem");
+}
+}
 }
