@@ -43,11 +43,11 @@ int referenceNumber=resultSet.getInt(1);
 purchase.setReferenceNumber(referenceNumber);
 resultSet.close();
 preparedStatement.close();
-preparedStatement=connection.prepareStatement("update supplier set total_purchase=total_purchase+? where code=?");
-preparedStatement.setBigDecimal(1,new BigDecimal(quantity*rate));
-preparedStatement.setInt(2,supplierCode);
-preparedStatement.executeUpdate();
-preparedStatement.close();
+//preparedStatement=connection.prepareStatement("update supplier set total_purchase=total_purchase+? where code=?");
+//preparedStatement.setBigDecimal(1,new BigDecimal(quantity*rate));
+//preparedStatement.setInt(2,supplierCode);
+//preparedStatement.executeUpdate();
+//preparedStatement.close();
 connection.close();
 }catch(Exception exception)
 {
