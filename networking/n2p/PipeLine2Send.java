@@ -73,7 +73,7 @@ bytes=job.bytes;
 //Send data to server side
 //code to send header with data length 
 // code to send data in chunks of 1024
-this.application.onBytes(job.id,bytes);
+this.application.onResponseBytes(job.id,bytes);
 }
 }catch(Exception exception)
 {

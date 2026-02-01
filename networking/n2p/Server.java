@@ -2,15 +2,9 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-class Pipelines
-{
-public String connectionId;
-public PipeLine2Send pipeLine2Send;
-public PipeLine2Receive pipeLine2Receive;
-}
 class Server
 {
-private HashMap<String,Pipelines> pipelines;
+private HashMap<String,PipeLines> pipeLinesMap;
 private HashMap<String,Object[]> socketStreams;
 private ServerSocket serverSocket1;
 private ServerSocket serverSocket2;
@@ -19,7 +13,7 @@ private Thread threadForSocket1;
 private Thread threadForSocket2; 
 public Server(Application application)
 {
-this.pipelines=new HashMap<>();
+this.pipeLinesMap=new HashMap<>();
 this.socketStreams=new HashMap<>();
 this.application=application;
 }
@@ -99,7 +93,7 @@ System.out.println(exception);
 });
 this.threadForSocket1.start();
 this.threadForSocket2=new Thread(()->{
-Socket socket2=null;
+Socket socket=null;
 InputStream inputStream=null;
 InputStreamReader inputStreamReader=null;
 OutputStream outputStream=null;
@@ -108,13 +102,16 @@ int x=0,i=0;
 String request="";
 String response="";
 StringBuffer stringBuffer=null;
+PipeLines pipeLines;
+PipeLine2Send pipeLine2Send;
+PipeLine2Receive pipeLine2Receive;
 while(true)
 {
 try
 {
 System.out.println("Server socket 2 is ready to accept request on port 4040");
-socket2=serverSocket2.accept();
-inputStream=socket2.getInputStream();
+socket=serverSocket2.accept();
+inputStream=socket.getInputStream();
 inputStreamReader=new InputStreamReader(inputStream);
 
 while(true)
@@ -127,11 +124,11 @@ i++;
 if(x!='#') 
 {
 response="INVALID#";
-outputStream=socket2.getOutputStream();
+outputStream=socket.getOutputStream();
 outputStreamWriter=new OutputStreamWriter(outputStream);
 outputStreamWriter.write(response);
 outputStreamWriter.flush();
-socket2.close();
+socket.close();
 continue;
 }
 request=stringBuffer.toString();
@@ -140,28 +137,31 @@ Object[] objects=socketStreams.get(connectionId);
 if(objects==null)
 {
 response="INVALID#";
-outputStream=socket2.getOutputStream();
+outputStream=socket.getOutputStream();
 outputStreamWriter=new OutputStreamWriter(outputStream);
 outputStreamWriter.write(response);
 outputStreamWriter.flush();
-socket2.close();
+socket.close();
 continue;
 }
-/* 
-Extract the streams from objects and call the sender and receiver 
-parameterized contructors from it with 
-	1) application, 
-	1.5) connectionId,	[clientId]
-	2) socket, 
-	3) inputStream
-	4) inputStreamReader
-	5) outputStream
-	6) outputStreamWriter	
-because we can not create multiple stream to fetch and send data. 
-Create objects of Sender and Receiver and activate those thread.
-add the clientId, socket1 and socket2 to the hashmap with name 
-*/	
-
+this.socketStreams.remove(connectionId);
+//with 4040 socket
+pipeLine2Send=new PipeLine2Send(application,connectionId,socket,inputStream,inputStreamReader,outputStream,outputStreamWriter);
+//with 5050 sockets
+pipeLine2Receive=new PipeLine2Receive(application,connectionId,(Socket)objects[0],(InputStream)objects[1],(InputStreamReader)objects[2],(OutputStream)objects[3],(OutputStreamWriter)objects[4]);
+pipeLines=new PipeLines();
+pipeLines.connectionId=connectionId;
+pipeLines.pipeLine2Send=pipeLine2Send;
+pipeLines.pipeLine2Receive=pipeLine2Receive;
+pipeLine2Send.start();
+pipeLine2Receive.start();
+pipeLinesMap.put(connectionId,pipeLines);
+response="CONNECTED#";
+outputStream=socket.getOutputStream();
+outputStreamWriter=new OutputStreamWriter(outputStream);
+outputStreamWriter.write(response);
+outputStreamWriter.flush();
+application.onConnected(connectionId);
 }catch(Exception exception)
 {
 System.out.println(exception);
@@ -174,5 +174,4 @@ this.threadForSocket2.start();
 System.out.println(exception);
 }
 }
-
 }

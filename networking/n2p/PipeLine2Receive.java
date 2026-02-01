@@ -58,7 +58,7 @@ if(x==-1) continue;
 // header+content into byte[]
 // then call the server method through variable application
 // deliver the byte[].
-//byte[] responseBytes=application.onBytes(bytes);
+//byte[] responseBytes=application.onRequestBytes(clientId,bytes);
 // send back response bytes
 }
 }catch(Exception exception)

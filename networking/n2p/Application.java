@@ -1,5 +1,6 @@
 interface Application
 {
-public byte[] onBytes(byte bytes[]);
-public void onBytes(String id,byte bytes[]);
+public byte[] onRequestBytes(String id,byte bytes[]);
+public void onResponseBytes(String id,byte bytes[]);
+public void onConnected(String id);
 }
