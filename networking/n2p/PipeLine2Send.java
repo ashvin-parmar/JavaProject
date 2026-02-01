@@ -4,6 +4,7 @@ import java.io.*;
 
 class PipeLine2Send extends Thread
 {
+private Application application;
 private String clientId;
 private Socket socket;
 private InputStream inputStream;
@@ -12,21 +13,16 @@ private OutputStream outputStream;
 private OutputStreamWriter outputStreamWriter;
 private boolean clientConnected;
 private List<Job> jobQueue;
-public PipeLine2Send(Socket socket,String clientId)
+public PipeLine2Send(Application application,String clientId,Socket socket,InputStream inputStream,InputStreamReader inputStreamReader,OutputStream outputStream,OutputStreamWriter outputStreamWriter)
 {
 this.clientConnected=true;
-this.socket=socket;
+this.application=application;
 this.clientId=clientId;
-try
-{
-inputStream=socket.getInputStream();
-outputStream=socket.getOutputStream();
-}catch(IOException ioException)
-{
-this.clientConnected=false;
-}
-inputStreamReader=new InputStreamReader(inputStream);
-outputStreamWriter=new OutputStreamWriter(outputStream);
+this.socket=socket;
+this.inputStream=inputStream;
+this.inputStreamReader=inputStreamReader;
+this.outputStream=outputStream;
+this.outputStreamWriter=outputStreamWriter;
 jobQueue=Collections.synchronizedList(new ArrayList<Job>());
 }
 public boolean isClientConnected()
@@ -77,7 +73,7 @@ bytes=job.bytes;
 //Send data to server side
 //code to send header with data length 
 // code to send data in chunks of 1024
-// application.onBytes(job.id,bytes);
+this.application.onBytes(job.id,bytes);
 }
 }catch(Exception exception)
 {

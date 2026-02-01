@@ -13,22 +13,16 @@ private OutputStream outputStream;
 private InputStreamReader inputStreamReader;
 private OutputStreamWriter outputStreamWriter;
 private boolean clientConnected;
-public PipeLine2Receive(Application application,Socket socket,String clientId)
+public PipeLine2Receive(Application application,String clientId,Socket socket,InputStream inputStream,InputStreamReader inputStreamReader,OutputStream outputStream,OutputStreamWriter outputStreamWriter)
 {
-this.application=application;
-this.socket=socket;
-this.clientId=clientId;
 this.clientConnected=true;
-try
-{
-this.inputStream=socket.getInputStream();
-this.outputStream=socket.getOutputStream();
-}catch(IOException ioException)
-{
-this.clientConnected=false;
-}
-this.inputStreamReader=new InputStreamReader(this.inputStream);
-this.outputStreamWriter=new OutputStreamWriter(this.outputStream);
+this.application=application;
+this.clientId=clientId;
+this.socket=socket;
+this.inputStream=inputStream;
+this.inputStreamReader=inputStreamReader;
+this.outputStream=outputStream;
+this.outputStreamWriter=outputStreamWriter;
 }
 public boolean isClientConnected()
 {
@@ -64,7 +58,7 @@ if(x==-1) continue;
 // header+content into byte[]
 // then call the server method through variable application
 // deliver the byte[].
-byte[] responseBytes=application.onBytes(bytes);
+//byte[] responseBytes=application.onBytes(bytes);
 // send back response bytes
 }
 }catch(Exception exception)
