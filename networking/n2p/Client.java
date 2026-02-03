@@ -39,19 +39,20 @@ stringBuffer.append((char)x);
 String response=stringBuffer.toString();
 if(response.equals("INVALID"))
 {
-throw new ConnectionException("Unable to connect");
+throw new ConnectionException("Unable to connect, invalid response1");
 }
 String connectionId=response;
 
 Socket socket2=new Socket(server,portNumber2);
 OutputStream outputStream2=socket2.getOutputStream();
 OutputStreamWriter outputStreamWriter2=new OutputStreamWriter(outputStream2);
-String request2="CONNECT#";
+String request2=connectionId+"#";
 outputStreamWriter2.write(request2);
 outputStreamWriter2.flush();
 
 InputStream inputStream2=socket2.getInputStream();
 InputStreamReader inputStreamReader2=new InputStreamReader(inputStream2);
+stringBuffer=new StringBuffer();
 while(true)
 {
 x=inputStreamReader2.read();
@@ -65,7 +66,7 @@ throw new ConnectionException("Unable to connect");
 String response2=stringBuffer.toString();
 if(response2.equals("INVALID"))
 {
-throw new ConnectionException("Unable to connect");
+throw new ConnectionException("Unable to connect, invalid response2");
 //socket2.close();			//Because TM's solution does not have this
 }
 //Over here complete connection created, now create sender and receiver objects and activate them 

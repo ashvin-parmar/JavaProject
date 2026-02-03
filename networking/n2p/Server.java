@@ -43,6 +43,7 @@ socket=serverSocket1.accept();
 inputStream=socket.getInputStream();
 inputStreamReader=new InputStreamReader(inputStream);
 i=0;
+stringBuffer=new StringBuffer();
 while(true)
 {
 x=inputStreamReader.read();
@@ -113,7 +114,8 @@ System.out.println("Server socket 2 is ready to accept request on port 4040");
 socket=serverSocket2.accept();
 inputStream=socket.getInputStream();
 inputStreamReader=new InputStreamReader(inputStream);
-
+stringBuffer=new StringBuffer();
+i=0;
 while(true)
 {
 x=inputStreamReader.read();
