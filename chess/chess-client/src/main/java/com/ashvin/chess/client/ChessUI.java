@@ -19,6 +19,9 @@ private JScrollPane availableMembersListScrollPane;
 private JTable invitationByMembersList;
 private InvitationByMembersListModel invitationByMembersListModel;
 private JScrollPane invitationByMembersListScrollPane;
+private JTable chessGame;
+private ChessGameModel chessGameModel;
+private JScrollPane chessGameScrollPane;
 private String username;
 private NFrameworkClient client;
 private javax.swing.Timer timerForSelf;
@@ -114,7 +117,7 @@ MESSAGE_TYPE messageType=MESSAGE_TYPE.NOT_AVAILABLE;
 Object obj=client.execute("/ChessServer/getInvitationStatus",username,availableMembersListModel.invitationToUsername);
 //System.out.println(obj.toString());
 messageType=MESSAGE_TYPE.valueOf(obj.toString());
-System.out.println(messageType);
+//System.out.println(messageType);
 if(messageType==MESSAGE_TYPE.CHALLENGE)
 {
 }
@@ -122,8 +125,10 @@ else
 {
 if(messageType==MESSAGE_TYPE.CHALLENGE_ACCEPTED)
 {
+JOptionPane.showMessageDialog(ChessUI.this,"Challenge accepted, Game start.","Game Start",JOptionPane.INFORMATION_MESSAGE);
 System.out.println("Challenge accepted\n");
-//timerForSelf.stop();
+ChessUI.this.startTheGame(username,availableMembersListModel.invitationToUsername);
+timerForSelf.stop();
 }
 else if(messageType==MESSAGE_TYPE.CHALLENGE_REJECTED)
 {
@@ -218,7 +223,24 @@ client.execute("/ChessServer/rejectInvitation",message);
 JOptionPane.showMessageDialog(ChessUI.this,t.toString());
 }
 }
+public void startTheGame(String fromUsername,String toUsername)
+{
+try
+{
+Message message=new Message();
+message.setToUsername(username);
+message.setFromUsername(fromUsername);
+message.setMessageType(MESSAGE_TYPE.NOT_AVAILABLE);
+String gameId=(String)client.execute("/ChessServer/getGameId",message);
+Game game=(Game)client.execute("/ChessServer/getGame",gameId);
+this.gameId=gameId;
+this.game=game;
+}catch(Throwable t)
+{
+JOptionPane.showMessageDialog(ChessUI.this,t.toString());
+}
 
+}
 
 //inner classes
 class AvailableMembersListModel extends AbstractTableModel
@@ -260,6 +282,7 @@ public void setValueAt(Object value,int row,int column)
 try
 {
 String text=(String)value;
+System.out.println("SET VALUE: "+text);
 if(text.equalsIgnoreCase("Invited"))
 {
 awaitingInvitationReply=true;
@@ -421,6 +444,9 @@ buttons.get(i).setEnabled(false);
 }
 fireTableDataChanged();
 ChessUI.this.acceptInvitation(members.get(row));
+JOptionPane.showMessageDialog(ChessUI.this,"Challenge accepted, Game start.","Game Start",JOptionPane.INFORMATION_MESSAGE);
+
+ChessUI.this.startTheGame(username,availableMembersListModel.invitationToUsername);
 }
 if(text.equalsIgnoreCase("Accept"))
 {
