@@ -1,8 +1,9 @@
+package com.ashvin.n2p;
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-class Server
+public class Server
 {
 private HashMap<String,PipeLines> pipeLinesMap;
 private HashMap<String,Object[]> socketStreams;

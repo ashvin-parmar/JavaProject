@@ -1,14 +1,15 @@
+package com.ashvin.n2p;
 import java.util.*;
 import java.io.*;
 import java.net.*;
 
-class Client
+public class Client
 {
 private Application application;
 private String clientId;
 private String server;
 private int portNumber1,portNumber2;
-Client(Application application,String server,int portNumber1,int portNumber2)
+public Client(Application application,String server,int portNumber1,int portNumber2)
 {
 this.application=application;
 this.server=server;
@@ -85,7 +86,7 @@ pipeLines=new PipeLines();
 pipeLines.connectionId=connectionId;
 pipeLines.pipeLine2Send=pipeLine2Send;
 pipeLines.pipeLine2Receive=pipeLine2Receive;
-
+this.application.onConnected(connectionId);
 }catch(Exception exception)
 {
 System.out.println(exception);

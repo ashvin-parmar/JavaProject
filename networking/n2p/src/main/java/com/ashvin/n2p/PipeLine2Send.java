@@ -1,8 +1,9 @@
+package com.ashvin.n2p;
 import java.util.*;
 import java.net.*;
 import java.io.*;
 
-class PipeLine2Send extends Thread
+public class PipeLine2Send extends Thread
 {
 private Application application;
 private String clientId;

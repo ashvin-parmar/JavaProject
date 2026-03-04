@@ -1,0 +1,9 @@
+//As per latest version of gradle 
+plugins {
+id 'java'
+}
+jar
+{
+archiveBaseName='n2p'
+}
+

@@ -1,4 +1,5 @@
-class PipeLines
+package com.ashvin.n2p;
+public class PipeLines
 {
 public String connectionId;
 public PipeLine2Send pipeLine2Send;

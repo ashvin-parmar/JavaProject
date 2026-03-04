@@ -1,0 +1,13 @@
+//As per latest version of gradle 
+plugins {
+  id 'java'
+}
+dependencies
+{
+implementation files('../dependencies/n2p.jar')    
+}
+jar
+{
+  archiveBaseName='wchat-client'
+}
+

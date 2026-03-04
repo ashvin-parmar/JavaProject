@@ -1,9 +1,10 @@
+package com.ashvin.n2p;
 import java.util.*;
 import java.io.*;
 import java.net.*;
 
 
-class PipeLine2Receive extends Thread
+public class PipeLine2Receive extends Thread
 {
 private Application application;
 private Socket socket;
