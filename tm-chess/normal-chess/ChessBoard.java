@@ -42,13 +42,13 @@ button.setContentAreaFilled(false);
 if(color)
 {
 //backgroundColor=new Color(100,149,237,100);
-//backgroundColor=Color.BLUE;
-backgroundColor=Color.BLACK;
+backgroundColor=Color.BLUE;
+//backgroundColor=Color.BLACK;
 }
 else
 {
-//backgroundColor=new Color(255,255,224,100);
-backgroundColor=Color.WHITE;
+backgroundColor=new Color(255,255,224,100);
+//backgroundColor=Color.WHITE;
 }
 button.setBackground(backgroundColor);
 button.setOpaque(true);
